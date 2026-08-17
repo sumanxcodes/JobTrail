@@ -40,6 +40,9 @@ export function Navbar() {
     router.refresh();
   };
 
+  const isAuthPage =
+    pathname === '/login' || pathname === '/signup' || pathname === '/reset-password';
+
   return (
     <header
       style={{
@@ -63,9 +66,9 @@ export function Navbar() {
       >
         {/* Brand */}
         <Link
-          href={userEmail ? '/dashboard' : '/'}
+          href={userEmail && !isAuthPage ? '/dashboard' : '/'}
           style={{
-            display: 'flex',
+            display: 'inline-flex',
             alignItems: 'center',
             gap: '0.5rem',
             fontFamily: 'var(--font-headline)',
@@ -87,7 +90,7 @@ export function Navbar() {
           <ThemeToggle />
 
           <nav style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
-            {userEmail ? (
+            {userEmail && !isAuthPage ? (
               <>
                 <Link
                   href="/dashboard"
