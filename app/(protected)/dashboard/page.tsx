@@ -111,10 +111,6 @@ export default function DashboardPage() {
             Real-time pipeline health, conversion metrics, and job pursuit momentum.
           </p>
         </div>
-
-        <Link href="/applications/new" style={{ textDecoration: 'none' }}>
-          <FilledButton icon="add">Add Job</FilledButton>
-        </Link>
       </div>
 
       {loading ? (
