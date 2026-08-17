@@ -103,11 +103,17 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
     setParseMessageType('info');
 
     try {
-      const { data, error } = await supabase.functions.invoke('parse-jd', {
-        body: { mode: inputMode, content },
+      const response = await fetch('/api/parse-jd', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mode: inputMode, content }),
       });
 
-      if (error) throw error;
+      const data = await response.json();
+
+      if (!response.ok && data?.error) {
+        throw new Error(data.error);
+      }
 
       if (data?.status === 'rate_limited') {
         setParseMessage('Daily limit reached. You can add details manually.');
