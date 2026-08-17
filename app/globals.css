@@ -387,7 +387,9 @@ a {
   text-decoration: none;
   cursor: pointer;
   width: 100%;
-  padding: 2px 0;
+  padding: 4px 0;
+  border-radius: 12px;
+  transition: background-color 0.15s ease;
 }
 
 .m3-active-pill {
@@ -421,11 +423,12 @@ a {
   transition: color 0.15s ease;
   white-space: nowrap;
   text-align: center;
+  line-height: 1.2;
 }
 
 .m3-nav-item.active .m3-nav-label {
   color: var(--md-sys-color-on-surface);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 /* M3 Floating Action Button (FAB) inside Rail - Flat / 0dp Resting Elevation */

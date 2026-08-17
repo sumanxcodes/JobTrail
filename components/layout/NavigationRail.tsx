@@ -37,9 +37,9 @@ export function NavigationRail() {
 
   return (
     <aside className="m3-nav-rail" aria-label="Main Navigation">
-      {/* Top Group: Logo Anchor, FAB, and Navigation Destinations */}
+      {/* Top Group: Logo Badge, FAB, and Navigation Destinations */}
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
-        {/* Brand Stepped-Arch Anchor */}
+        {/* Brand Stepped-Arch Circular Badge */}
         <Link
           href="/dashboard"
           title="JobTrail Workspace"
@@ -47,23 +47,27 @@ export function NavigationRail() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            width: '48px',
-            height: '48px',
+            width: '44px',
+            height: '44px',
+            borderRadius: '50%',
+            backgroundColor: 'var(--md-sys-color-surface-container-lowest)',
+            border: '1.5px solid var(--md-sys-color-outline-variant)',
             textDecoration: 'none',
-            marginBottom: '1rem', /* 16px to FAB */
+            marginBottom: '1.25rem', /* 20px gap to FAB */
+            transition: 'all 0.2s ease',
           }}
         >
-          <Logo size={28} color="var(--md-sys-color-primary)" />
+          <Logo size={22} color="var(--md-sys-color-primary)" />
         </Link>
 
-        {/* Canonical M3 Floating Action Button (FAB) -> 56×56px Squircle */}
+        {/* Canonical M3 Floating Action Button (FAB) -> 56×56px Flat Squircle */}
         <Link
           href="/applications/new"
           className="m3-fab-btn"
           title="Add New Application"
           aria-label="Add New Application"
           style={{
-            marginBottom: '1.5rem', /* 24px deliberate M3 section spacing from FAB to destinations */
+            marginBottom: '2rem', /* 32px deliberate visual separation between FAB and destinations */
           }}
         >
           <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>
@@ -71,12 +75,12 @@ export function NavigationRail() {
           </span>
         </Link>
 
-        {/* Middle Navigation Destinations (Uniform 16px Rhythm) */}
+        {/* Middle Navigation Destinations (20px Rhythm) */}
         <nav
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: '1rem', /* 16px between destinations */
+            gap: '1.25rem', /* 20px between destination item blocks */
             width: '100%',
           }}
         >
