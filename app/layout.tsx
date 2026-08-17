@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { Navbar } from '@/components/layout/Navbar';
-import { Footer } from '@/components/layout/Footer';
+import { LayoutShell } from '@/components/layout/LayoutShell';
 
 export const metadata: Metadata = {
   title: 'JobTrail — AI-Assisted Job Application Tracker',
@@ -45,9 +44,7 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <Navbar />
-        <main style={{ flex: 1, padding: '2rem 0' }}>{children}</main>
-        <Footer />
+        <LayoutShell>{children}</LayoutShell>
       </body>
     </html>
   );

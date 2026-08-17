@@ -343,6 +343,158 @@ a {
   }
 }
 
+/* ==========================================================================
+   Material Design 3 (M3) App Shell, Navigation Rail & Navigation Bar
+   ========================================================================== */
+
+.m3-app-layout {
+  min-height: 100vh;
+  display: flex;
+  background-color: var(--md-sys-color-background);
+  color: var(--md-sys-color-on-background);
+}
+
+/* Vertical Navigation Rail (Desktop / Tablet) */
+.m3-nav-rail {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 80px;
+  background-color: var(--md-sys-color-surface-container-low);
+  border-right: 1px solid var(--md-sys-color-outline-variant);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 0.5rem 1.25rem 0.5rem;
+  z-index: 40;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+@media (max-width: 767px) {
+  .m3-nav-rail {
+    display: none;
+  }
+}
+
+/* Navigation Rail Item */
+.m3-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  width: 100%;
+  padding: 4px 0;
+}
+
+.m3-active-pill {
+  width: 56px;
+  height: 32px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  color: var(--md-sys-color-on-surface-variant);
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.m3-nav-item.active .m3-active-pill {
+  background-color: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+}
+
+.m3-nav-item:hover:not(.active) .m3-active-pill {
+  background-color: var(--md-sys-color-surface-container-high);
+  color: var(--md-sys-color-on-surface);
+}
+
+.m3-nav-label {
+  font-family: var(--font-headline);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--md-sys-color-on-surface-variant);
+  transition: color 0.15s ease;
+  white-space: nowrap;
+}
+
+.m3-nav-item.active .m3-nav-label {
+  color: var(--md-sys-color-on-surface);
+  font-weight: 700;
+}
+
+/* M3 Floating Action Button (FAB) inside Rail */
+.m3-fab-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background-color: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  text-decoration: none;
+}
+
+.m3-fab-btn:hover {
+  filter: brightness(1.06);
+  transform: scale(1.04);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.16);
+}
+
+/* Mobile Bottom Navigation Bar (< 768px) */
+.m3-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 72px;
+  background-color: var(--md-sys-color-surface-container-low);
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+  display: none;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 50;
+  padding: 0 0.5rem;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+@media (max-width: 767px) {
+  .m3-bottom-nav {
+    display: flex;
+  }
+}
+
+/* Workspace Canvas Area */
+.m3-workspace-canvas {
+  flex: 1;
+  min-width: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .m3-workspace-canvas {
+    margin-left: 80px;
+  }
+}
+
+@media (max-width: 767px) {
+  .m3-workspace-canvas {
+    margin-bottom: 72px;
+  }
+}
+
 /* Card surfaces */
 .m3-card {
   background-color: var(--md-sys-color-surface-container-lowest);
