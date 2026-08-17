@@ -595,7 +595,7 @@ md-text-button [slot="icon"] {
   background-color: var(--md-sys-color-surface-container);
 }
 
-/* Theme Toggle Animated Button */
+/* Theme Toggle Animated Button (M3 Standard Icon Button) */
 .theme-toggle-btn {
   width: 40px;
   height: 40px;
@@ -606,16 +606,16 @@ md-text-button [slot="icon"] {
   align-items: center;
   justify-content: center;
   border: 1px solid var(--md-sys-color-outline-variant);
-  background-color: var(--md-sys-color-surface-container-low);
+  background-color: transparent;
   color: var(--md-sys-color-on-surface-variant);
   cursor: pointer;
   outline: none;
   box-shadow: none;
-  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .theme-toggle-btn:hover {
-  background-color: var(--md-sys-color-surface-container-high);
+  background-color: var(--md-sys-color-surface-container);
   color: var(--md-sys-color-on-surface);
   border-color: var(--md-sys-color-outline);
 }
