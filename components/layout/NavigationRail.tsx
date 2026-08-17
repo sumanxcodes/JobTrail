@@ -37,8 +37,8 @@ export function NavigationRail() {
 
   return (
     <aside className="m3-nav-rail" aria-label="Main Navigation">
-      {/* Top Group: Brand Logo & M3 FAB */}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.25rem', width: '100%' }}>
+      {/* Top Group: Logo Anchor, FAB, and Navigation Destinations */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
         {/* Brand Stepped-Arch Anchor */}
         <Link
           href="/dashboard"
@@ -47,8 +47,10 @@ export function NavigationRail() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '4px',
+            width: '48px',
+            height: '48px',
             textDecoration: 'none',
+            marginBottom: '1rem', /* 16px to FAB */
           }}
         >
           <Logo size={28} color="var(--md-sys-color-primary)" />
@@ -60,20 +62,22 @@ export function NavigationRail() {
           className="m3-fab-btn"
           title="Add New Application"
           aria-label="Add New Application"
+          style={{
+            marginBottom: '1.5rem', /* 24px deliberate M3 section spacing from FAB to destinations */
+          }}
         >
           <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>
             add
           </span>
         </Link>
 
-        {/* Middle Navigation Destinations (20px Rhythm) */}
+        {/* Middle Navigation Destinations (Uniform 16px Rhythm) */}
         <nav
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: '1.25rem',
+            gap: '1rem', /* 16px between destinations */
             width: '100%',
-            marginTop: '0.75rem',
           }}
         >
           {/* Insights Destination */}
@@ -118,7 +122,7 @@ export function NavigationRail() {
         </nav>
       </div>
 
-      {/* Bottom Group: Circular Outlined Action Controls (48×48px) */}
+      {/* Bottom Group: Circular Outlined Action Controls (48×48px with 16px gap) */}
       <div
         style={{
           display: 'flex',
