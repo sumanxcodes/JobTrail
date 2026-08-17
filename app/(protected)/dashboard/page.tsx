@@ -114,10 +114,10 @@ export default function DashboardPage() {
 
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
           <Link href="/applications" style={{ textDecoration: 'none' }}>
-            <OutlinedButton icon="view_list">View Applications Table</OutlinedButton>
+            <OutlinedButton icon="table_chart">Applications</OutlinedButton>
           </Link>
           <Link href="/applications/new" style={{ textDecoration: 'none' }}>
-            <FilledButton icon="add">Add Application</FilledButton>
+            <FilledButton icon="add">Add Job</FilledButton>
           </Link>
         </div>
       </div>
@@ -607,7 +607,7 @@ export default function DashboardPage() {
                   Add your first job pursuit using AI parsing to begin seeing insights and pipeline momentum.
                 </p>
                 <Link href="/applications/new" style={{ marginTop: '0.5rem', textDecoration: 'none' }}>
-                  <FilledButton icon="add">Add First Application</FilledButton>
+                  <FilledButton icon="add">Add Job</FilledButton>
                 </Link>
               </div>
             ) : (

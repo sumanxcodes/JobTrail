@@ -195,7 +195,7 @@ export default function ApplicationDetailPage() {
             {errorMsg || 'The requested application could not be found.'}
           </p>
           <Link href="/applications" style={{ textDecoration: 'none' }}>
-            <FilledButton icon="arrow_back">Return to Applications</FilledButton>
+            <FilledButton icon="arrow_back">Applications</FilledButton>
           </Link>
         </div>
       </div>
@@ -209,7 +209,7 @@ export default function ApplicationDetailPage() {
       {/* Breadcrumb Navigation */}
       <div style={{ marginBottom: '1.5rem' }}>
         <Link href="/applications" style={{ textDecoration: 'none' }}>
-          <TextButton icon="arrow_back">Back to Applications</TextButton>
+          <TextButton icon="arrow_back">Applications</TextButton>
         </Link>
       </div>
 
@@ -731,7 +731,7 @@ export default function ApplicationDetailPage() {
           <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
             <TextButton onClick={() => setDeleteDialogOpen(false)}>Cancel</TextButton>
             <FilledButton onClick={handleDelete} disabled={deleting}>
-              {deleting ? 'Deleting...' : 'Delete Application'}
+              {deleting ? 'Deleting...' : 'Delete'}
             </FilledButton>
           </div>
         }

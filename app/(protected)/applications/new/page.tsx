@@ -328,7 +328,7 @@ export default function NewApplicationPage() {
                   </button>
 
                   <FilledButton onClick={handleParse} disabled={parsing || !linkInput.trim()} icon="auto_awesome">
-                    {parsing ? 'Parsing with AI...' : 'Parse Job Posting'}
+                    {parsing ? 'Parsing...' : 'Parse Link'}
                   </FilledButton>
                 </div>
               </div>
@@ -364,7 +364,7 @@ export default function NewApplicationPage() {
                   </button>
 
                   <FilledButton onClick={handleParse} disabled={parsing || !pasteInput.trim()} icon="auto_awesome">
-                    {parsing ? 'Parsing with AI...' : 'Parse Job Text'}
+                    {parsing ? 'Parsing...' : 'Parse Text'}
                   </FilledButton>
                 </div>
               </div>
@@ -483,7 +483,7 @@ export default function NewApplicationPage() {
               </OutlinedButton>
 
               <FilledButton onClick={handleSave} disabled={saving} icon="check">
-                {saving ? 'Saving...' : 'Save Application'}
+                {saving ? 'Saving...' : 'Save Job'}
               </FilledButton>
             </div>
           </div>

@@ -137,7 +137,7 @@ export default function ApplicationsPage() {
         </div>
 
         <Link href="/applications/new" style={{ textDecoration: 'none' }}>
-          <FilledButton icon="add">Add Application</FilledButton>
+          <FilledButton icon="add">Add Job</FilledButton>
         </Link>
       </div>
 
@@ -380,7 +380,7 @@ export default function ApplicationsPage() {
           </div>
 
           <Link href="/applications/new" style={{ textDecoration: 'none', marginTop: '0.5rem' }}>
-            <FilledButton icon="add">Add Application</FilledButton>
+            <FilledButton icon="add">Add Job</FilledButton>
           </Link>
         </div>
       ) : (
