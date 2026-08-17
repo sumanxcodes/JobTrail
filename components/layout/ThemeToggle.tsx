@@ -4,10 +4,8 @@ import React, { useEffect, useState } from 'react';
 
 export function ThemeToggle() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
     const savedTheme = localStorage.getItem('jobtrail_theme');
     if (savedTheme === 'light' || savedTheme === 'dark') {
       setTheme(savedTheme);
@@ -24,10 +22,6 @@ export function ThemeToggle() {
     document.documentElement.setAttribute('data-theme', nextTheme);
     localStorage.setItem('jobtrail_theme', nextTheme);
   };
-
-  if (!mounted) {
-    return <div style={{ width: '40px', height: '40px' }} />;
-  }
 
   return (
     <button

@@ -8,7 +8,6 @@ import { ThemeToggle } from './ThemeToggle';
 
 export function Navbar() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
   const pathname = usePathname();
   const router = useRouter();
   const supabase = createClient();
@@ -19,7 +18,6 @@ export function Navbar() {
         data: { session },
       } = await supabase.auth.getSession();
       setUserEmail(session?.user?.email || null);
-      setLoading(false);
     }
 
     checkUser();
@@ -92,97 +90,95 @@ export function Navbar() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <ThemeToggle />
 
-          {!loading && (
-            <nav style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              {userEmail ? (
-                <>
-                  <Link
-                    href="/dashboard"
-                    style={{
-                      fontSize: '0.875rem',
-                      fontWeight: 600,
-                      color:
-                        pathname === '/dashboard'
-                          ? 'var(--md-sys-color-primary)'
-                          : 'var(--md-sys-color-on-surface-variant)',
-                      padding: '0.4rem 0.75rem',
-                      borderRadius: '8px',
-                      transition: 'color 0.15s ease',
-                    }}
-                  >
-                    Dashboard
-                  </Link>
+          <nav style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            {userEmail ? (
+              <>
+                <Link
+                  href="/dashboard"
+                  style={{
+                    fontSize: '0.875rem',
+                    fontWeight: 600,
+                    color:
+                      pathname === '/dashboard'
+                        ? 'var(--md-sys-color-primary)'
+                        : 'var(--md-sys-color-on-surface-variant)',
+                    padding: '0.4rem 0.75rem',
+                    borderRadius: '8px',
+                    transition: 'color 0.15s ease',
+                  }}
+                >
+                  Dashboard
+                </Link>
 
-                  <Link
-                    href="/applications/new"
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '0.35rem',
-                      fontSize: '0.875rem',
-                      fontWeight: 600,
-                      backgroundColor: 'var(--md-sys-color-primary)',
-                      color: 'var(--md-sys-color-on-primary)',
-                      padding: '0.5rem 1.125rem',
-                      borderRadius: '9999px',
-                      textDecoration: 'none',
-                    }}
-                  >
-                    <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
-                      add
-                    </span>
-                    <span>Add Application</span>
-                  </Link>
+                <Link
+                  href="/applications/new"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.35rem',
+                    fontSize: '0.875rem',
+                    fontWeight: 600,
+                    backgroundColor: 'var(--md-sys-color-primary)',
+                    color: 'var(--md-sys-color-on-primary)',
+                    padding: '0.5rem 1.125rem',
+                    borderRadius: '9999px',
+                    textDecoration: 'none',
+                  }}
+                >
+                  <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
+                    add
+                  </span>
+                  <span>Add Application</span>
+                </Link>
 
-                  <button
-                    onClick={handleLogout}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      fontSize: '0.875rem',
-                      fontWeight: 500,
-                      color: 'var(--md-sys-color-on-surface-variant)',
-                      padding: '0.4rem 0.75rem',
-                    }}
-                  >
-                    Log out
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link
-                    href="/login"
-                    style={{
-                      fontSize: '0.9375rem',
-                      fontWeight: 600,
-                      color: 'var(--md-sys-color-on-surface-variant)',
-                      padding: '0.5rem 1rem',
-                      borderRadius: '8px',
-                      transition: 'color 0.15s ease',
-                    }}
-                  >
-                    Log in
-                  </Link>
-                  <Link
-                    href="/signup"
-                    style={{
-                      fontSize: '0.9375rem',
-                      fontWeight: 600,
-                      backgroundColor: 'var(--md-sys-color-primary)',
-                      color: 'var(--md-sys-color-on-primary)',
-                      padding: '0.55rem 1.35rem',
-                      borderRadius: '9999px',
-                      textDecoration: 'none',
-                      boxShadow: '0 2px 6px rgba(36,56,156,0.2)',
-                    }}
-                  >
-                    Sign up
-                  </Link>
-                </>
-              )}
-            </nav>
-          )}
+                <button
+                  onClick={handleLogout}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    fontSize: '0.875rem',
+                    fontWeight: 500,
+                    color: 'var(--md-sys-color-on-surface-variant)',
+                    padding: '0.4rem 0.75rem',
+                  }}
+                >
+                  Log out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  style={{
+                    fontSize: '0.9375rem',
+                    fontWeight: 600,
+                    color: 'var(--md-sys-color-on-surface-variant)',
+                    padding: '0.5rem 1rem',
+                    borderRadius: '8px',
+                    transition: 'color 0.15s ease',
+                  }}
+                >
+                  Log in
+                </Link>
+                <Link
+                  href="/signup"
+                  style={{
+                    fontSize: '0.9375rem',
+                    fontWeight: 600,
+                    backgroundColor: 'var(--md-sys-color-primary)',
+                    color: 'var(--md-sys-color-on-primary)',
+                    padding: '0.55rem 1.35rem',
+                    borderRadius: '9999px',
+                    textDecoration: 'none',
+                    boxShadow: '0 2px 6px rgba(36,56,156,0.2)',
+                  }}
+                >
+                  Sign up
+                </Link>
+              </>
+            )}
+          </nav>
         </div>
       </div>
     </header>
