@@ -245,6 +245,8 @@ a {
 
 .m3-bento-tile:hover {
   background-color: var(--md-sys-color-surface-container);
+}
+
 /* Theme Toggle Animated Button */
 .theme-toggle-btn {
   width: 40px;
