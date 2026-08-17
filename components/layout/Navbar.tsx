@@ -49,7 +49,8 @@ export function Navbar() {
         position: 'sticky',
         top: 0,
         zIndex: 50,
-        backdropFilter: 'blur(10px)',
+        backdropFilter: 'blur(12px)',
+        transition: 'background-color 0.25s ease, border-color 0.25s ease',
       }}
     >
       <div
@@ -76,20 +77,23 @@ export function Navbar() {
         >
           <span
             className="material-symbols-outlined"
-            style={{ fontSize: '24px', color: 'var(--md-sys-color-primary)' }}
+            style={{
+              fontSize: '24px',
+              color: 'var(--md-sys-color-primary)',
+              fontVariationSettings: "'FILL' 1",
+            }}
           >
             work
           </span>
           <span>JobTrail</span>
         </Link>
 
-        {/* Navigation Actions */}
-        <nav style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          {/* Light / Dark Mode Toggle */}
+        {/* Actions & Theme Toggle */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <ThemeToggle />
 
           {!loading && (
-            <>
+            <nav style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               {userEmail ? (
                 <>
                   <Link
@@ -170,16 +174,16 @@ export function Navbar() {
                       padding: '0.55rem 1.35rem',
                       borderRadius: '9999px',
                       textDecoration: 'none',
-                      boxShadow: '0 2px 6px rgba(36,56,156,0.25)',
+                      boxShadow: '0 2px 6px rgba(36,56,156,0.2)',
                     }}
                   >
                     Sign up
                   </Link>
                 </>
               )}
-            </>
+            </nav>
           )}
-        </nav>
+        </div>
       </div>
     </header>
   );
