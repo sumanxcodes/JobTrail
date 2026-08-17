@@ -583,6 +583,16 @@ md-text-button [slot="icon"] {
   margin-right: 2px;
 }
 
+/* Material Web Outlined Text Field Tokens */
+md-outlined-text-field {
+  --md-outlined-text-field-container-shape: 12px;
+  --md-outlined-text-field-outline-color: var(--md-sys-color-outline-variant);
+  --md-outlined-text-field-hover-outline-color: var(--md-sys-color-outline);
+  --md-outlined-text-field-focus-outline-color: var(--md-sys-color-primary);
+  --md-outlined-text-field-input-text-color: var(--md-sys-color-on-surface);
+  --md-outlined-text-field-label-text-color: var(--md-sys-color-on-surface-variant);
+}
+
 .m3-bento-tile {
   background-color: var(--md-sys-color-surface-container-low);
   border: 1px solid var(--md-sys-color-outline-variant);
