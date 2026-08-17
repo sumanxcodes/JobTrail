@@ -855,15 +855,15 @@ md-outlined-text-field {
   display: inline-flex;
   background-color: var(--md-sys-color-surface-container);
   border-radius: 9999px;
-  padding: 4px;
-  gap: 4px;
+  padding: 3px;
+  gap: 2px;
   overflow-x: auto;
   max-width: 100%;
   border: 1px solid var(--md-sys-color-outline-variant);
 }
 
 .segmented-control-btn {
-  padding: 0.5rem 1.25rem;
+  padding: 0.45rem 1rem;
   border-radius: 9999px;
   font-family: var(--font-headline);
   font-size: 0.8125rem;
@@ -872,15 +872,23 @@ md-outlined-text-field {
   cursor: pointer;
   background: transparent;
   color: var(--md-sys-color-on-surface-variant);
-  transition: all 0.15s cubic-bezier(0.2, 0, 0, 1);
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.segmented-control-btn:hover:not(.active) {
+  color: var(--md-sys-color-on-surface);
+  background-color: var(--md-sys-color-surface-container-high);
 }
 
 .segmented-control-btn.active {
   background-color: var(--md-sys-color-surface-container-lowest);
   color: var(--md-sys-color-primary);
   font-weight: 700;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
 /* Company Monogram Avatar */
