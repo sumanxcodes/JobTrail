@@ -67,6 +67,7 @@ export function Navbar() {
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem',
+            fontFamily: 'var(--font-headline)',
             fontWeight: 800,
             fontSize: '1.25rem',
             color: 'var(--md-sys-color-primary)',
@@ -88,23 +89,25 @@ export function Navbar() {
 
         {/* Actions & Theme Toggle */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          {/* M3 Standard Icon Button (0dp elevation) */}
           <ThemeToggle />
 
-          <nav style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <nav style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             {userEmail ? (
               <>
                 <Link
                   href="/dashboard"
                   style={{
                     fontSize: '0.875rem',
+                    fontFamily: 'var(--font-headline)',
                     fontWeight: 600,
                     color:
                       pathname === '/dashboard'
                         ? 'var(--md-sys-color-primary)'
                         : 'var(--md-sys-color-on-surface-variant)',
-                    padding: '0.4rem 0.75rem',
-                    borderRadius: '8px',
-                    transition: 'color 0.15s ease',
+                    padding: '0.5rem 0.875rem',
+                    borderRadius: '9999px',
+                    transition: 'all 0.15s ease',
                   }}
                 >
                   Dashboard
@@ -117,15 +120,19 @@ export function Navbar() {
                     alignItems: 'center',
                     gap: '0.35rem',
                     fontSize: '0.875rem',
+                    fontFamily: 'var(--font-headline)',
                     fontWeight: 600,
                     backgroundColor: 'var(--md-sys-color-primary)',
                     color: 'var(--md-sys-color-on-primary)',
-                    padding: '0.5rem 1.125rem',
+                    height: '40px',
+                    padding: '0 1.25rem',
                     borderRadius: '9999px',
-                    textDecoration: 'none',
+                    boxShadow: 'none',
+                    border: 'none',
+                    transition: 'all 0.2s ease',
                   }}
                 >
-                  <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
                     add
                   </span>
                   <span>Add Application</span>
@@ -138,9 +145,11 @@ export function Navbar() {
                     border: 'none',
                     cursor: 'pointer',
                     fontSize: '0.875rem',
-                    fontWeight: 500,
+                    fontFamily: 'var(--font-headline)',
+                    fontWeight: 600,
                     color: 'var(--md-sys-color-on-surface-variant)',
-                    padding: '0.4rem 0.75rem',
+                    padding: '0.5rem 0.875rem',
+                    borderRadius: '9999px',
                   }}
                 >
                   Log out
@@ -148,30 +157,57 @@ export function Navbar() {
               </>
             ) : (
               <>
+                {/* M3 Text Button: 0dp elevation, transparent, label-large */}
                 <Link
                   href="/login"
                   style={{
-                    fontSize: '0.9375rem',
+                    fontSize: '0.875rem',
+                    fontFamily: 'var(--font-headline)',
                     fontWeight: 600,
                     color: 'var(--md-sys-color-on-surface-variant)',
                     padding: '0.5rem 1rem',
-                    borderRadius: '8px',
-                    transition: 'color 0.15s ease',
+                    borderRadius: '9999px',
+                    backgroundColor: 'transparent',
+                    boxShadow: 'none',
+                    transition: 'all 0.15s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container-high)';
+                    e.currentTarget.style.color = 'var(--md-sys-color-on-surface)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                    e.currentTarget.style.color = 'var(--md-sys-color-on-surface-variant)';
                   }}
                 >
                   Log in
                 </Link>
+
+                {/* M3 Filled Button: 0dp resting elevation (NO shadow), 40px height, pill shape */}
                 <Link
                   href="/signup"
                   style={{
-                    fontSize: '0.9375rem',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '0.875rem',
+                    fontFamily: 'var(--font-headline)',
                     fontWeight: 600,
                     backgroundColor: 'var(--md-sys-color-primary)',
                     color: 'var(--md-sys-color-on-primary)',
-                    padding: '0.55rem 1.35rem',
+                    height: '40px',
+                    padding: '0 1.25rem',
                     borderRadius: '9999px',
+                    border: 'none',
+                    boxShadow: 'none',
                     textDecoration: 'none',
-                    boxShadow: '0 2px 6px rgba(36,56,156,0.2)',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.filter = 'brightness(1.08)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.filter = 'none';
                   }}
                 >
                   Sign up
