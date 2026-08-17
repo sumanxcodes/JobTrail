@@ -111,34 +111,10 @@ export function Footer() {
               Product
             </h4>
             <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
-              <Link
-                href="/dashboard"
-                style={{
-                  fontSize: '0.875rem',
-                  fontFamily: 'var(--font-body)',
-                  color: 'var(--md-sys-color-on-surface-variant)',
-                  textDecoration: 'none',
-                  transition: 'color 0.15s ease',
-                  width: 'fit-content',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--md-sys-color-primary)')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--md-sys-color-on-surface-variant)')}
-              >
+              <Link href="/dashboard" className="footer-link">
                 Tracker Dashboard
               </Link>
-              <Link
-                href="/applications/new"
-                style={{
-                  fontSize: '0.875rem',
-                  fontFamily: 'var(--font-body)',
-                  color: 'var(--md-sys-color-on-surface-variant)',
-                  textDecoration: 'none',
-                  transition: 'color 0.15s ease',
-                  width: 'fit-content',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--md-sys-color-primary)')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--md-sys-color-on-surface-variant)')}
-              >
+              <Link href="/applications/new" className="footer-link">
                 Add Application
               </Link>
             </nav>
@@ -159,49 +135,13 @@ export function Footer() {
               Account
             </h4>
             <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
-              <Link
-                href="/login"
-                style={{
-                  fontSize: '0.875rem',
-                  fontFamily: 'var(--font-body)',
-                  color: 'var(--md-sys-color-on-surface-variant)',
-                  textDecoration: 'none',
-                  transition: 'color 0.15s ease',
-                  width: 'fit-content',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--md-sys-color-primary)')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--md-sys-color-on-surface-variant)')}
-              >
+              <Link href="/login" className="footer-link">
                 Sign In
               </Link>
-              <Link
-                href="/signup"
-                style={{
-                  fontSize: '0.875rem',
-                  fontFamily: 'var(--font-body)',
-                  color: 'var(--md-sys-color-on-surface-variant)',
-                  textDecoration: 'none',
-                  transition: 'color 0.15s ease',
-                  width: 'fit-content',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--md-sys-color-primary)')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--md-sys-color-on-surface-variant)')}
-              >
+              <Link href="/signup" className="footer-link">
                 Create Account
               </Link>
-              <Link
-                href="/reset-password"
-                style={{
-                  fontSize: '0.875rem',
-                  fontFamily: 'var(--font-body)',
-                  color: 'var(--md-sys-color-on-surface-variant)',
-                  textDecoration: 'none',
-                  transition: 'color 0.15s ease',
-                  width: 'fit-content',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--md-sys-color-primary)')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--md-sys-color-on-surface-variant)')}
-              >
+              <Link href="/reset-password" className="footer-link">
                 Reset Password
               </Link>
             </nav>
@@ -222,19 +162,7 @@ export function Footer() {
               Trust & Legal
             </h4>
             <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
-              <Link
-                href="/privacy"
-                style={{
-                  fontSize: '0.875rem',
-                  fontFamily: 'var(--font-body)',
-                  color: 'var(--md-sys-color-on-surface-variant)',
-                  textDecoration: 'none',
-                  transition: 'color 0.15s ease',
-                  width: 'fit-content',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--md-sys-color-primary)')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--md-sys-color-on-surface-variant)')}
-              >
+              <Link href="/privacy" className="footer-link">
                 Privacy Policy & Disclosure
               </Link>
             </nav>
