@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { ThemeToggle } from './ThemeToggle';
+import { Logo } from '@/components/ui/Logo';
 
 export function Navbar() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
@@ -66,24 +67,16 @@ export function Navbar() {
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '0.5rem',
+            gap: '0.625rem',
             fontFamily: 'var(--font-headline)',
             fontWeight: 800,
             fontSize: '1.25rem',
             color: 'var(--md-sys-color-primary)',
             letterSpacing: '-0.02em',
+            textDecoration: 'none',
           }}
         >
-          <span
-            className="material-symbols-outlined"
-            style={{
-              fontSize: '24px',
-              color: 'var(--md-sys-color-primary)',
-              fontVariationSettings: "'FILL' 1",
-            }}
-          >
-            work
-          </span>
+          <Logo size={26} color="var(--md-sys-color-primary)" />
           <span>JobTrail</span>
         </Link>
 

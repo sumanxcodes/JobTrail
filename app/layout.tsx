@@ -7,6 +7,11 @@ export const metadata: Metadata = {
   title: 'JobTrail — AI-Assisted Job Application Tracker',
   description:
     'Track your job applications with automated AI parsing from job descriptions or links. Simple, fast, and secure.',
+  icons: {
+    icon: '/icon.svg',
+    shortcut: '/icon.svg',
+    apple: '/icon.svg',
+  },
 };
 
 export default function RootLayout({
@@ -17,6 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link

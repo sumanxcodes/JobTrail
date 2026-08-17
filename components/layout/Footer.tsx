@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { Logo } from '@/components/ui/Logo';
 
 export function Footer() {
   return (
@@ -48,16 +49,7 @@ export function Footer() {
               textDecoration: 'none',
             }}
           >
-            <span
-              className="material-symbols-outlined"
-              style={{
-                fontSize: '22px',
-                color: 'var(--md-sys-color-primary)',
-                fontVariationSettings: "'FILL' 1",
-              }}
-            >
-              work
-            </span>
+            <Logo size={22} color="var(--md-sys-color-primary)" />
             <span>JobTrail</span>
           </Link>
 
