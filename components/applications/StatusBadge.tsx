@@ -23,12 +23,15 @@ export function StatusBadge({ status, size = 'medium' }: StatusBadgeProps) {
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: isSmall ? '0.2rem 0.5rem' : '0.35rem 0.75rem',
+        padding: isSmall ? '0.2rem 0.55rem' : '0.3rem 0.75rem',
         borderRadius: '9999px',
-        fontSize: isSmall ? '0.75rem' : '0.875rem',
-        fontWeight: 500,
+        fontFamily: 'var(--font-headline)',
+        fontSize: isSmall ? '0.75rem' : '0.8125rem',
+        fontWeight: 600,
         letterSpacing: '0.02em',
         textTransform: 'capitalize',
+        lineHeight: 1.2,
+        whiteSpace: 'nowrap',
       }}
     >
       {meta.label}

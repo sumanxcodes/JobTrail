@@ -46,25 +46,9 @@ export function ApplicationCard({ application }: ApplicationCardProps) {
           flexDirection: 'column',
           gap: '1rem',
           height: '100%',
-          position: 'relative',
-          overflow: 'hidden',
+          padding: '1.25rem',
         }}
       >
-        {/* Top subtle corner decoration */}
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            width: '80px',
-            height: '80px',
-            backgroundColor: 'var(--md-sys-color-primary-container)',
-            opacity: 0.15,
-            borderBottomLeftRadius: '100%',
-            pointerEvents: 'none',
-          }}
-        />
-
         {/* Header: Company Avatar + Title + Status */}
         <div
           style={{
@@ -72,27 +56,13 @@ export function ApplicationCard({ application }: ApplicationCardProps) {
             justifyContent: 'space-between',
             alignItems: 'flex-start',
             gap: '0.75rem',
-            position: 'relative',
-            zIndex: 1,
           }}
         >
           <div style={{ display: 'flex', gap: '0.875rem', alignItems: 'center' }}>
-            {/* Company Avatar / Logo Badge */}
+            {/* Company Avatar / Monogram Badge */}
             <div
-              style={{
-                width: '44px',
-                height: '44px',
-                borderRadius: '10px',
-                backgroundColor: 'var(--md-sys-color-surface-container)',
-                border: '1px solid var(--md-sys-color-outline-variant)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 700,
-                fontSize: '0.875rem',
-                color: 'var(--md-sys-color-primary)',
-                flexShrink: 0,
-              }}
+              className="company-avatar"
+              style={{ width: '40px', height: '40px', fontSize: '0.875rem' }}
             >
               {initials}
             </div>
@@ -100,17 +70,20 @@ export function ApplicationCard({ application }: ApplicationCardProps) {
             <div>
               <h3
                 style={{
-                  fontSize: '1.0625rem',
-                  fontWeight: 600,
+                  fontSize: '1rem',
+                  fontFamily: 'var(--font-headline)',
+                  fontWeight: 700,
                   color: 'var(--md-sys-color-on-surface)',
                   lineHeight: 1.3,
+                  marginBottom: '0.15rem',
                 }}
               >
                 {application.title}
               </h3>
               <p
                 style={{
-                  fontSize: '0.875rem',
+                  fontSize: '0.8125rem',
+                  fontFamily: 'var(--font-body)',
                   color: 'var(--md-sys-color-on-surface-variant)',
                   fontWeight: 500,
                 }}
@@ -129,8 +102,9 @@ export function ApplicationCard({ application }: ApplicationCardProps) {
             display: 'flex',
             alignItems: 'center',
             flexWrap: 'wrap',
-            gap: '0.875rem',
+            gap: '0.75rem',
             fontSize: '0.8125rem',
+            fontFamily: 'var(--font-body)',
             color: 'var(--md-sys-color-on-surface-variant)',
             marginTop: 'auto',
             paddingTop: '0.75rem',
@@ -158,7 +132,7 @@ export function ApplicationCard({ application }: ApplicationCardProps) {
           {application.seniority && (
             <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
               <span className="material-symbols-outlined" style={{ fontSize: '15px' }}>
-                stairs
+                trending_up
               </span>
               {application.seniority}
             </span>

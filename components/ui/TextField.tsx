@@ -77,7 +77,17 @@ export function TextField({
       style={{ width: '100%' }}
     >
       {leadingIcon && (
-        <span slot="leading-icon" className="material-symbols-outlined">
+        <span
+          slot="leading-icon"
+          className="material-symbols-outlined"
+          style={{
+            fontSize: '20px',
+            color: 'var(--md-sys-color-on-surface-variant)',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
           {leadingIcon}
         </span>
       )}
