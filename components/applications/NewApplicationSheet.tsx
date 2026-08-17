@@ -129,6 +129,9 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
         if (data.reason === 'fetch_failed') {
           setParseMessage("Couldn't read URL — paste text directly instead.");
           setInputMode('paste');
+        } else if (data.error_message) {
+          setParseMessage(`OpenRouter: ${data.error_message}`);
+          setInputMode('manual');
         } else {
           setParseMessage('AI extraction was unable to parse structured fields. Fill in details manually.');
           setInputMode('manual');
