@@ -6,13 +6,18 @@ export function ThemeToggle() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem('jobtrail_theme');
-    if (savedTheme === 'light' || savedTheme === 'dark') {
-      setTheme(savedTheme);
-      document.documentElement.setAttribute('data-theme', savedTheme);
+    // Read from the data-theme attribute set synchronously by the head script
+    const currentTheme = document.documentElement.getAttribute('data-theme') as 'light' | 'dark' | null;
+    if (currentTheme === 'light' || currentTheme === 'dark') {
+      setTheme(currentTheme);
     } else {
-      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setTheme(isDark ? 'dark' : 'light');
+      const savedTheme = localStorage.getItem('jobtrail_theme');
+      if (savedTheme === 'light' || savedTheme === 'dark') {
+        setTheme(savedTheme);
+      } else {
+        const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        setTheme(isDark ? 'dark' : 'light');
+      }
     }
   }, []);
 
