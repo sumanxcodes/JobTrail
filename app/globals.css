@@ -1073,3 +1073,23 @@ md-outlined-text-field {
   background-color: var(--md-sys-color-primary);
   transition: width 0.6s cubic-bezier(0.2, 0, 0, 1);
 }
+
+/* M3 Side Sheet Keyframes */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+

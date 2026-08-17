@@ -2,12 +2,14 @@
 
 import React, { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Application, ApplicationStatus, APPLICATION_STATUSES } from '@/lib/types/database';
 import { StatusBadge } from '@/components/applications/StatusBadge';
 import { TextField } from '@/components/ui/TextField';
 import { FilledButton, OutlinedButton } from '@/components/ui/Button';
 import { CircularProgress } from '@/components/ui/CircularProgress';
+import { NewApplicationSheet } from '@/components/applications/NewApplicationSheet';
 
 function getInitials(name: string): string {
   if (!name) return 'JT';
@@ -22,8 +24,17 @@ export default function ApplicationsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeStatus, setActiveStatus] = useState<ApplicationStatus | 'all'>('all');
   const [sortBy, setSortBy] = useState<'updated_desc' | 'created_desc' | 'company_asc'>('updated_desc');
+  const [isNewSheetOpen, setIsNewSheetOpen] = useState(false);
 
+  const searchParams = useSearchParams();
   const supabase = createClient();
+
+  // Auto-open drawer if ?new=1 query param is present
+  useEffect(() => {
+    if (searchParams.get('new') === '1' || searchParams.get('new') === 'true') {
+      setIsNewSheetOpen(true);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     async function fetchApplications() {
@@ -136,9 +147,9 @@ export default function ApplicationsPage() {
           </p>
         </div>
 
-        <Link href="/applications/new" style={{ textDecoration: 'none' }}>
-          <FilledButton icon="add">Add Job</FilledButton>
-        </Link>
+        <FilledButton icon="add" onClick={() => setIsNewSheetOpen(true)}>
+          Add Job
+        </FilledButton>
       </div>
 
       {/* Search & Filter Toolbar */}
@@ -432,9 +443,11 @@ export default function ApplicationsPage() {
             </p>
           </div>
 
-          <Link href="/applications/new" style={{ textDecoration: 'none', marginTop: '0.5rem' }}>
-            <FilledButton icon="add">Add Job</FilledButton>
-          </Link>
+          <div style={{ marginTop: '0.5rem' }}>
+            <FilledButton icon="add" onClick={() => setIsNewSheetOpen(true)}>
+              Add Job
+            </FilledButton>
+          </div>
         </div>
       ) : (
         /* M3 Data Table */
@@ -456,15 +469,15 @@ export default function ApplicationsPage() {
               <tbody>
                 {filteredApplications.map((app) => (
                   <tr key={app.id} className="m3-table-row">
-                    {/* Company & Role with Avatar */}
                     <td className="m3-table-td">
                       <Link
                         href={`/applications/${app.id}`}
                         style={{
-                          textDecoration: 'none',
                           display: 'flex',
                           alignItems: 'center',
-                          gap: '0.875rem',
+                          gap: '0.75rem',
+                          textDecoration: 'none',
+                          color: 'inherit',
                         }}
                       >
                         <div
@@ -473,22 +486,22 @@ export default function ApplicationsPage() {
                         >
                           {getInitials(app.company)}
                         </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
                           <span
                             style={{
                               fontFamily: 'var(--font-headline)',
                               fontWeight: 700,
-                              color: 'var(--md-sys-color-on-surface)',
                               fontSize: '0.9375rem',
+                              color: 'var(--md-sys-color-on-surface)',
                             }}
                           >
                             {app.company}
                           </span>
                           <span
                             style={{
-                              fontFamily: 'var(--font-body)',
-                              color: 'var(--md-sys-color-on-surface-variant)',
                               fontSize: '0.8125rem',
+                              color: 'var(--md-sys-color-on-surface-variant)',
+                              fontWeight: 500,
                             }}
                           >
                             {app.title}
@@ -497,33 +510,29 @@ export default function ApplicationsPage() {
                       </Link>
                     </td>
 
-                    {/* Status */}
                     <td className="m3-table-td">
-                      <StatusBadge status={app.status} />
+                      <StatusBadge status={app.status} size="small" />
                     </td>
 
-                    {/* Location */}
                     <td className="m3-table-td">
                       <span
                         style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '0.25rem',
-                          color: 'var(--md-sys-color-on-surface-variant)',
                           fontSize: '0.8125rem',
+                          color: 'var(--md-sys-color-on-surface-variant)',
                         }}
                       >
-                        <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
-                          location_on
-                        </span>
                         {app.location || '—'}
                       </span>
                     </td>
 
-                    {/* Applied Date */}
                     <td className="m3-table-td">
-                      <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
-                        {new Date(app.created_at).toLocaleDateString('en-US', {
+                      <span
+                        style={{
+                          fontSize: '0.8125rem',
+                          color: 'var(--md-sys-color-on-surface-variant)',
+                        }}
+                      >
+                        {new Date(app.created_at).toLocaleDateString(undefined, {
                           month: 'short',
                           day: 'numeric',
                           year: 'numeric',
@@ -531,16 +540,26 @@ export default function ApplicationsPage() {
                       </span>
                     </td>
 
-                    {/* Salary Range */}
                     <td className="m3-table-td">
-                      <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface)' }}>
+                      <span
+                        style={{
+                          fontSize: '0.8125rem',
+                          color: 'var(--md-sys-color-on-surface-variant)',
+                        }}
+                      >
                         {app.salary_range || '—'}
                       </span>
                     </td>
 
-                    {/* Actions */}
                     <td className="m3-table-td" style={{ textAlign: 'right' }}>
-                      <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'flex-end',
+                          gap: '0.5rem',
+                        }}
+                      >
                         <Link href={`/applications/${app.id}`} style={{ textDecoration: 'none' }}>
                           <button
                             title="View details"
@@ -596,6 +615,15 @@ export default function ApplicationsPage() {
           </div>
         </div>
       )}
+
+      {/* M3 Side Sheet Drawer for In-Context Creation */}
+      <NewApplicationSheet
+        open={isNewSheetOpen}
+        onClose={() => setIsNewSheetOpen(false)}
+        onCreated={(newApp) => {
+          setApplications((prev) => [newApp, ...prev]);
+        }}
+      />
     </div>
   );
 }

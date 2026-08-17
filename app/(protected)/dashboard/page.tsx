@@ -597,7 +597,7 @@ export default function DashboardPage() {
                 <p style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '0.8125rem', maxWidth: '360px' }}>
                   Add your first job pursuit using AI parsing to begin seeing insights and pipeline momentum.
                 </p>
-                <Link href="/applications/new" style={{ marginTop: '0.5rem', textDecoration: 'none' }}>
+                <Link href="/applications?new=1" style={{ marginTop: '0.5rem', textDecoration: 'none' }}>
                   <FilledButton icon="add">Add Job</FilledButton>
                 </Link>
               </div>
