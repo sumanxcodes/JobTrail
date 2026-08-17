@@ -30,7 +30,7 @@ export function NavigationRail() {
     router.refresh();
   };
 
-  const isInsightsActive = pathname === '/dashboard';
+  const isDashboardActive = pathname === '/dashboard';
   const isApplicationsActive =
     pathname === '/applications' ||
     (pathname.startsWith('/applications/') && pathname !== '/applications/new');
@@ -84,24 +84,24 @@ export function NavigationRail() {
             width: '100%',
           }}
         >
-          {/* Insights Destination */}
+          {/* Dashboard Destination */}
           <Link
             href="/dashboard"
-            className={`m3-nav-item ${isInsightsActive ? 'active' : ''}`}
-            title="Insights & Overview"
+            className={`m3-nav-item ${isDashboardActive ? 'active' : ''}`}
+            title="Dashboard Overview"
           >
             <div className="m3-active-pill">
               <span
                 className="material-symbols-outlined"
                 style={{
                   fontSize: '24px',
-                  fontVariationSettings: isInsightsActive ? "'FILL' 1" : "'FILL' 0",
+                  fontVariationSettings: isDashboardActive ? "'FILL' 1" : "'FILL' 0",
                 }}
               >
-                insights
+                space_dashboard
               </span>
             </div>
-            <span className="m3-nav-label">Insights</span>
+            <span className="m3-nav-label">Dashboard</span>
           </Link>
 
           {/* Applications Table Destination */}
@@ -118,7 +118,7 @@ export function NavigationRail() {
                   fontVariationSettings: isApplicationsActive ? "'FILL' 1" : "'FILL' 0",
                 }}
               >
-                work
+                business_center
               </span>
             </div>
             <span className="m3-nav-label">Applications</span>

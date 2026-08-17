@@ -8,7 +8,7 @@ import { StatusBadge } from '@/components/applications/StatusBadge';
 import { FilledButton, OutlinedButton } from '@/components/ui/Button';
 import { CircularProgress } from '@/components/ui/CircularProgress';
 
-export default function DashboardInsightsPage() {
+export default function DashboardPage() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -23,7 +23,7 @@ export default function DashboardInsightsPage() {
         .order('updated_at', { ascending: false });
 
       if (error) {
-        console.error('Error fetching applications for insights:', error);
+        console.error('Error fetching applications for dashboard:', error);
       } else {
         setApplications(data || []);
       }
@@ -70,7 +70,7 @@ export default function DashboardInsightsPage() {
 
   return (
     <div style={{ padding: '2rem 2.5rem 3.5rem 2.5rem', maxWidth: '1200px', margin: '0 auto' }}>
-      {/* Header & Quick Navigation */}
+      {/* Header & Quick Actions */}
       <div
         style={{
           display: 'flex',
@@ -92,7 +92,7 @@ export default function DashboardInsightsPage() {
               marginBottom: '0.25rem',
             }}
           >
-            Insights & Analytics
+            Dashboard
           </h1>
           <p
             style={{
@@ -107,7 +107,7 @@ export default function DashboardInsightsPage() {
 
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
           <Link href="/applications" style={{ textDecoration: 'none' }}>
-            <OutlinedButton icon="table_rows">View Applications Table</OutlinedButton>
+            <OutlinedButton icon="view_list">View Applications Table</OutlinedButton>
           </Link>
           <Link href="/applications/new" style={{ textDecoration: 'none' }}>
             <FilledButton icon="add">Add Application</FilledButton>
@@ -128,7 +128,7 @@ export default function DashboardInsightsPage() {
         >
           <CircularProgress indeterminate />
           <p style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '0.9375rem' }}>
-            Calculating insights...
+            Loading dashboard data...
           </p>
         </div>
       ) : (
@@ -158,9 +158,9 @@ export default function DashboardInsightsPage() {
                 </span>
                 <span
                   className="material-symbols-outlined"
-                  style={{ fontSize: '20px', color: 'var(--md-sys-color-primary)' }}
+                  style={{ fontSize: '22px', color: 'var(--md-sys-color-primary)' }}
                 >
-                  work
+                  layers
                 </span>
               </div>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginTop: '0.25rem' }}>
@@ -200,9 +200,9 @@ export default function DashboardInsightsPage() {
                 </span>
                 <span
                   className="material-symbols-outlined"
-                  style={{ fontSize: '20px', color: 'var(--md-sys-color-tertiary)' }}
+                  style={{ fontSize: '22px', color: 'var(--md-sys-color-tertiary)' }}
                 >
-                  pending_actions
+                  timelapse
                 </span>
               </div>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginTop: '0.25rem' }}>
@@ -242,7 +242,7 @@ export default function DashboardInsightsPage() {
                 </span>
                 <span
                   className="material-symbols-outlined"
-                  style={{ fontSize: '20px', color: 'var(--md-sys-color-secondary)' }}
+                  style={{ fontSize: '22px', color: 'var(--md-sys-color-secondary)' }}
                 >
                   trending_up
                 </span>
@@ -285,12 +285,12 @@ export default function DashboardInsightsPage() {
                 <span
                   className="material-symbols-outlined"
                   style={{
-                    fontSize: '20px',
+                    fontSize: '22px',
                     color: 'var(--md-sys-color-primary)',
                     fontVariationSettings: "'FILL' 1",
                   }}
                 >
-                  verified
+                  workspace_premium
                 </span>
               </div>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginTop: '0.25rem' }}>

@@ -25,7 +25,7 @@ export function BottomNavigationBar() {
 
   return (
     <nav className="m3-bottom-nav" aria-label="Mobile Navigation Bar">
-      {/* Insights Item */}
+      {/* Dashboard Item */}
       <Link
         href="/dashboard"
         className={`m3-nav-item ${isInsightsActive ? 'active' : ''}`}
@@ -39,10 +39,10 @@ export function BottomNavigationBar() {
               fontVariationSettings: isInsightsActive ? "'FILL' 1" : "'FILL' 0",
             }}
           >
-            insights
+            space_dashboard
           </span>
         </div>
-        <span className="m3-nav-label">Insights</span>
+        <span className="m3-nav-label">Dashboard</span>
       </Link>
 
       {/* Applications Table Item */}
@@ -59,7 +59,7 @@ export function BottomNavigationBar() {
               fontVariationSettings: isApplicationsActive ? "'FILL' 1" : "'FILL' 0",
             }}
           >
-            work
+            business_center
           </span>
         </div>
         <span className="m3-nav-label">Applications</span>
