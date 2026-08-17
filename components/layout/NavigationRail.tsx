@@ -53,26 +53,11 @@ export function NavigationRail() {
             backgroundColor: 'var(--md-sys-color-surface-container-lowest)',
             border: '1.5px solid var(--md-sys-color-outline-variant)',
             textDecoration: 'none',
-            marginBottom: '1.25rem', /* 20px gap to FAB */
+            marginBottom: '2rem', /* 32px deliberate visual separation to navigation destinations */
             transition: 'all 0.2s ease',
           }}
         >
           <Logo size={22} color="var(--md-sys-color-primary)" />
-        </Link>
-
-        {/* Canonical M3 Floating Action Button (FAB) -> 56×56px Flat Squircle */}
-        <Link
-          href="/applications/new"
-          className="m3-fab-btn"
-          title="Add New Application"
-          aria-label="Add New Application"
-          style={{
-            marginBottom: '2rem', /* 32px deliberate visual separation between FAB and destinations */
-          }}
-        >
-          <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>
-            add
-          </span>
         </Link>
 
         {/* Middle Navigation Destinations (20px Rhythm) */}
