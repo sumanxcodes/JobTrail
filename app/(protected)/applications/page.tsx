@@ -171,32 +171,85 @@ export default function ApplicationsPage() {
             />
           </div>
 
-          {/* Sort Selector */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          {/* M3 Sort Chip */}
+          <div
+            style={{
+              position: 'relative',
+              display: 'inline-flex',
+              alignItems: 'center',
+              height: '40px',
+              padding: '0 1rem 0 0.875rem',
+              borderRadius: '9999px',
+              border: '1px solid var(--md-sys-color-outline-variant)',
+              backgroundColor: 'var(--md-sys-color-surface-container-low)',
+              color: 'var(--md-sys-color-on-surface)',
+              gap: '0.5rem',
+              cursor: 'pointer',
+              transition: 'background-color 0.2s ease, border-color 0.2s ease',
+            }}
+          >
+            <span
+              className="material-symbols-outlined"
+              style={{
+                fontSize: '18px',
+                color: 'var(--md-sys-color-on-surface-variant)',
+                pointerEvents: 'none',
+              }}
+            >
+              sort
+            </span>
             <span
               style={{
-                fontSize: '0.8125rem',
                 fontFamily: 'var(--font-headline)',
+                fontSize: '0.8125rem',
                 fontWeight: 600,
                 color: 'var(--md-sys-color-on-surface-variant)',
+                pointerEvents: 'none',
               }}
             >
               Sort:
             </span>
+            <span
+              style={{
+                fontFamily: 'var(--font-headline)',
+                fontSize: '0.8125rem',
+                fontWeight: 700,
+                color: 'var(--md-sys-color-on-surface)',
+                pointerEvents: 'none',
+              }}
+            >
+              {sortBy === 'updated_desc'
+                ? 'Recently Updated'
+                : sortBy === 'created_desc'
+                ? 'Recently Created'
+                : 'Company (A-Z)'}
+            </span>
+            <span
+              className="material-symbols-outlined"
+              style={{
+                fontSize: '18px',
+                color: 'var(--md-sys-color-on-surface-variant)',
+                pointerEvents: 'none',
+                marginLeft: '0.15rem',
+              }}
+            >
+              expand_more
+            </span>
+
+            {/* Native Select Overlay for accessibility & menu popup */}
             <select
               value={sortBy}
               onChange={(e: any) => setSortBy(e.target.value)}
+              aria-label="Sort applications"
               style={{
-                padding: '0.45rem 1rem',
-                borderRadius: '9999px',
-                border: '1px solid var(--md-sys-color-outline-variant)',
-                backgroundColor: 'var(--md-sys-color-surface-container-low)',
-                color: 'var(--md-sys-color-on-surface)',
-                fontFamily: 'var(--font-headline)',
-                fontSize: '0.8125rem',
-                fontWeight: 600,
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                opacity: 0,
                 cursor: 'pointer',
-                outline: 'none',
+                appearance: 'none',
               }}
             >
               <option value="updated_desc">Recently Updated</option>
