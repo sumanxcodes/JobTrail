@@ -8,9 +8,11 @@ export function Footer() {
         marginTop: 'auto',
         borderTop: '1px solid var(--md-sys-color-outline-variant)',
         backgroundColor: 'var(--md-sys-color-surface-container-lowest)',
-        padding: '2rem 0',
+        padding: '2.5rem 0',
         color: 'var(--md-sys-color-on-surface-variant)',
+        fontFamily: 'var(--font-body)',
         fontSize: '0.875rem',
+        transition: 'background-color 0.25s ease, border-color 0.25s ease',
       }}
     >
       <div
@@ -18,34 +20,48 @@ export function Footer() {
         style={{
           display: 'flex',
           flexDirection: 'column',
-          gap: '1.25rem',
+          gap: '1.5rem',
         }}
       >
+        {/* Top Row: Brand & Nav Links */}
         <div
           style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             flexWrap: 'wrap',
-            gap: '1rem',
+            gap: '1.25rem',
           }}
         >
-          <div
+          {/* Brand */}
+          <Link
+            href="/"
             style={{
-              fontWeight: 700,
-              fontSize: '1.1rem',
-              color: 'var(--md-sys-color-on-surface)',
-              display: 'flex',
+              display: 'inline-flex',
               alignItems: 'center',
               gap: '0.5rem',
+              fontFamily: 'var(--font-headline)',
+              fontWeight: 800,
+              fontSize: '1.15rem',
+              color: 'var(--md-sys-color-primary)',
+              letterSpacing: '-0.02em',
+              textDecoration: 'none',
             }}
           >
-            <span className="material-symbols-outlined" style={{ fontSize: '20px', color: 'var(--md-sys-color-primary)' }}>
+            <span
+              className="material-symbols-outlined"
+              style={{
+                fontSize: '22px',
+                color: 'var(--md-sys-color-primary)',
+                fontVariationSettings: "'FILL' 1",
+              }}
+            >
               work
             </span>
             <span>JobTrail</span>
-          </div>
+          </Link>
 
+          {/* Navigation Links */}
           <div
             style={{
               display: 'flex',
@@ -53,6 +69,8 @@ export function Footer() {
               alignItems: 'center',
               flexWrap: 'wrap',
               fontSize: '0.875rem',
+              fontFamily: 'var(--font-headline)',
+              fontWeight: 600,
             }}
           >
             <Link
@@ -71,25 +89,32 @@ export function Footer() {
                 transition: 'color 0.15s ease',
               }}
             >
-              Tracker Dashboard
+              Dashboard
             </Link>
-            <span style={{ opacity: 0.7 }}>
+            <span
+              style={{
+                color: 'var(--md-sys-color-outline)',
+                fontFamily: 'var(--font-body)',
+                fontWeight: 400,
+              }}
+            >
               &copy; {new Date().getFullYear()} JobTrail. All rights reserved.
             </span>
           </div>
         </div>
 
+        {/* Bottom AI & Data Handling Disclosure */}
         <div
           style={{
             fontSize: '0.8125rem',
             color: 'var(--md-sys-color-outline)',
-            lineHeight: 1.5,
+            lineHeight: 1.6,
             borderTop: '1px solid var(--md-sys-color-surface-container-high)',
-            paddingTop: '0.875rem',
+            paddingTop: '1rem',
           }}
         >
-          Job descriptions submitted by the user are parsed via AI for structured field extraction
-          and stored securely in Supabase. We do not sell your personal data.
+          Job descriptions submitted by the user are parsed via Anthropic Claude AI for structured field extraction
+          and securely stored in Supabase with PostgreSQL Row-Level Security. We do not sell or monetize personal data.
         </div>
       </div>
     </footer>
