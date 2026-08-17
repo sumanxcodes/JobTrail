@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap');
 
 :root {
-  /* M3 Light Theme Tokens (from Stitch Design System) */
+  /* M3 Light Theme Tokens (Stitch JobTrack AI Theme) */
   --md-sys-color-primary: #24389c;
   --md-sys-color-on-primary: #ffffff;
   --md-sys-color-primary-container: #dee0ff;
@@ -9,8 +9,8 @@
 
   --md-sys-color-secondary: #505f76;
   --md-sys-color-on-secondary: #ffffff;
-  --md-sys-color-secondary-container: #d0e1fb;
-  --md-sys-color-on-secondary-container: #0b1c30;
+  --md-sys-color-secondary-container: #dce2f9;
+  --md-sys-color-on-secondary-container: #151d2c;
 
   --md-sys-color-tertiary: #6c3400;
   --md-sys-color-on-tertiary: #ffffff;
@@ -20,7 +20,7 @@
   --md-sys-color-error: #ba1a1a;
   --md-sys-color-on-error: #ffffff;
   --md-sys-color-error-container: #ffdad6;
-  --md-sys-color-on-error-container: #93000a;
+  --md-sys-color-on-error-container: #410002;
 
   --md-sys-color-background: #fbf8ff;
   --md-sys-color-on-background: #1a1b22;
@@ -50,10 +50,10 @@
   --status-offer-text: #14532d;
   --status-rejected-bg: #fee2e2;
   --status-rejected-text: #7f1d1d;
-  --status-withdrawn-bg: #e2e8f0;
+  --status-withdrawn-bg: #f1f5f9;
   --status-withdrawn-text: #334155;
 
-  --font-main: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -79,25 +79,25 @@
     --md-sys-color-error-container: #93000a;
     --md-sys-color-on-error-container: #ffdad6;
 
-    --md-sys-color-background: #1a1b22;
+    --md-sys-color-background: #111218;
     --md-sys-color-on-background: #e3e1ea;
 
-    --md-sys-color-surface: #1a1b22;
+    --md-sys-color-surface: #111218;
     --md-sys-color-on-surface: #e3e1ea;
     --md-sys-color-surface-variant: #454652;
     --md-sys-color-on-surface-variant: #c5c5d4;
 
-    --md-sys-color-surface-container-lowest: #121318;
-    --md-sys-color-surface-container-low: #1e1f26;
-    --md-sys-color-surface-container: #23242c;
-    --md-sys-color-surface-container-high: #2d2e37;
-    --md-sys-color-surface-container-highest: #383942;
+    --md-sys-color-surface-container-lowest: #181920;
+    --md-sys-color-surface-container-low: #202129;
+    --md-sys-color-surface-container: #262731;
+    --md-sys-color-surface-container-high: #31323d;
+    --md-sys-color-surface-container-highest: #3c3d4a;
 
     --md-sys-color-outline: #8f909f;
     --md-sys-color-outline-variant: #454652;
 
     /* Custom Status Colors - Dark */
-    --status-draft-bg: #383942;
+    --status-draft-bg: #2d2e37;
     --status-draft-text: #c5c5d4;
     --status-applied-bg: #1e293b;
     --status-applied-text: #93c5fd;
@@ -151,43 +151,139 @@ a {
 
 .container {
   width: 100%;
-  max-width: 1240px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 1.5rem;
+}
+
+/* Hero curve background */
+.hero-curve-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 520px;
+  background-color: var(--md-sys-color-surface-container-low);
+  clip-path: ellipse(150% 100% at 50% 0%);
+  z-index: -10;
+  pointer-events: none;
 }
 
 /* Card surfaces */
 .m3-card {
   background-color: var(--md-sys-color-surface-container-lowest);
   border: 1px solid var(--md-sys-color-outline-variant);
-  border-radius: 16px;
+  border-radius: 20px;
   padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-  transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .m3-card:hover {
   border-color: var(--md-sys-color-primary);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
 }
 
 .m3-bento-tile {
   background-color: var(--md-sys-color-surface-container-low);
   border: 1px solid var(--md-sys-color-outline-variant);
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 1.25rem;
-  transition: background-color 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
 .m3-bento-tile:hover {
   background-color: var(--md-sys-color-surface-container);
 }
 
+/* Stitch Illustrated Bento Feature Card */
+.stitch-feature-card {
+  background-color: var(--md-sys-color-surface-container-low);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 24px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.stitch-feature-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.card-watermark {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 1.5rem;
+  opacity: 0.08;
+  transform: translate(15px, -15px);
+  transition: transform 0.4s ease, opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.stitch-feature-card:hover .card-watermark {
+  transform: translate(10px, -10px) scale(1.1);
+  opacity: 0.14;
+}
+
+/* Custom Pill Button Styles (Stitch Visual Fidelity) */
+.btn-pill-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.875rem 2rem;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.btn-pill-primary:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 4px 14px rgba(36, 56, 156, 0.35);
+  transform: translateY(-1px);
+}
+
+.btn-pill-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: var(--md-sys-color-surface-container-lowest);
+  color: var(--md-sys-color-primary);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.875rem 2rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.btn-pill-secondary:hover {
+  background-color: var(--md-sys-color-surface-container);
+  border-color: var(--md-sys-color-primary);
+  transform: translateY(-1px);
+}
+
 /* Segmented Control / Tabs */
 .segmented-control {
   display: inline-flex;
   background-color: var(--md-sys-color-surface-container);
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 4px;
   gap: 4px;
   overflow-x: auto;
@@ -195,7 +291,7 @@ a {
 }
 
 .segmented-control-btn {
-  padding: 0.45rem 1rem;
+  padding: 0.5rem 1.125rem;
   border-radius: 8px;
   font-size: 0.875rem;
   font-weight: 500;
@@ -211,7 +307,7 @@ a {
   background-color: var(--md-sys-color-surface-container-lowest);
   color: var(--md-sys-color-primary);
   font-weight: 600;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
 
 /* Status Badge Classes */

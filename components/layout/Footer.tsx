@@ -8,7 +8,7 @@ export function Footer() {
         marginTop: 'auto',
         borderTop: '1px solid var(--md-sys-color-outline-variant)',
         backgroundColor: 'var(--md-sys-color-surface-container-lowest)',
-        padding: '1.5rem 0',
+        padding: '2rem 0',
         color: 'var(--md-sys-color-on-surface-variant)',
         fontSize: '0.875rem',
       }}
@@ -18,28 +18,79 @@ export function Footer() {
         style={{
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center',
-          textAlign: 'center',
-          gap: '0.75rem',
+          gap: '1.25rem',
         }}
       >
-        <p>
-          Job description content submitted by the user is processed by a third-party AI provider
-          (Anthropic) for field extraction, and stored in Supabase.{' '}
-          <Link
-            href="/privacy"
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '1rem',
+          }}
+        >
+          <div
             style={{
-              color: 'var(--md-sys-color-primary)',
-              textDecoration: 'underline',
-              fontWeight: 500,
+              fontWeight: 700,
+              fontSize: '1.1rem',
+              color: 'var(--md-sys-color-on-surface)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
             }}
           >
-            Privacy & Data Handling
-          </Link>
-        </p>
-        <p style={{ opacity: 0.8 }}>
-          &copy; {new Date().getFullYear()} JobTrail. Built with Next.js & Material Web.
-        </p>
+            <span className="material-symbols-outlined" style={{ fontSize: '20px', color: 'var(--md-sys-color-primary)' }}>
+              work
+            </span>
+            <span>JobTrail</span>
+          </div>
+
+          <div
+            style={{
+              display: 'flex',
+              gap: '1.5rem',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              fontSize: '0.875rem',
+            }}
+          >
+            <Link
+              href="/privacy"
+              style={{
+                color: 'var(--md-sys-color-on-surface-variant)',
+                transition: 'color 0.15s ease',
+              }}
+            >
+              Privacy & Data Disclosure
+            </Link>
+            <Link
+              href="/dashboard"
+              style={{
+                color: 'var(--md-sys-color-on-surface-variant)',
+                transition: 'color 0.15s ease',
+              }}
+            >
+              Tracker Dashboard
+            </Link>
+            <span style={{ opacity: 0.7 }}>
+              &copy; {new Date().getFullYear()} JobTrail. All rights reserved.
+            </span>
+          </div>
+        </div>
+
+        <div
+          style={{
+            fontSize: '0.8125rem',
+            color: 'var(--md-sys-color-outline)',
+            lineHeight: 1.5,
+            borderTop: '1px solid var(--md-sys-color-surface-container-high)',
+            paddingTop: '0.875rem',
+          }}
+        >
+          Job descriptions submitted by the user are parsed via AI for structured field extraction
+          and stored securely in Supabase. We do not sell your personal data.
+        </div>
       </div>
     </footer>
   );
