@@ -148,41 +148,54 @@ export default function ApplicationDetailPage() {
       const { error } = await supabase.from('applications').delete().eq('id', applicationId);
       if (error) throw error;
 
-      router.push('/dashboard');
+      router.push('/applications');
       router.refresh();
     } catch (err: any) {
       setErrorMsg(err.message || 'Failed to delete application.');
-      setDeleteDialogOpen(false);
       setDeleting(false);
+      setDeleteDialogOpen(false);
     }
   };
 
   if (loading) {
     return (
       <div
-        className="container"
         style={{
           display: 'flex',
-          justifyContent: 'center',
+          flexDirection: 'column',
           alignItems: 'center',
-          padding: '5rem 0',
+          justifyContent: 'center',
+          padding: '6rem 1rem',
+          gap: '1.25rem',
         }}
       >
-        <CircularProgress />
+        <CircularProgress indeterminate />
+        <p style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '0.9375rem' }}>
+          Loading application details...
+        </p>
       </div>
     );
   }
 
   if (!application) {
     return (
-      <div className="container" style={{ maxWidth: '640px', padding: '2rem 1.5rem' }}>
-        <div className="m3-card" style={{ textAlign: 'center', padding: '3rem 1.5rem' }}>
-          <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Application Not Found</h2>
+      <div style={{ maxWidth: '600px', margin: '4rem auto', padding: '0 1rem' }}>
+        <div className="m3-card" style={{ textAlign: 'center', padding: '3rem 2rem' }}>
+          <h2
+            style={{
+              fontSize: '1.5rem',
+              fontFamily: 'var(--font-headline)',
+              fontWeight: 700,
+              marginBottom: '1rem',
+            }}
+          >
+            Application Not Found
+          </h2>
           <p style={{ color: 'var(--md-sys-color-on-surface-variant)', marginBottom: '1.5rem' }}>
             {errorMsg || 'The requested application could not be found.'}
           </p>
-          <Link href="/dashboard">
-            <FilledButton icon="arrow_back">Return to Dashboard</FilledButton>
+          <Link href="/applications" style={{ textDecoration: 'none' }}>
+            <FilledButton icon="arrow_back">Return to Applications</FilledButton>
           </Link>
         </div>
       </div>
@@ -203,34 +216,46 @@ export default function ApplicationDetailPage() {
       {successMsg && (
         <div
           style={{
-            padding: '0.75rem 1rem',
-            borderRadius: '8px',
+            padding: '0.875rem 1.25rem',
+            borderRadius: '12px',
             backgroundColor: 'var(--status-offer-bg)',
             color: 'var(--status-offer-text)',
             fontSize: '0.875rem',
-            marginBottom: '1.25rem',
+            marginBottom: '1.5rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
           }}
         >
-          {successMsg}
+          <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
+            check_circle
+          </span>
+          <span>{successMsg}</span>
         </div>
       )}
 
       {errorMsg && (
         <div
           style={{
-            padding: '0.75rem 1rem',
-            borderRadius: '8px',
+            padding: '0.875rem 1.25rem',
+            borderRadius: '12px',
             backgroundColor: 'var(--md-sys-color-error-container)',
             color: 'var(--md-sys-color-on-error-container)',
             fontSize: '0.875rem',
-            marginBottom: '1.25rem',
+            marginBottom: '1.5rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
           }}
         >
-          {errorMsg}
+          <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
+            error
+          </span>
+          <span>{errorMsg}</span>
         </div>
       )}
 
-      {/* Main Header Banner (Stitch Application Detail style) */}
+      {/* Main Header Banner */}
       <div
         className="m3-card"
         style={{
@@ -240,24 +265,18 @@ export default function ApplicationDetailPage() {
           flexWrap: 'wrap',
           gap: '1.5rem',
           marginBottom: '2rem',
+          padding: '1.75rem 2rem',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
           {/* Company Avatar */}
           <div
+            className="company-avatar"
             style={{
-              width: '64px',
-              height: '64px',
-              borderRadius: '14px',
-              backgroundColor: 'var(--md-sys-color-surface-container)',
-              border: '1px solid var(--md-sys-color-outline-variant)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontWeight: 700,
+              width: '56px',
+              height: '56px',
+              borderRadius: '16px',
               fontSize: '1.25rem',
-              color: 'var(--md-sys-color-primary)',
-              flexShrink: 0,
             }}
           >
             {initials}
@@ -267,10 +286,12 @@ export default function ApplicationDetailPage() {
             <h1
               style={{
                 fontSize: '1.75rem',
-                fontWeight: 700,
+                fontFamily: 'var(--font-headline)',
+                fontWeight: 800,
                 color: 'var(--md-sys-color-on-surface)',
                 lineHeight: 1.2,
                 marginBottom: '0.35rem',
+                letterSpacing: '-0.02em',
               }}
             >
               {application.title}
@@ -285,7 +306,7 @@ export default function ApplicationDetailPage() {
                 flexWrap: 'wrap',
               }}
             >
-              <span style={{ fontWeight: 600, color: 'var(--md-sys-color-on-surface)' }}>
+              <span style={{ fontWeight: 700, color: 'var(--md-sys-color-on-surface)', fontFamily: 'var(--font-headline)' }}>
                 {application.company}
               </span>
               {application.job_url && (
@@ -298,10 +319,12 @@ export default function ApplicationDetailPage() {
                     style={{
                       color: 'var(--md-sys-color-primary)',
                       textDecoration: 'underline',
-                      fontWeight: 500,
+                      fontWeight: 600,
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: '0.25rem',
+                      fontFamily: 'var(--font-headline)',
+                      fontSize: '0.8125rem',
                     }}
                   >
                     View Original Posting
@@ -316,7 +339,7 @@ export default function ApplicationDetailPage() {
         </div>
 
         {/* Header Right: Status Selector + Actions */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
           <StatusSelector
             applicationId={application.id}
             currentStatus={application.status}
@@ -342,7 +365,6 @@ export default function ApplicationDetailPage() {
               <OutlinedButton
                 icon="delete"
                 onClick={() => setDeleteDialogOpen(true)}
-                className="status-rejected"
               >
                 Delete
               </OutlinedButton>
@@ -364,7 +386,7 @@ export default function ApplicationDetailPage() {
                 Cancel
               </OutlinedButton>
               <FilledButton icon="save" onClick={handleSaveEdit} disabled={saving}>
-                {saving ? <CircularProgress /> : 'Save'}
+                {saving ? 'Saving...' : 'Save'}
               </FilledButton>
             </>
           )}
@@ -375,13 +397,13 @@ export default function ApplicationDetailPage() {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
           gap: '1.5rem',
           alignItems: 'start',
         }}
       >
-        {/* Left Column: Bento Grid Info + Notes + Raw JD */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', flex: '2 1 500px' }}>
+        {/* Left Column: Info Grid + Notes + Raw JD */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           {!isEditing ? (
             <>
               {/* Bento Info Grid */}
@@ -397,8 +419,10 @@ export default function ApplicationDetailPage() {
                   <span
                     style={{
                       fontSize: '0.75rem',
-                      fontWeight: 600,
+                      fontFamily: 'var(--font-headline)',
+                      fontWeight: 700,
                       textTransform: 'uppercase',
+                      letterSpacing: '0.04em',
                       color: 'var(--md-sys-color-secondary)',
                       display: 'flex',
                       alignItems: 'center',
@@ -406,12 +430,12 @@ export default function ApplicationDetailPage() {
                       marginBottom: '0.35rem',
                     }}
                   >
-                    <span className="material-symbols-outlined" style={{ fontSize: '15px' }}>
+                    <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
                       location_on
                     </span>
                     Location
                   </span>
-                  <p style={{ fontSize: '1rem', fontWeight: 600 }}>
+                  <p style={{ fontSize: '0.9375rem', fontWeight: 600, color: 'var(--md-sys-color-on-surface)' }}>
                     {application.location || 'Not specified'}
                   </p>
                 </div>
@@ -421,8 +445,10 @@ export default function ApplicationDetailPage() {
                   <span
                     style={{
                       fontSize: '0.75rem',
-                      fontWeight: 600,
+                      fontFamily: 'var(--font-headline)',
+                      fontWeight: 700,
                       textTransform: 'uppercase',
+                      letterSpacing: '0.04em',
                       color: 'var(--md-sys-color-secondary)',
                       display: 'flex',
                       alignItems: 'center',
@@ -430,12 +456,12 @@ export default function ApplicationDetailPage() {
                       marginBottom: '0.35rem',
                     }}
                   >
-                    <span className="material-symbols-outlined" style={{ fontSize: '15px' }}>
+                    <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
                       payments
                     </span>
                     Salary Range
                   </span>
-                  <p style={{ fontSize: '1rem', fontWeight: 600 }}>
+                  <p style={{ fontSize: '0.9375rem', fontWeight: 600, color: 'var(--md-sys-color-on-surface)' }}>
                     {application.salary_range || 'Not specified'}
                   </p>
                 </div>
@@ -445,8 +471,10 @@ export default function ApplicationDetailPage() {
                   <span
                     style={{
                       fontSize: '0.75rem',
-                      fontWeight: 600,
+                      fontFamily: 'var(--font-headline)',
+                      fontWeight: 700,
                       textTransform: 'uppercase',
+                      letterSpacing: '0.04em',
                       color: 'var(--md-sys-color-secondary)',
                       display: 'flex',
                       alignItems: 'center',
@@ -454,12 +482,12 @@ export default function ApplicationDetailPage() {
                       marginBottom: '0.35rem',
                     }}
                   >
-                    <span className="material-symbols-outlined" style={{ fontSize: '15px' }}>
-                      stairs
+                    <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
+                      trending_up
                     </span>
                     Seniority
                   </span>
-                  <p style={{ fontSize: '1rem', fontWeight: 600 }}>
+                  <p style={{ fontSize: '0.9375rem', fontWeight: 600, color: 'var(--md-sys-color-on-surface)' }}>
                     {application.seniority || 'Not specified'}
                   </p>
                 </div>
@@ -469,8 +497,10 @@ export default function ApplicationDetailPage() {
                   <span
                     style={{
                       fontSize: '0.75rem',
-                      fontWeight: 600,
+                      fontFamily: 'var(--font-headline)',
+                      fontWeight: 700,
                       textTransform: 'uppercase',
+                      letterSpacing: '0.04em',
                       color: 'var(--md-sys-color-secondary)',
                       display: 'flex',
                       alignItems: 'center',
@@ -478,73 +508,14 @@ export default function ApplicationDetailPage() {
                       marginBottom: '0.35rem',
                     }}
                   >
-                    <span className="material-symbols-outlined" style={{ fontSize: '15px' }}>
+                    <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
                       share
                     </span>
                     Source Type
                   </span>
-                  <p style={{ fontSize: '1rem', fontWeight: 600, textTransform: 'capitalize' }}>
+                  <p style={{ fontSize: '0.9375rem', fontWeight: 600, textTransform: 'capitalize', color: 'var(--md-sys-color-on-surface)' }}>
                     {application.source_type || 'Manual'}
                   </p>
-                </div>
-
-                {/* Timestamps Tile (Full Row) */}
-                <div className="m3-bento-tile" style={{ gridColumn: '1 / -1' }}>
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      flexWrap: 'wrap',
-                      gap: '1rem',
-                    }}
-                  >
-                    <div>
-                      <span
-                        style={{
-                          fontSize: '0.75rem',
-                          color: 'var(--md-sys-color-secondary)',
-                          display: 'block',
-                        }}
-                      >
-                        Created On
-                      </span>
-                      <span style={{ fontSize: '0.9375rem', fontWeight: 500 }}>
-                        {new Date(application.created_at).toLocaleDateString(undefined, {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric',
-                        })}
-                      </span>
-                    </div>
-
-                    <div
-                      style={{
-                        width: '1px',
-                        height: '24px',
-                        backgroundColor: 'var(--md-sys-color-outline-variant)',
-                      }}
-                    />
-
-                    <div>
-                      <span
-                        style={{
-                          fontSize: '0.75rem',
-                          color: 'var(--md-sys-color-secondary)',
-                          display: 'block',
-                        }}
-                      >
-                        Last Updated
-                      </span>
-                      <span style={{ fontSize: '0.9375rem', fontWeight: 500 }}>
-                        {new Date(application.updated_at).toLocaleDateString(undefined, {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric',
-                        })}
-                      </span>
-                    </div>
-                  </div>
                 </div>
               </div>
 
@@ -553,29 +524,31 @@ export default function ApplicationDetailPage() {
                 <h3
                   style={{
                     fontSize: '1.125rem',
-                    fontWeight: 600,
+                    fontFamily: 'var(--font-headline)',
+                    fontWeight: 700,
                     marginBottom: '0.75rem',
                     color: 'var(--md-sys-color-on-surface)',
                   }}
                 >
-                  Notes & Details
+                  Notes & Key Requirements
                 </h3>
                 {application.notes ? (
                   <div
                     style={{
                       padding: '1rem',
-                      borderRadius: '10px',
+                      borderRadius: '12px',
                       backgroundColor: 'var(--md-sys-color-surface-container-low)',
                       whiteSpace: 'pre-wrap',
-                      fontSize: '0.9375rem',
+                      fontSize: '0.875rem',
                       lineHeight: 1.6,
+                      color: 'var(--md-sys-color-on-surface)',
                     }}
                   >
                     {application.notes}
                   </div>
                 ) : (
                   <p style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '0.875rem' }}>
-                    No additional notes. Click Edit to add notes, referral info, or salary discussions.
+                    No additional notes. Click Edit to add notes, referral info, or interview prep.
                   </p>
                 )}
               </div>
@@ -586,23 +559,25 @@ export default function ApplicationDetailPage() {
                   <h3
                     style={{
                       fontSize: '1.125rem',
-                      fontWeight: 600,
+                      fontFamily: 'var(--font-headline)',
+                      fontWeight: 700,
                       marginBottom: '0.75rem',
                       color: 'var(--md-sys-color-on-surface)',
                     }}
                   >
-                    Original Job Description
+                    Preserved Job Description
                   </h3>
                   <details
                     style={{
                       padding: '0.875rem 1rem',
-                      borderRadius: '10px',
-                      backgroundColor: 'var(--md-sys-color-surface-container-high)',
+                      borderRadius: '12px',
+                      backgroundColor: 'var(--md-sys-color-surface-container-low)',
                       fontSize: '0.875rem',
+                      border: '1px solid var(--md-sys-color-outline-variant)',
                     }}
                   >
-                    <summary style={{ cursor: 'pointer', fontWeight: 600 }}>
-                      Click to expand preserved job description
+                    <summary style={{ cursor: 'pointer', fontWeight: 600, color: 'var(--md-sys-color-primary)', fontFamily: 'var(--font-headline)' }}>
+                      Click to view full preserved JD text
                     </summary>
                     <div
                       style={{
@@ -612,6 +587,7 @@ export default function ApplicationDetailPage() {
                         whiteSpace: 'pre-wrap',
                         lineHeight: 1.6,
                         color: 'var(--md-sys-color-on-surface-variant)',
+                        fontSize: '0.8125rem',
                       }}
                     >
                       {application.raw_jd}
@@ -622,8 +598,10 @@ export default function ApplicationDetailPage() {
             </>
           ) : (
             /* Edit Form */
-            <div className="m3-card" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Edit Job Details</h2>
+            <div className="m3-card" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', padding: '1.75rem' }}>
+              <h2 style={{ fontSize: '1.25rem', fontFamily: 'var(--font-headline)', fontWeight: 700 }}>
+                Edit Job Details
+              </h2>
               <div
                 style={{
                   display: 'grid',
@@ -632,28 +610,43 @@ export default function ApplicationDetailPage() {
                 }}
               >
                 <TextField
-                  label="Company Name *"
+                  label="Company Name"
                   value={company}
                   onValueChange={setCompany}
                   required
+                  leadingIcon="domain"
                 />
-                <TextField label="Job Title *" value={title} onValueChange={setTitle} required />
-                <TextField label="Location" value={location} onValueChange={setLocation} />
+                <TextField
+                  label="Job Title"
+                  value={title}
+                  onValueChange={setTitle}
+                  required
+                  leadingIcon="badge"
+                />
+                <TextField
+                  label="Location"
+                  value={location}
+                  onValueChange={setLocation}
+                  leadingIcon="location_on"
+                />
                 <TextField
                   label="Salary Range"
                   value={salaryRange}
                   onValueChange={setSalaryRange}
+                  leadingIcon="payments"
                 />
                 <TextField
                   label="Seniority Level"
                   value={seniority}
                   onValueChange={setSeniority}
+                  leadingIcon="trending_up"
                 />
                 <TextField
                   label="Job Posting URL"
                   type="url"
                   value={jobUrl}
                   onValueChange={setJobUrl}
+                  leadingIcon="link"
                 />
               </div>
               <TextArea
@@ -667,62 +660,44 @@ export default function ApplicationDetailPage() {
         </div>
 
         {/* Right Column: Status Timeline Card */}
-        <div style={{ flex: '1 1 300px' }}>
-          <div className="m3-card">
-            <h3
-              style={{
-                fontSize: '1.125rem',
-                fontWeight: 600,
-                marginBottom: '1.25rem',
-                color: 'var(--md-sys-color-on-surface)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-              }}
-            >
-              <span className="material-symbols-outlined" style={{ color: 'var(--md-sys-color-primary)' }}>
-                timeline
-              </span>
-              Status Timeline
-            </h3>
+        <div className="m3-card" style={{ padding: '1.75rem' }}>
+          <h3
+            style={{
+              fontSize: '1.125rem',
+              fontFamily: 'var(--font-headline)',
+              fontWeight: 700,
+              marginBottom: '1.25rem',
+              color: 'var(--md-sys-color-on-surface)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+            }}
+          >
+            <span className="material-symbols-outlined" style={{ color: 'var(--md-sys-color-primary)' }}>
+              timeline
+            </span>
+            Status Timeline
+          </h3>
 
-            {history.length === 0 ? (
-              <p style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '0.875rem' }}>
-                No status changes recorded yet.
-              </p>
-            ) : (
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '1rem',
-                  position: 'relative',
-                }}
-              >
-                {history.map((entry, idx) => (
-                  <div
-                    key={entry.id || idx}
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '0.25rem',
-                      paddingLeft: '1rem',
-                      borderLeft: '2px solid var(--md-sys-color-primary)',
-                      position: 'relative',
-                    }}
-                  >
-                    {/* Timeline bullet dot */}
-                    <div
-                      style={{
-                        position: 'absolute',
-                        left: '-6px',
-                        top: '4px',
-                        width: '10px',
-                        height: '10px',
-                        borderRadius: '50%',
-                        backgroundColor: 'var(--md-sys-color-primary)',
-                      }}
-                    />
+          {history.length === 0 ? (
+            <p style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '0.875rem' }}>
+              No status changes recorded yet.
+            </p>
+          ) : (
+            <div className="m3-timeline">
+              {history.map((entry, idx) => (
+                <div key={entry.id || idx} className="m3-timeline-item">
+                  <div className="m3-timeline-line" />
+                  <div className="m3-timeline-dot">
+                    <span
+                      className="material-symbols-outlined"
+                      style={{ fontSize: '14px', color: 'var(--md-sys-color-primary)' }}
+                    >
+                      radio_button_checked
+                    </span>
+                  </div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', flex: 1 }}>
                     <StatusBadge status={entry.status} size="small" />
                     <span
                       style={{
@@ -740,10 +715,10 @@ export default function ApplicationDetailPage() {
                       })}
                     </span>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
@@ -755,7 +730,7 @@ export default function ApplicationDetailPage() {
         actions={
           <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
             <TextButton onClick={() => setDeleteDialogOpen(false)}>Cancel</TextButton>
-            <FilledButton onClick={handleDelete} disabled={deleting} className="status-rejected">
+            <FilledButton onClick={handleDelete} disabled={deleting}>
               {deleting ? 'Deleting...' : 'Delete Application'}
             </FilledButton>
           </div>

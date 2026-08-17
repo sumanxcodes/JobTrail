@@ -685,28 +685,29 @@ a {
   transform: translateY(-1px);
 }
 
-/* Segmented Control / Tabs */
+/* M3 Segmented Control (Pill Shape) */
 .segmented-control {
   display: inline-flex;
   background-color: var(--md-sys-color-surface-container);
-  border-radius: 12px;
+  border-radius: 9999px;
   padding: 4px;
   gap: 4px;
   overflow-x: auto;
   max-width: 100%;
+  border: 1px solid var(--md-sys-color-outline-variant);
 }
 
 .segmented-control-btn {
-  padding: 0.5rem 1.125rem;
-  border-radius: 8px;
+  padding: 0.5rem 1.25rem;
+  border-radius: 9999px;
   font-family: var(--font-headline);
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   border: none;
   cursor: pointer;
   background: transparent;
   color: var(--md-sys-color-on-surface-variant);
-  transition: all 0.15s ease;
+  transition: all 0.15s cubic-bezier(0.2, 0, 0, 1);
   white-space: nowrap;
 }
 
@@ -714,7 +715,78 @@ a {
   background-color: var(--md-sys-color-surface-container-lowest);
   color: var(--md-sys-color-primary);
   font-weight: 700;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* Company Monogram Avatar */
+.company-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background-color: var(--md-sys-color-surface-container-high);
+  color: var(--md-sys-color-primary);
+  font-family: var(--font-headline);
+  font-weight: 800;
+  flex-shrink: 0;
+  border: 1px solid var(--md-sys-color-outline-variant);
+  text-transform: uppercase;
+}
+
+/* M3 Connected Timeline */
+.m3-timeline {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.m3-timeline-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  position: relative;
+  padding-bottom: 1.5rem;
+}
+
+.m3-timeline-item:last-child {
+  padding-bottom: 0;
+}
+
+.m3-timeline-line {
+  position: absolute;
+  left: 11px;
+  top: 24px;
+  bottom: 0;
+  width: 2px;
+  background-color: var(--md-sys-color-outline-variant);
+}
+
+.m3-timeline-item:last-child .m3-timeline-line {
+  display: none;
+}
+
+.m3-timeline-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: var(--md-sys-color-surface-container-high);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  flex-shrink: 0;
+  border: 2px solid var(--md-sys-color-surface-container-lowest);
+}
+
+/* KPI Metric Icon Badge */
+.kpi-icon-badge {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 /* Status Badge Classes */

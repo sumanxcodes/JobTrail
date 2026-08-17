@@ -6,8 +6,15 @@ import { createClient } from '@/lib/supabase/client';
 import { Application, ApplicationStatus, APPLICATION_STATUSES } from '@/lib/types/database';
 import { StatusBadge } from '@/components/applications/StatusBadge';
 import { TextField } from '@/components/ui/TextField';
-import { FilledButton } from '@/components/ui/Button';
+import { FilledButton, OutlinedButton } from '@/components/ui/Button';
 import { CircularProgress } from '@/components/ui/CircularProgress';
+
+function getInitials(name: string): string {
+  if (!name) return 'JT';
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[1][0]).toUpperCase();
+}
 
 export default function ApplicationsPage() {
   const [applications, setApplications] = useState<Application[]>([]);
@@ -93,7 +100,7 @@ export default function ApplicationsPage() {
   };
 
   return (
-    <div style={{ padding: '2rem 2.5rem 3.5rem 2.5rem', maxWidth: '1200px', margin: '0 auto' }}>
+    <div style={{ padding: '2rem 2.5rem 4rem 2.5rem', maxWidth: '1200px', margin: '0 auto' }}>
       {/* Header & Main Actions */}
       <div
         style={{
@@ -309,8 +316,8 @@ export default function ApplicationsPage() {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '4rem 1rem',
-            gap: '1rem',
+            padding: '5rem 1rem',
+            gap: '1.25rem',
           }}
         >
           <CircularProgress indeterminate />
@@ -398,36 +405,44 @@ export default function ApplicationsPage() {
               <tbody>
                 {filteredApplications.map((app) => (
                   <tr key={app.id} className="m3-table-row">
-                    {/* Company & Role */}
+                    {/* Company & Role with Avatar */}
                     <td className="m3-table-td">
                       <Link
                         href={`/applications/${app.id}`}
                         style={{
                           textDecoration: 'none',
                           display: 'flex',
-                          flexDirection: 'column',
-                          gap: '0.2rem',
+                          alignItems: 'center',
+                          gap: '0.875rem',
                         }}
                       >
-                        <span
-                          style={{
-                            fontFamily: 'var(--font-headline)',
-                            fontWeight: 700,
-                            color: 'var(--md-sys-color-on-surface)',
-                            fontSize: '0.9375rem',
-                          }}
+                        <div
+                          className="company-avatar"
+                          style={{ width: '38px', height: '38px', fontSize: '0.8125rem' }}
                         >
-                          {app.company}
-                        </span>
-                        <span
-                          style={{
-                            fontFamily: 'var(--font-body)',
-                            color: 'var(--md-sys-color-on-surface-variant)',
-                            fontSize: '0.8125rem',
-                          }}
-                        >
-                          {app.title}
-                        </span>
+                          {getInitials(app.company)}
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
+                          <span
+                            style={{
+                              fontFamily: 'var(--font-headline)',
+                              fontWeight: 700,
+                              color: 'var(--md-sys-color-on-surface)',
+                              fontSize: '0.9375rem',
+                            }}
+                          >
+                            {app.company}
+                          </span>
+                          <span
+                            style={{
+                              fontFamily: 'var(--font-body)',
+                              color: 'var(--md-sys-color-on-surface-variant)',
+                              fontSize: '0.8125rem',
+                            }}
+                          >
+                            {app.title}
+                          </span>
+                        </div>
                       </Link>
                     </td>
 
@@ -450,87 +465,74 @@ export default function ApplicationsPage() {
                         <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
                           location_on
                         </span>
-                        <span>{app.location || 'Not specified'}</span>
+                        {app.location || '—'}
                       </span>
                     </td>
 
-                    {/* Date */}
+                    {/* Applied Date */}
                     <td className="m3-table-td">
-                      <span
-                        style={{
-                          color: 'var(--md-sys-color-on-surface-variant)',
-                          fontSize: '0.8125rem',
-                        }}
-                      >
-                        {app.created_at
-                          ? new Date(app.created_at).toLocaleDateString('en-US', {
-                              month: 'short',
-                              day: 'numeric',
-                              year: 'numeric',
-                            })
-                          : '—'}
+                      <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
+                        {new Date(app.created_at).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric',
+                        })}
                       </span>
                     </td>
 
                     {/* Salary Range */}
                     <td className="m3-table-td">
-                      <span
-                        style={{
-                          color: 'var(--md-sys-color-on-surface)',
-                          fontSize: '0.8125rem',
-                          fontWeight: 500,
-                        }}
-                      >
+                      <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface)' }}>
                         {app.salary_range || '—'}
                       </span>
                     </td>
 
-                    {/* Row Actions */}
+                    {/* Actions */}
                     <td className="m3-table-td" style={{ textAlign: 'right' }}>
-                      <div
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '0.5rem',
-                        }}
-                      >
-                        <Link
-                          href={`/applications/${app.id}`}
-                          style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            width: '32px',
-                            height: '32px',
-                            borderRadius: '50%',
-                            backgroundColor: 'var(--md-sys-color-surface-container-high)',
-                            color: 'var(--md-sys-color-on-surface)',
-                            textDecoration: 'none',
-                          }}
-                          title="View Details"
-                        >
-                          <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
-                            arrow_forward
-                          </span>
+                      <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <Link href={`/applications/${app.id}`} style={{ textDecoration: 'none' }}>
+                          <button
+                            title="View details"
+                            aria-label="View application details"
+                            style={{
+                              background: 'none',
+                              border: '1px solid var(--md-sys-color-outline-variant)',
+                              borderRadius: '8px',
+                              padding: '0.35rem 0.6rem',
+                              color: 'var(--md-sys-color-primary)',
+                              cursor: 'pointer',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '0.25rem',
+                              fontFamily: 'var(--font-headline)',
+                              fontSize: '0.75rem',
+                              fontWeight: 600,
+                            }}
+                          >
+                            <span>View</span>
+                            <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>
+                              arrow_forward
+                            </span>
+                          </button>
                         </Link>
 
                         <button
                           onClick={(e) => handleDelete(app.id, e)}
+                          title="Delete application"
+                          aria-label="Delete application"
                           style={{
+                            background: 'none',
+                            border: '1px solid var(--md-sys-color-outline-variant)',
+                            borderRadius: '8px',
+                            padding: '0.35rem',
+                            color: 'var(--md-sys-color-error)',
+                            cursor: 'pointer',
                             display: 'inline-flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            width: '32px',
-                            height: '32px',
-                            borderRadius: '50%',
-                            backgroundColor: 'transparent',
-                            color: 'var(--md-sys-color-error)',
-                            border: 'none',
-                            cursor: 'pointer',
                           }}
-                          title="Delete Application"
                         >
-                          <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
+                          <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
                             delete
                           </span>
                         </button>
@@ -540,25 +542,6 @@ export default function ApplicationsPage() {
                 ))}
               </tbody>
             </table>
-          </div>
-
-          {/* Table Footer / Summary Bar */}
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              padding: '0.875rem 1.25rem',
-              backgroundColor: 'var(--md-sys-color-surface-container-low)',
-              borderTop: '1px solid var(--md-sys-color-outline-variant)',
-              fontSize: '0.8125rem',
-              fontFamily: 'var(--font-body)',
-              color: 'var(--md-sys-color-on-surface-variant)',
-            }}
-          >
-            <span>
-              Showing {filteredApplications.length} of {applications.length} applications
-            </span>
           </div>
         </div>
       )}

@@ -8,6 +8,13 @@ import { StatusBadge } from '@/components/applications/StatusBadge';
 import { FilledButton, OutlinedButton } from '@/components/ui/Button';
 import { CircularProgress } from '@/components/ui/CircularProgress';
 
+function getInitials(name: string): string {
+  if (!name) return 'JT';
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[1][0]).toUpperCase();
+}
+
 export default function DashboardPage() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
@@ -65,12 +72,12 @@ export default function DashboardPage() {
   }, [applications]);
 
   const recentApplications = useMemo(() => {
-    return applications.slice(0, 4);
+    return applications.slice(0, 5);
   }, [applications]);
 
   return (
-    <div style={{ padding: '2rem 2.5rem 3.5rem 2.5rem', maxWidth: '1200px', margin: '0 auto' }}>
-      {/* Header & Quick Actions */}
+    <div style={{ padding: '2rem 2.5rem 4rem 2.5rem', maxWidth: '1200px', margin: '0 auto' }}>
+      {/* Header & Primary Actions */}
       <div
         style={{
           display: 'flex',
@@ -122,8 +129,8 @@ export default function DashboardPage() {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '4rem 1rem',
-            gap: '1rem',
+            padding: '5rem 1rem',
+            gap: '1.25rem',
           }}
         >
           <CircularProgress indeterminate />
@@ -156,14 +163,19 @@ export default function DashboardPage() {
                 >
                   Total Applications
                 </span>
-                <span
-                  className="material-symbols-outlined"
-                  style={{ fontSize: '22px', color: 'var(--md-sys-color-primary)' }}
+                <div
+                  className="kpi-icon-badge"
+                  style={{
+                    backgroundColor: 'var(--md-sys-color-primary-container)',
+                    color: 'var(--md-sys-color-on-primary-container)',
+                  }}
                 >
-                  layers
-                </span>
+                  <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
+                    layers
+                  </span>
+                </div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginTop: '0.25rem' }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginTop: '0.5rem' }}>
                 <span
                   style={{
                     fontSize: '2.25rem',
@@ -178,8 +190,8 @@ export default function DashboardPage() {
                   all-time
                 </span>
               </div>
-              <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
-                {stats.activePipeline} currently active in pipeline
+              <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)', marginTop: '0.25rem' }}>
+                {stats.activePipeline} active in your pursuit pipeline
               </span>
             </div>
 
@@ -198,14 +210,19 @@ export default function DashboardPage() {
                 >
                   Active Pipeline
                 </span>
-                <span
-                  className="material-symbols-outlined"
-                  style={{ fontSize: '22px', color: 'var(--md-sys-color-tertiary)' }}
+                <div
+                  className="kpi-icon-badge"
+                  style={{
+                    backgroundColor: 'var(--md-sys-color-tertiary-container)',
+                    color: 'var(--md-sys-color-on-tertiary-container)',
+                  }}
                 >
-                  timelapse
-                </span>
+                  <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
+                    timelapse
+                  </span>
+                </div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginTop: '0.25rem' }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginTop: '0.5rem' }}>
                 <span
                   style={{
                     fontSize: '2.25rem',
@@ -220,8 +237,8 @@ export default function DashboardPage() {
                   in progress
                 </span>
               </div>
-              <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
-                {stats.interviewing} in active interview stages
+              <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)', marginTop: '0.25rem' }}>
+                {stats.interviewing} currently in interview rounds
               </span>
             </div>
 
@@ -240,14 +257,19 @@ export default function DashboardPage() {
                 >
                   Interview Rate
                 </span>
-                <span
-                  className="material-symbols-outlined"
-                  style={{ fontSize: '22px', color: 'var(--md-sys-color-secondary)' }}
+                <div
+                  className="kpi-icon-badge"
+                  style={{
+                    backgroundColor: 'var(--md-sys-color-secondary-container)',
+                    color: 'var(--md-sys-color-on-secondary-container)',
+                  }}
                 >
-                  trending_up
-                </span>
+                  <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
+                    trending_up
+                  </span>
+                </div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginTop: '0.25rem' }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginTop: '0.5rem' }}>
                 <span
                   style={{
                     fontSize: '2.25rem',
@@ -262,8 +284,8 @@ export default function DashboardPage() {
                   conversion
                 </span>
               </div>
-              <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
-                Applied to interview success ratio
+              <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)', marginTop: '0.25rem' }}>
+                Applied to interview progression ratio
               </span>
             </div>
 
@@ -282,18 +304,22 @@ export default function DashboardPage() {
                 >
                   Offers Received
                 </span>
-                <span
-                  className="material-symbols-outlined"
+                <div
+                  className="kpi-icon-badge"
                   style={{
-                    fontSize: '22px',
-                    color: 'var(--md-sys-color-primary)',
-                    fontVariationSettings: "'FILL' 1",
+                    backgroundColor: 'var(--md-sys-color-primary)',
+                    color: 'var(--md-sys-color-on-primary)',
                   }}
                 >
-                  workspace_premium
-                </span>
+                  <span
+                    className="material-symbols-outlined"
+                    style={{ fontSize: '20px', fontVariationSettings: "'FILL' 1" }}
+                  >
+                    workspace_premium
+                  </span>
+                </div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginTop: '0.25rem' }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginTop: '0.5rem' }}>
                 <span
                   style={{
                     fontSize: '2.25rem',
@@ -308,8 +334,8 @@ export default function DashboardPage() {
                   offers
                 </span>
               </div>
-              <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
-                {stats.offerRate}% final conversion rate
+              <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)', marginTop: '0.25rem' }}>
+                {stats.offerRate}% final offer conversion rate
               </span>
             </div>
           </div>
@@ -434,8 +460,8 @@ export default function DashboardPage() {
               {/* Segmented Progress Distribution Bar */}
               <div
                 style={{
-                  height: '16px',
-                  borderRadius: '8px',
+                  height: '14px',
+                  borderRadius: '7px',
                   backgroundColor: 'var(--md-sys-color-surface-container-high)',
                   display: 'flex',
                   overflow: 'hidden',
@@ -486,15 +512,16 @@ export default function DashboardPage() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
-                        padding: '0.5rem 0.75rem',
+                        padding: '0.625rem 0.875rem',
                         borderRadius: '12px',
                         backgroundColor: 'var(--md-sys-color-surface-container-low)',
+                        border: '1px solid var(--md-sys-color-outline-variant)',
                       }}
                     >
                       <span style={{ fontSize: '0.8125rem', fontFamily: 'var(--font-headline)', fontWeight: 600, color: 'var(--md-sys-color-on-surface)' }}>
                         {status.label}
                       </span>
-                      <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
+                      <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)', fontWeight: 500 }}>
                         {count} ({percent}%)
                       </span>
                     </div>
@@ -546,11 +573,45 @@ export default function DashboardPage() {
             </div>
 
             {recentApplications.length === 0 ? (
-              <p style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '0.875rem', padding: '1rem 0' }}>
-                No applications added yet. Click "+ Add Application" above to get started!
-              </p>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '2.5rem 1rem',
+                  gap: '0.75rem',
+                  textAlign: 'center',
+                }}
+              >
+                <div
+                  style={{
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '16px',
+                    backgroundColor: 'var(--md-sys-color-surface-container)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'var(--md-sys-color-primary)',
+                  }}
+                >
+                  <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>
+                    work
+                  </span>
+                </div>
+                <p style={{ color: 'var(--md-sys-color-on-surface)', fontWeight: 600, fontSize: '0.9375rem' }}>
+                  No applications tracked yet
+                </p>
+                <p style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '0.8125rem', maxWidth: '360px' }}>
+                  Add your first job pursuit using AI parsing to begin seeing insights and pipeline momentum.
+                </p>
+                <Link href="/applications/new" style={{ marginTop: '0.5rem', textDecoration: 'none' }}>
+                  <FilledButton icon="add">Add First Application</FilledButton>
+                </Link>
+              </div>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
                 {recentApplications.map((app) => (
                   <Link
                     key={app.id}
@@ -559,26 +620,53 @@ export default function DashboardPage() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
-                      padding: '0.875rem 1rem',
-                      borderRadius: '14px',
+                      padding: '0.75rem 1rem',
+                      borderRadius: '16px',
                       backgroundColor: 'var(--md-sys-color-surface-container-low)',
                       border: '1px solid var(--md-sys-color-outline-variant)',
                       textDecoration: 'none',
-                      transition: 'all 0.15s ease',
+                      transition: 'all 0.15s cubic-bezier(0.2, 0, 0, 1)',
+                      gap: '1rem',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container)';
+                      e.currentTarget.style.borderColor = 'var(--md-sys-color-primary)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container-low)';
+                      e.currentTarget.style.borderColor = 'var(--md-sys-color-outline-variant)';
                     }}
                   >
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
-                      <span style={{ fontFamily: 'var(--font-headline)', fontWeight: 700, color: 'var(--md-sys-color-on-surface)', fontSize: '0.9375rem' }}>
-                        {app.company}
-                      </span>
-                      <span style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '0.8125rem' }}>
-                        {app.title} {app.location ? `• ${app.location}` : ''}
-                      </span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem' }}>
+                      <div
+                        className="company-avatar"
+                        style={{ width: '40px', height: '40px', fontSize: '0.875rem' }}
+                      >
+                        {getInitials(app.company)}
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
+                        <span
+                          style={{
+                            fontFamily: 'var(--font-headline)',
+                            fontWeight: 700,
+                            color: 'var(--md-sys-color-on-surface)',
+                            fontSize: '0.9375rem',
+                          }}
+                        >
+                          {app.company}
+                        </span>
+                        <span style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '0.8125rem' }}>
+                          {app.title} {app.location ? `• ${app.location}` : ''}
+                        </span>
+                      </div>
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                       <StatusBadge status={app.status} />
-                      <span className="material-symbols-outlined" style={{ fontSize: '18px', color: 'var(--md-sys-color-outline)' }}>
+                      <span
+                        className="material-symbols-outlined"
+                        style={{ fontSize: '18px', color: 'var(--md-sys-color-outline)' }}
+                      >
                         arrow_forward
                       </span>
                     </div>
