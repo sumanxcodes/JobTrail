@@ -67,61 +67,40 @@ export function Navbar() {
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '0.625rem',
+            gap: '0.5rem',
             fontFamily: 'var(--font-headline)',
             fontWeight: 800,
-            fontSize: '1.25rem',
+            fontSize: '1.2rem',
             color: 'var(--md-sys-color-primary)',
             letterSpacing: '-0.02em',
             textDecoration: 'none',
+            flexShrink: 0,
           }}
         >
-          <Logo size={26} color="var(--md-sys-color-primary)" />
+          <Logo size={24} color="var(--md-sys-color-primary)" />
           <span>JobTrail</span>
         </Link>
 
         {/* Actions & Theme Toggle */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', flexShrink: 0 }}>
           {/* M3 Standard/Outlined Icon Button (40x40px, 0dp resting elevation) */}
           <ThemeToggle />
 
-          <nav style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <nav style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
             {userEmail ? (
               <>
                 <Link
                   href="/dashboard"
+                  className="nav-action-text"
                   style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: '40px',
-                    padding: '0 1rem',
-                    fontSize: '0.875rem',
-                    fontFamily: 'var(--font-headline)',
-                    fontWeight: 600,
-                    letterSpacing: '0.01em',
-                    color:
-                      pathname === '/dashboard'
-                        ? 'var(--md-sys-color-primary)'
-                        : 'var(--md-sys-color-on-surface-variant)',
-                    borderRadius: '9999px',
                     backgroundColor:
                       pathname === '/dashboard'
                         ? 'var(--md-sys-color-surface-container-high)'
                         : 'transparent',
-                    transition: 'all 0.15s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    if (pathname !== '/dashboard') {
-                      e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container-high)';
-                      e.currentTarget.style.color = 'var(--md-sys-color-on-surface)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (pathname !== '/dashboard') {
-                      e.currentTarget.style.backgroundColor = 'transparent';
-                      e.currentTarget.style.color = 'var(--md-sys-color-on-surface-variant)';
-                    }
+                    color:
+                      pathname === '/dashboard'
+                        ? 'var(--md-sys-color-primary)'
+                        : 'var(--md-sys-color-on-surface-variant)',
                   }}
                 >
                   Dashboard
@@ -129,130 +108,36 @@ export function Navbar() {
 
                 <Link
                   href="/applications/new"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '0.5rem',
-                    fontSize: '0.875rem',
-                    fontFamily: 'var(--font-headline)',
-                    fontWeight: 600,
-                    letterSpacing: '0.01em',
-                    backgroundColor: 'var(--md-sys-color-primary)',
-                    color: 'var(--md-sys-color-on-primary)',
-                    height: '40px',
-                    padding: '0 1.5rem',
-                    borderRadius: '9999px',
-                    boxShadow: 'none',
-                    border: 'none',
-                    textDecoration: 'none',
-                    transition: 'all 0.2s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.filter = 'brightness(1.08)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.filter = 'none';
-                  }}
+                  className="nav-action-filled"
                 >
                   <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
                     add
                   </span>
-                  <span>Add Application</span>
+                  <span>Add</span>
                 </Link>
 
                 <button
                   onClick={handleLogout}
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: '40px',
-                    padding: '0 0.875rem',
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    fontSize: '0.875rem',
-                    fontFamily: 'var(--font-headline)',
-                    fontWeight: 600,
-                    letterSpacing: '0.01em',
-                    color: 'var(--md-sys-color-on-surface-variant)',
-                    borderRadius: '9999px',
-                    transition: 'all 0.15s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container-high)';
-                    e.currentTarget.style.color = 'var(--md-sys-color-on-surface)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'transparent';
-                    e.currentTarget.style.color = 'var(--md-sys-color-on-surface-variant)';
-                  }}
+                  className="nav-action-text"
+                  style={{ border: 'none', cursor: 'pointer' }}
                 >
                   Log out
                 </button>
               </>
             ) : (
               <>
-                {/* M3 Text Button: Height 40px, Label Large (14px/600), 0dp elevation */}
+                {/* M3 Text Button */}
                 <Link
                   href="/login"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: '40px',
-                    padding: '0 1rem',
-                    fontSize: '0.875rem',
-                    fontFamily: 'var(--font-headline)',
-                    fontWeight: 600,
-                    letterSpacing: '0.01em',
-                    color: 'var(--md-sys-color-on-surface-variant)',
-                    borderRadius: '9999px',
-                    backgroundColor: 'transparent',
-                    boxShadow: 'none',
-                    textDecoration: 'none',
-                    transition: 'all 0.15s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container-high)';
-                    e.currentTarget.style.color = 'var(--md-sys-color-on-surface)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'transparent';
-                    e.currentTarget.style.color = 'var(--md-sys-color-on-surface-variant)';
-                  }}
+                  className="nav-action-text"
                 >
                   Log in
                 </Link>
 
-                {/* M3 Filled Button: Height 40px, Padding 24px, Label Large, 0dp resting elevation */}
+                {/* M3 Filled Button */}
                 <Link
                   href="/signup"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: '40px',
-                    padding: '0 1.5rem',
-                    fontSize: '0.875rem',
-                    fontFamily: 'var(--font-headline)',
-                    fontWeight: 600,
-                    letterSpacing: '0.01em',
-                    backgroundColor: 'var(--md-sys-color-primary)',
-                    color: 'var(--md-sys-color-on-primary)',
-                    borderRadius: '9999px',
-                    border: 'none',
-                    boxShadow: 'none',
-                    textDecoration: 'none',
-                    transition: 'all 0.2s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.filter = 'brightness(1.08)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.filter = 'none';
-                  }}
+                  className="nav-action-filled"
                 >
                   Sign up
                 </Link>

@@ -220,6 +220,72 @@ a {
   padding: 0 1.5rem;
 }
 
+@media (max-width: 640px) {
+  .container {
+    padding: 0 1rem;
+  }
+}
+
+/* Responsive Navigation Bar Actions */
+.nav-action-text {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 1rem;
+  font-size: 0.875rem;
+  font-family: var(--font-headline);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--md-sys-color-on-surface-variant);
+  border-radius: 9999px;
+  background-color: transparent;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.nav-action-text:hover {
+  background-color: var(--md-sys-color-surface-container-high);
+  color: var(--md-sys-color-on-surface);
+}
+
+.nav-action-filled {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  height: 40px;
+  padding: 0 1.5rem;
+  font-size: 0.875rem;
+  font-family: var(--font-headline);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  background-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+  border-radius: 9999px;
+  border: none;
+  box-shadow: none;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.nav-action-filled:hover {
+  filter: brightness(1.08);
+}
+
+@media (max-width: 480px) {
+  .nav-action-text {
+    padding: 0 0.625rem;
+    font-size: 0.8125rem;
+  }
+  .nav-action-filled {
+    padding: 0 1rem;
+    font-size: 0.8125rem;
+  }
+}
+
 /* Card surfaces */
 .m3-card {
   background-color: var(--md-sys-color-surface-container-lowest);
