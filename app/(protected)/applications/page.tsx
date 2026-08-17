@@ -697,7 +697,7 @@ export default function ApplicationsPage() {
                           }}
                         >
                           <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
-                            arrow_forward
+                            visibility
                           </span>
                         </button>
 
