@@ -91,7 +91,7 @@ export default function ResetPasswordPage() {
             borderRadius: '28px',
             backgroundColor: 'var(--md-sys-color-surface-container-lowest)',
             border: '1px solid var(--md-sys-color-outline-variant)',
-            boxShadow: '0 4px 24px rgba(0, 0, 0, 0.04)',
+            boxShadow: 'none',
           }}
         >
           {/* Card Header & Brand Icon */}

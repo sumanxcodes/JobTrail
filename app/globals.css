@@ -542,18 +542,18 @@ a {
   }
 }
 
-/* Card surfaces */
+/* M3 Outlined Card Surfaces (0dp Resting Elevation, Outline Only) */
 .m3-card {
   background-color: var(--md-sys-color-surface-container-lowest);
   border: 1px solid var(--md-sys-color-outline-variant);
   border-radius: 20px;
   padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.25s ease;
+  box-shadow: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .m3-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: none;
 }
 
 /* Material Web Button Styling & Sizing */
@@ -1042,7 +1042,7 @@ md-text-button [slot="icon"] {
   border-bottom: none;
 }
 
-/* KPI Metric Card */
+/* KPI Metric Card (Outlined M3 Variant) */
 .kpi-card {
   background-color: var(--md-sys-color-surface-container-lowest);
   border: 1px solid var(--md-sys-color-outline-variant);
@@ -1051,13 +1051,14 @@ md-text-button [slot="icon"] {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
-  transition: all 0.2s ease;
+  box-shadow: none;
+  transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
 .kpi-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+  background-color: var(--md-sys-color-surface-container-low);
+  box-shadow: none;
 }
 
 /* Funnel Bar */
