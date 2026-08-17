@@ -91,32 +91,20 @@ export default function LoginPage() {
           }}
         >
           {/* Card Header & Brand Icon */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div
-                style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: '16px',
-                  backgroundColor: 'var(--md-sys-color-primary-container)',
-                  color: 'var(--md-sys-color-on-primary-container)',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Logo size={26} color="var(--md-sys-color-on-primary-container)" />
-              </div>
-
-              <Link
-                href="/"
-                className="btn-back-pill"
-              >
-                <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
-                  arrow_back
-                </span>
-                <span>Home</span>
-              </Link>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
+            <div
+              style={{
+                width: '48px',
+                height: '48px',
+                borderRadius: '16px',
+                backgroundColor: 'var(--md-sys-color-primary-container)',
+                color: 'var(--md-sys-color-on-primary-container)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Logo size={26} color="var(--md-sys-color-on-primary-container)" />
             </div>
 
             <div>
@@ -202,7 +190,6 @@ export default function LoginPage() {
               type="email"
               value={email}
               onValueChange={setEmail}
-              required
               leadingIcon="mail"
             />
 
@@ -213,7 +200,6 @@ export default function LoginPage() {
                   type="password"
                   value={password}
                   onValueChange={setPassword}
-                  required
                   leadingIcon="lock"
                 />
 

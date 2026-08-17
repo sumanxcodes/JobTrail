@@ -71,7 +71,6 @@ export function TextField({
       placeholder={placeholder}
       type={type === 'textarea' ? 'textarea' : type}
       rows={rows}
-      required={required || undefined}
       disabled={disabled || undefined}
       supporting-text={supportingText}
       class={className}

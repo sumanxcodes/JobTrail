@@ -95,32 +95,20 @@ export default function ResetPasswordPage() {
           }}
         >
           {/* Card Header & Brand Icon */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div
-                style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: '16px',
-                  backgroundColor: 'var(--md-sys-color-primary-container)',
-                  color: 'var(--md-sys-color-on-primary-container)',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Logo size={26} color="var(--md-sys-color-on-primary-container)" />
-              </div>
-
-              <Link
-                href="/login"
-                className="btn-back-pill"
-              >
-                <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
-                  arrow_back
-                </span>
-                <span>Log in</span>
-              </Link>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
+            <div
+              style={{
+                width: '48px',
+                height: '48px',
+                borderRadius: '16px',
+                backgroundColor: 'var(--md-sys-color-primary-container)',
+                color: 'var(--md-sys-color-on-primary-container)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Logo size={26} color="var(--md-sys-color-on-primary-container)" />
             </div>
 
             <div>
@@ -207,7 +195,6 @@ export default function ResetPasswordPage() {
                 type="email"
                 value={email}
                 onValueChange={setEmail}
-                required
                 leadingIcon="mail"
               />
 
@@ -238,7 +225,6 @@ export default function ResetPasswordPage() {
                 type="password"
                 value={newPassword}
                 onValueChange={setNewPassword}
-                required
                 leadingIcon="lock"
                 supportingText="Must be at least 6 characters"
               />
