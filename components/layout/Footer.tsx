@@ -9,10 +9,10 @@ export function Footer() {
         marginTop: 'auto',
         borderTop: '1px solid var(--md-sys-color-outline-variant)',
         backgroundColor: 'var(--md-sys-color-surface-container-lowest)',
-        padding: '2.5rem 0',
+        paddingTop: '3.5rem',
+        paddingBottom: '2.5rem',
         color: 'var(--md-sys-color-on-surface-variant)',
         fontFamily: 'var(--font-body)',
-        fontSize: '0.875rem',
         transition: 'background-color 0.25s ease, border-color 0.25s ease',
       }}
     >
@@ -21,92 +21,286 @@ export function Footer() {
         style={{
           display: 'flex',
           flexDirection: 'column',
-          gap: '1.5rem',
+          gap: '2.5rem',
         }}
       >
-        {/* Top Row: Brand & Nav Links */}
+        {/* Main Content Grid: Brand Column + Navigation Columns */}
         <div
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: '1.25rem',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: '2.5rem',
           }}
         >
-          {/* Brand */}
-          <Link
-            href="/"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              fontFamily: 'var(--font-headline)',
-              fontWeight: 800,
-              fontSize: '1.15rem',
-              color: 'var(--md-sys-color-primary)',
-              letterSpacing: '-0.02em',
-              textDecoration: 'none',
-            }}
-          >
-            <Logo size={22} color="var(--md-sys-color-primary)" />
-            <span>JobTrail</span>
-          </Link>
+          {/* Brand & Value Proposition Column */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem', maxWidth: '340px' }}>
+            <Link
+              href="/"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.625rem',
+                fontFamily: 'var(--font-headline)',
+                fontWeight: 800,
+                fontSize: '1.25rem',
+                color: 'var(--md-sys-color-primary)',
+                letterSpacing: '-0.02em',
+                textDecoration: 'none',
+                width: 'fit-content',
+              }}
+            >
+              <Logo size={24} color="var(--md-sys-color-primary)" />
+              <span>JobTrail</span>
+            </Link>
 
-          {/* Navigation Links */}
-          <div
-            style={{
-              display: 'flex',
-              gap: '1.5rem',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              fontSize: '0.875rem',
-              fontFamily: 'var(--font-headline)',
-              fontWeight: 600,
-            }}
-          >
-            <Link
-              href="/privacy"
+            <p
               style={{
-                color: 'var(--md-sys-color-on-surface-variant)',
-                transition: 'color 0.15s ease',
-              }}
-            >
-              Privacy & Data Disclosure
-            </Link>
-            <Link
-              href="/dashboard"
-              style={{
-                color: 'var(--md-sys-color-on-surface-variant)',
-                transition: 'color 0.15s ease',
-              }}
-            >
-              Dashboard
-            </Link>
-            <span
-              style={{
-                color: 'var(--md-sys-color-outline)',
+                fontSize: '0.875rem',
                 fontFamily: 'var(--font-body)',
-                fontWeight: 400,
+                color: 'var(--md-sys-color-on-surface-variant)',
+                lineHeight: 1.55,
               }}
             >
-              &copy; {new Date().getFullYear()} JobTrail. All rights reserved.
-            </span>
+              Automated AI job application tracking. Extract roles, requirements, and salary insights directly from job descriptions.
+            </p>
+
+            {/* AI Security Trust Badge */}
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                padding: '0.35rem 0.75rem',
+                borderRadius: '9999px',
+                backgroundColor: 'var(--md-sys-color-surface-container-low)',
+                border: '1px solid var(--md-sys-color-outline-variant)',
+                fontSize: '0.75rem',
+                fontFamily: 'var(--font-headline)',
+                fontWeight: 600,
+                color: 'var(--md-sys-color-on-surface-variant)',
+                width: 'fit-content',
+                marginTop: '0.25rem',
+              }}
+            >
+              <span
+                className="material-symbols-outlined"
+                style={{
+                  fontSize: '15px',
+                  color: 'var(--md-sys-color-primary)',
+                  fontVariationSettings: "'FILL' 1",
+                }}
+              >
+                verified_user
+              </span>
+              <span>Encrypted & Privacy-First</span>
+            </div>
+          </div>
+
+          {/* Product Links Column */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
+            <h4
+              style={{
+                fontSize: '0.8125rem',
+                fontFamily: 'var(--font-headline)',
+                fontWeight: 700,
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase',
+                color: 'var(--md-sys-color-on-surface)',
+              }}
+            >
+              Product
+            </h4>
+            <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+              <Link
+                href="/dashboard"
+                style={{
+                  fontSize: '0.875rem',
+                  fontFamily: 'var(--font-body)',
+                  color: 'var(--md-sys-color-on-surface-variant)',
+                  textDecoration: 'none',
+                  transition: 'color 0.15s ease',
+                  width: 'fit-content',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--md-sys-color-primary)')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--md-sys-color-on-surface-variant)')}
+              >
+                Tracker Dashboard
+              </Link>
+              <Link
+                href="/applications/new"
+                style={{
+                  fontSize: '0.875rem',
+                  fontFamily: 'var(--font-body)',
+                  color: 'var(--md-sys-color-on-surface-variant)',
+                  textDecoration: 'none',
+                  transition: 'color 0.15s ease',
+                  width: 'fit-content',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--md-sys-color-primary)')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--md-sys-color-on-surface-variant)')}
+              >
+                Add Application
+              </Link>
+            </nav>
+          </div>
+
+          {/* Account & Auth Column */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
+            <h4
+              style={{
+                fontSize: '0.8125rem',
+                fontFamily: 'var(--font-headline)',
+                fontWeight: 700,
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase',
+                color: 'var(--md-sys-color-on-surface)',
+              }}
+            >
+              Account
+            </h4>
+            <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+              <Link
+                href="/login"
+                style={{
+                  fontSize: '0.875rem',
+                  fontFamily: 'var(--font-body)',
+                  color: 'var(--md-sys-color-on-surface-variant)',
+                  textDecoration: 'none',
+                  transition: 'color 0.15s ease',
+                  width: 'fit-content',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--md-sys-color-primary)')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--md-sys-color-on-surface-variant)')}
+              >
+                Sign In
+              </Link>
+              <Link
+                href="/signup"
+                style={{
+                  fontSize: '0.875rem',
+                  fontFamily: 'var(--font-body)',
+                  color: 'var(--md-sys-color-on-surface-variant)',
+                  textDecoration: 'none',
+                  transition: 'color 0.15s ease',
+                  width: 'fit-content',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--md-sys-color-primary)')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--md-sys-color-on-surface-variant)')}
+              >
+                Create Account
+              </Link>
+              <Link
+                href="/reset-password"
+                style={{
+                  fontSize: '0.875rem',
+                  fontFamily: 'var(--font-body)',
+                  color: 'var(--md-sys-color-on-surface-variant)',
+                  textDecoration: 'none',
+                  transition: 'color 0.15s ease',
+                  width: 'fit-content',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--md-sys-color-primary)')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--md-sys-color-on-surface-variant)')}
+              >
+                Reset Password
+              </Link>
+            </nav>
+          </div>
+
+          {/* Legal & Compliance Column */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
+            <h4
+              style={{
+                fontSize: '0.8125rem',
+                fontFamily: 'var(--font-headline)',
+                fontWeight: 700,
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase',
+                color: 'var(--md-sys-color-on-surface)',
+              }}
+            >
+              Trust & Legal
+            </h4>
+            <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+              <Link
+                href="/privacy"
+                style={{
+                  fontSize: '0.875rem',
+                  fontFamily: 'var(--font-body)',
+                  color: 'var(--md-sys-color-on-surface-variant)',
+                  textDecoration: 'none',
+                  transition: 'color 0.15s ease',
+                  width: 'fit-content',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--md-sys-color-primary)')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--md-sys-color-on-surface-variant)')}
+              >
+                Privacy Policy & Disclosure
+              </Link>
+            </nav>
           </div>
         </div>
 
-        {/* Bottom AI & Data Handling Disclosure */}
+        {/* Bottom Section: AI Disclosure + Copyright Bar */}
         <div
           style={{
-            fontSize: '0.8125rem',
-            color: 'var(--md-sys-color-outline)',
-            lineHeight: 1.6,
-            borderTop: '1px solid var(--md-sys-color-surface-container-high)',
-            paddingTop: '1rem',
+            borderTop: '1px solid var(--md-sys-color-outline-variant)',
+            paddingTop: '1.75rem',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1rem',
           }}
         >
-          Job descriptions submitted by the user are parsed via Anthropic Claude AI for structured field extraction
-          and securely stored in Supabase with PostgreSQL Row-Level Security. We do not sell or monetize personal data.
+          {/* AI Disclosure Note */}
+          <p
+            style={{
+              fontSize: '0.8125rem',
+              fontFamily: 'var(--font-body)',
+              color: 'var(--md-sys-color-outline)',
+              lineHeight: 1.6,
+              maxWidth: '850px',
+            }}
+          >
+            Job descriptions submitted by users are processed securely via AI for structured field extraction
+            and stored in Supabase with PostgreSQL Row-Level Security (RLS). We never sell, monetize, or share your personal career data.
+          </p>
+
+          {/* Bottom Copyright & Status */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: '1rem',
+              fontSize: '0.8125rem',
+              fontFamily: 'var(--font-body)',
+              color: 'var(--md-sys-color-outline)',
+            }}
+          >
+            <span>
+              &copy; {new Date().getFullYear()} JobTrail. Built with Google Material Design 3.
+            </span>
+
+            <span
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.375rem',
+              }}
+            >
+              <span
+                style={{
+                  width: '7px',
+                  height: '7px',
+                  borderRadius: '50%',
+                  backgroundColor: 'var(--md-sys-color-primary)',
+                  display: 'inline-block',
+                }}
+              />
+              <span>Systems operational</span>
+            </span>
+          </div>
         </div>
       </div>
     </footer>
