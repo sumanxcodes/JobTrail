@@ -307,8 +307,8 @@ export default function DashboardPage() {
                 <div
                   className="kpi-icon-badge"
                   style={{
-                    backgroundColor: 'var(--md-sys-color-primary)',
-                    color: 'var(--md-sys-color-on-primary)',
+                    backgroundColor: 'var(--md-sys-color-primary-container)',
+                    color: 'var(--md-sys-color-on-primary-container)',
                   }}
                 >
                   <span
@@ -325,7 +325,7 @@ export default function DashboardPage() {
                     fontSize: '2.25rem',
                     fontFamily: 'var(--font-headline)',
                     fontWeight: 800,
-                    color: 'var(--md-sys-color-primary)',
+                    color: stats.offers > 0 ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-on-surface)',
                   }}
                 >
                   {stats.offers}
@@ -422,8 +422,8 @@ export default function DashboardPage() {
                 {/* Step 4: Offer */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem' }}>
-                    <span style={{ fontWeight: 600, color: 'var(--md-sys-color-primary)' }}>4. Job Offers</span>
-                    <span style={{ color: 'var(--md-sys-color-primary)', fontWeight: 700 }}>{stats.offers} apps</span>
+                    <span style={{ fontWeight: 600, color: stats.offers > 0 ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-on-surface)' }}>4. Job Offers</span>
+                    <span style={{ color: stats.offers > 0 ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-on-surface-variant)', fontWeight: stats.offers > 0 ? 700 : 500 }}>{stats.offers} apps</span>
                   </div>
                   <div className="m3-funnel-bar">
                     <div

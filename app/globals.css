@@ -548,13 +548,44 @@ a {
   border: 1px solid var(--md-sys-color-outline-variant);
   border-radius: 20px;
   padding: 1.5rem;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background-color 0.25s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.25s ease;
 }
 
 .m3-card:hover {
-  border-color: var(--md-sys-color-primary);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Material Web Button Styling & Sizing */
+md-filled-button,
+md-outlined-button,
+md-text-button,
+md-elevated-button {
+  --md-filled-button-container-shape: 9999px;
+  --md-outlined-button-container-shape: 9999px;
+  --md-text-button-container-shape: 9999px;
+  --md-filled-button-label-text-font: var(--font-headline);
+  --md-outlined-button-label-text-font: var(--font-headline);
+  --md-text-button-label-text-font: var(--font-headline);
+  --md-filled-button-label-text-weight: 700;
+  --md-outlined-button-label-text-weight: 600;
+  --md-text-button-label-text-weight: 600;
+  --md-filled-button-label-text-size: 0.875rem;
+  --md-outlined-button-label-text-size: 0.875rem;
+  --md-text-button-label-text-size: 0.875rem;
+  --md-filled-button-container-height: 40px;
+  --md-outlined-button-container-height: 40px;
+  font-family: var(--font-headline);
+  white-space: nowrap;
+  display: inline-flex;
+}
+
+md-filled-button [slot="icon"],
+md-outlined-button [slot="icon"],
+md-text-button [slot="icon"] {
+  font-size: 18px !important;
+  line-height: 1 !important;
+  margin-right: 2px;
 }
 
 .m3-bento-tile {
@@ -897,8 +928,7 @@ a {
 
 .kpi-card:hover {
   transform: translateY(-2px);
-  border-color: var(--md-sys-color-primary);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
 }
 
 /* Funnel Bar */

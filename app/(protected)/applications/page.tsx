@@ -187,8 +187,8 @@ export default function ApplicationsPage() {
               value={sortBy}
               onChange={(e: any) => setSortBy(e.target.value)}
               style={{
-                padding: '0.5rem 0.875rem',
-                borderRadius: '12px',
+                padding: '0.45rem 1rem',
+                borderRadius: '9999px',
                 border: '1px solid var(--md-sys-color-outline-variant)',
                 backgroundColor: 'var(--md-sys-color-surface-container-low)',
                 color: 'var(--md-sys-color-on-surface)',
@@ -219,20 +219,16 @@ export default function ApplicationsPage() {
           <button
             onClick={() => setActiveStatus('all')}
             style={{
-              padding: '0.375rem 0.875rem',
+              padding: '0.4rem 0.875rem',
               borderRadius: '9999px',
-              border: '1px solid',
-              borderColor:
-                activeStatus === 'all'
-                  ? 'var(--md-sys-color-primary)'
-                  : 'var(--md-sys-color-outline-variant)',
+              border: activeStatus === 'all' ? '1px solid transparent' : '1px solid var(--md-sys-color-outline-variant)',
               backgroundColor:
                 activeStatus === 'all'
-                  ? 'var(--md-sys-color-primary-container)'
+                  ? 'var(--md-sys-color-secondary-container)'
                   : 'var(--md-sys-color-surface-container-low)',
               color:
                 activeStatus === 'all'
-                  ? 'var(--md-sys-color-on-primary-container)'
+                  ? 'var(--md-sys-color-on-secondary-container)'
                   : 'var(--md-sys-color-on-surface-variant)',
               fontFamily: 'var(--font-headline)',
               fontSize: '0.8125rem',
@@ -240,7 +236,7 @@ export default function ApplicationsPage() {
               cursor: 'pointer',
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '0.375rem',
+              gap: '0.4rem',
               whiteSpace: 'nowrap',
               transition: 'all 0.15s ease',
             }}
@@ -249,10 +245,11 @@ export default function ApplicationsPage() {
             <span
               style={{
                 fontSize: '0.75rem',
-                padding: '0.1rem 0.4rem',
+                padding: '0.1rem 0.45rem',
                 borderRadius: '9999px',
-                backgroundColor: 'var(--md-sys-color-surface-container-highest)',
-                color: 'var(--md-sys-color-on-surface)',
+                backgroundColor: activeStatus === 'all' ? 'rgba(0,0,0,0.08)' : 'var(--md-sys-color-surface-container-highest)',
+                color: 'inherit',
+                fontWeight: 700,
               }}
             >
               {statusCounts.all || 0}
@@ -267,17 +264,14 @@ export default function ApplicationsPage() {
                 key={status.value}
                 onClick={() => setActiveStatus(status.value)}
                 style={{
-                  padding: '0.375rem 0.875rem',
+                  padding: '0.4rem 0.875rem',
                   borderRadius: '9999px',
-                  border: '1px solid',
-                  borderColor: isActive
-                    ? 'var(--md-sys-color-primary)'
-                    : 'var(--md-sys-color-outline-variant)',
+                  border: isActive ? '1px solid transparent' : '1px solid var(--md-sys-color-outline-variant)',
                   backgroundColor: isActive
-                    ? 'var(--md-sys-color-primary-container)'
+                    ? 'var(--md-sys-color-secondary-container)'
                     : 'var(--md-sys-color-surface-container-low)',
                   color: isActive
-                    ? 'var(--md-sys-color-on-primary-container)'
+                    ? 'var(--md-sys-color-on-secondary-container)'
                     : 'var(--md-sys-color-on-surface-variant)',
                   fontFamily: 'var(--font-headline)',
                   fontSize: '0.8125rem',
@@ -285,7 +279,7 @@ export default function ApplicationsPage() {
                   cursor: 'pointer',
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: '0.375rem',
+                  gap: '0.4rem',
                   whiteSpace: 'nowrap',
                   transition: 'all 0.15s ease',
                 }}
@@ -294,10 +288,11 @@ export default function ApplicationsPage() {
                 <span
                   style={{
                     fontSize: '0.75rem',
-                    padding: '0.1rem 0.4rem',
+                    padding: '0.1rem 0.45rem',
                     borderRadius: '9999px',
-                    backgroundColor: 'var(--md-sys-color-surface-container-highest)',
-                    color: 'var(--md-sys-color-on-surface)',
+                    backgroundColor: isActive ? 'rgba(0,0,0,0.08)' : 'var(--md-sys-color-surface-container-highest)',
+                    color: 'inherit',
+                    fontWeight: 700,
                   }}
                 >
                   {count}
@@ -335,19 +330,19 @@ export default function ApplicationsPage() {
             justifyContent: 'center',
             padding: '4rem 1.5rem',
             textAlign: 'center',
-            gap: '1rem',
+            gap: '1.25rem',
           }}
         >
           <div
             style={{
               width: '56px',
               height: '56px',
-              borderRadius: '28px',
-              backgroundColor: 'var(--md-sys-color-surface-container-high)',
+              borderRadius: '16px',
+              backgroundColor: 'var(--md-sys-color-surface-container)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: 'var(--md-sys-color-on-surface-variant)',
+              color: 'var(--md-sys-color-primary)',
             }}
           >
             <span className="material-symbols-outlined" style={{ fontSize: '28px' }}>
@@ -355,31 +350,34 @@ export default function ApplicationsPage() {
             </span>
           </div>
 
-          <h3
-            style={{
-              fontSize: '1.25rem',
-              fontFamily: 'var(--font-headline)',
-              fontWeight: 700,
-              color: 'var(--md-sys-color-on-surface)',
-            }}
-          >
-            {searchQuery || activeStatus !== 'all'
-              ? 'No matching applications'
-              : 'No applications tracked yet'}
-          </h3>
+          <div>
+            <h3
+              style={{
+                fontSize: '1.25rem',
+                fontFamily: 'var(--font-headline)',
+                fontWeight: 700,
+                color: 'var(--md-sys-color-on-surface)',
+                marginBottom: '0.35rem',
+              }}
+            >
+              {searchQuery || activeStatus !== 'all'
+                ? 'No matching applications'
+                : 'No applications tracked yet'}
+            </h3>
 
-          <p
-            style={{
-              color: 'var(--md-sys-color-on-surface-variant)',
-              maxWidth: '400px',
-              fontSize: '0.875rem',
-              lineHeight: 1.5,
-            }}
-          >
-            {searchQuery || activeStatus !== 'all'
-              ? 'Try changing your search keywords or switching status filters.'
-              : 'Add your first job application with automated AI job description extraction.'}
-          </p>
+            <p
+              style={{
+                color: 'var(--md-sys-color-on-surface-variant)',
+                maxWidth: '420px',
+                fontSize: '0.875rem',
+                lineHeight: 1.5,
+              }}
+            >
+              {searchQuery || activeStatus !== 'all'
+                ? 'Try changing your search keywords or switching status filters.'
+                : 'Add your first job application with automated AI job description extraction.'}
+            </p>
+          </div>
 
           <Link href="/applications/new" style={{ textDecoration: 'none', marginTop: '0.5rem' }}>
             <FilledButton icon="add">Add Application</FilledButton>

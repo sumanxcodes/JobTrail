@@ -40,8 +40,25 @@ export function FilledButton({
       disabled={disabled || undefined}
       class={className}
       trailing-icon={trailingIcon || undefined}
+      has-icon={Boolean(icon) || undefined}
     >
-      {icon && <span slot="icon" className="material-symbols-outlined">{icon}</span>}
+      {icon && (
+        <span
+          slot="icon"
+          className="material-symbols-outlined"
+          style={{
+            fontSize: '18px',
+            width: '18px',
+            height: '18px',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            lineHeight: 1,
+          }}
+        >
+          {icon}
+        </span>
+      )}
       {children}
     </md-filled-button>
   );
@@ -71,8 +88,25 @@ export function OutlinedButton({
       disabled={disabled || undefined}
       class={className}
       trailing-icon={trailingIcon || undefined}
+      has-icon={Boolean(icon) || undefined}
     >
-      {icon && <span slot="icon" className="material-symbols-outlined">{icon}</span>}
+      {icon && (
+        <span
+          slot="icon"
+          className="material-symbols-outlined"
+          style={{
+            fontSize: '18px',
+            width: '18px',
+            height: '18px',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            lineHeight: 1,
+          }}
+        >
+          {icon}
+        </span>
+      )}
       {children}
     </md-outlined-button>
   );
@@ -102,8 +136,25 @@ export function TextButton({
       disabled={disabled || undefined}
       class={className}
       trailing-icon={trailingIcon || undefined}
+      has-icon={Boolean(icon) || undefined}
     >
-      {icon && <span slot="icon" className="material-symbols-outlined">{icon}</span>}
+      {icon && (
+        <span
+          slot="icon"
+          className="material-symbols-outlined"
+          style={{
+            fontSize: '18px',
+            width: '18px',
+            height: '18px',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            lineHeight: 1,
+          }}
+        >
+          {icon}
+        </span>
+      )}
       {children}
     </md-text-button>
   );
