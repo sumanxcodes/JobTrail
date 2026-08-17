@@ -81,8 +81,8 @@ export function Navbar() {
         </Link>
 
         {/* Actions & Theme Toggle */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          {/* M3 Standard Icon Button (0dp elevation) */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          {/* M3 Standard/Outlined Icon Button (40x40px, 0dp resting elevation) */}
           <ThemeToggle />
 
           <nav style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -91,16 +91,37 @@ export function Navbar() {
                 <Link
                   href="/dashboard"
                   style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '40px',
+                    padding: '0 1rem',
                     fontSize: '0.875rem',
                     fontFamily: 'var(--font-headline)',
                     fontWeight: 600,
+                    letterSpacing: '0.01em',
                     color:
                       pathname === '/dashboard'
                         ? 'var(--md-sys-color-primary)'
                         : 'var(--md-sys-color-on-surface-variant)',
-                    padding: '0.5rem 0.875rem',
                     borderRadius: '9999px',
+                    backgroundColor:
+                      pathname === '/dashboard'
+                        ? 'var(--md-sys-color-surface-container-high)'
+                        : 'transparent',
                     transition: 'all 0.15s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (pathname !== '/dashboard') {
+                      e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container-high)';
+                      e.currentTarget.style.color = 'var(--md-sys-color-on-surface)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (pathname !== '/dashboard') {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                      e.currentTarget.style.color = 'var(--md-sys-color-on-surface-variant)';
+                    }
                   }}
                 >
                   Dashboard
@@ -111,18 +132,27 @@ export function Navbar() {
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',
-                    gap: '0.35rem',
+                    justifyContent: 'center',
+                    gap: '0.5rem',
                     fontSize: '0.875rem',
                     fontFamily: 'var(--font-headline)',
                     fontWeight: 600,
+                    letterSpacing: '0.01em',
                     backgroundColor: 'var(--md-sys-color-primary)',
                     color: 'var(--md-sys-color-on-primary)',
                     height: '40px',
-                    padding: '0 1.25rem',
+                    padding: '0 1.5rem',
                     borderRadius: '9999px',
                     boxShadow: 'none',
                     border: 'none',
+                    textDecoration: 'none',
                     transition: 'all 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.filter = 'brightness(1.08)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.filter = 'none';
                   }}
                 >
                   <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
@@ -134,15 +164,29 @@ export function Navbar() {
                 <button
                   onClick={handleLogout}
                   style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '40px',
+                    padding: '0 0.875rem',
                     background: 'none',
                     border: 'none',
                     cursor: 'pointer',
                     fontSize: '0.875rem',
                     fontFamily: 'var(--font-headline)',
                     fontWeight: 600,
+                    letterSpacing: '0.01em',
                     color: 'var(--md-sys-color-on-surface-variant)',
-                    padding: '0.5rem 0.875rem',
                     borderRadius: '9999px',
+                    transition: 'all 0.15s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container-high)';
+                    e.currentTarget.style.color = 'var(--md-sys-color-on-surface)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                    e.currentTarget.style.color = 'var(--md-sys-color-on-surface-variant)';
                   }}
                 >
                   Log out
@@ -150,18 +194,24 @@ export function Navbar() {
               </>
             ) : (
               <>
-                {/* M3 Text Button: 0dp elevation, transparent, label-large */}
+                {/* M3 Text Button: Height 40px, Label Large (14px/600), 0dp elevation */}
                 <Link
                   href="/login"
                   style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '40px',
+                    padding: '0 1rem',
                     fontSize: '0.875rem',
                     fontFamily: 'var(--font-headline)',
                     fontWeight: 600,
+                    letterSpacing: '0.01em',
                     color: 'var(--md-sys-color-on-surface-variant)',
-                    padding: '0.5rem 1rem',
                     borderRadius: '9999px',
                     backgroundColor: 'transparent',
                     boxShadow: 'none',
+                    textDecoration: 'none',
                     transition: 'all 0.15s ease',
                   }}
                   onMouseEnter={(e) => {
@@ -176,20 +226,21 @@ export function Navbar() {
                   Log in
                 </Link>
 
-                {/* M3 Filled Button: 0dp resting elevation (NO shadow), 40px height, pill shape */}
+                {/* M3 Filled Button: Height 40px, Padding 24px, Label Large, 0dp resting elevation */}
                 <Link
                   href="/signup"
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center',
+                    height: '40px',
+                    padding: '0 1.5rem',
                     fontSize: '0.875rem',
                     fontFamily: 'var(--font-headline)',
                     fontWeight: 600,
+                    letterSpacing: '0.01em',
                     backgroundColor: 'var(--md-sys-color-primary)',
                     color: 'var(--md-sys-color-on-primary)',
-                    height: '40px',
-                    padding: '0 1.25rem',
                     borderRadius: '9999px',
                     border: 'none',
                     boxShadow: 'none',
