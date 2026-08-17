@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap');
 
-:root {
+:root,
+[data-theme="light"] {
   /* M3 Light Theme Tokens (Stitch JobTrack AI Theme) */
   --md-sys-color-primary: #24389c;
   --md-sys-color-on-primary: #ffffff;
@@ -57,7 +58,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     /* M3 Dark Theme Tokens */
     --md-sys-color-primary: #bac3ff;
     --md-sys-color-on-primary: #001f90;
@@ -112,6 +113,60 @@
   }
 }
 
+[data-theme="dark"] {
+  /* Explicit M3 Dark Theme Tokens Override */
+  --md-sys-color-primary: #bac3ff;
+  --md-sys-color-on-primary: #001f90;
+  --md-sys-color-primary-container: #24389c;
+  --md-sys-color-on-primary-container: #dee0ff;
+
+  --md-sys-color-secondary: #b7c8e1;
+  --md-sys-color-on-secondary: #223146;
+  --md-sys-color-secondary-container: #39485d;
+  --md-sys-color-on-secondary-container: #d0e1fb;
+
+  --md-sys-color-tertiary: #ffb784;
+  --md-sys-color-on-tertiary: #4c2200;
+  --md-sys-color-tertiary-container: #6c3400;
+  --md-sys-color-on-tertiary-container: #ffdcc6;
+
+  --md-sys-color-error: #ffb4ab;
+  --md-sys-color-on-error: #690005;
+  --md-sys-color-error-container: #93000a;
+  --md-sys-color-on-error-container: #ffdad6;
+
+  --md-sys-color-background: #111218;
+  --md-sys-color-on-background: #e3e1ea;
+
+  --md-sys-color-surface: #111218;
+  --md-sys-color-on-surface: #e3e1ea;
+  --md-sys-color-surface-variant: #454652;
+  --md-sys-color-on-surface-variant: #c5c5d4;
+
+  --md-sys-color-surface-container-lowest: #181920;
+  --md-sys-color-surface-container-low: #202129;
+  --md-sys-color-surface-container: #262731;
+  --md-sys-color-surface-container-high: #31323d;
+  --md-sys-color-surface-container-highest: #3c3d4a;
+
+  --md-sys-color-outline: #8f909f;
+  --md-sys-color-outline-variant: #454652;
+
+  /* Custom Status Colors - Dark */
+  --status-draft-bg: #2d2e37;
+  --status-draft-text: #c5c5d4;
+  --status-applied-bg: #1e293b;
+  --status-applied-text: #93c5fd;
+  --status-interviewing-bg: #3b0764;
+  --status-interviewing-text: #e9d5ff;
+  --status-offer-bg: #052e16;
+  --status-offer-text: #86efac;
+  --status-rejected-bg: #450a0a;
+  --status-rejected-text: #fca5a5;
+  --status-withdrawn-bg: #1e293b;
+  --status-withdrawn-text: #94a3b8;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -126,6 +181,7 @@ body {
   display: flex;
   flex-direction: column;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 a {
@@ -167,6 +223,7 @@ a {
   clip-path: ellipse(150% 100% at 50% 0%);
   z-index: -10;
   pointer-events: none;
+  transition: background-color 0.25s ease;
 }
 
 /* Card surfaces */
@@ -176,7 +233,7 @@ a {
   border-radius: 20px;
   padding: 1.5rem;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background-color 0.25s ease;
 }
 
 .m3-card:hover {
@@ -207,7 +264,7 @@ a {
   position: relative;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
 }
 
 .stitch-feature-card:hover {

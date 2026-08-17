@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { ThemeToggle } from './ThemeToggle';
 
 export function Navbar() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
@@ -83,7 +84,10 @@ export function Navbar() {
         </Link>
 
         {/* Navigation Actions */}
-        <nav style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <nav style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          {/* Light / Dark Mode Toggle */}
+          <ThemeToggle />
+
           {!loading && (
             <>
               {userEmail ? (
