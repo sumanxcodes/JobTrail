@@ -23,22 +23,22 @@
   --md-sys-color-error-container: #ffdad6;
   --md-sys-color-on-error-container: #410002;
 
-  --md-sys-color-background: #fdfcf5;
-  --md-sys-color-on-background: #1b1c18;
+  --md-sys-color-background: #f6f8f0;
+  --md-sys-color-on-background: #191c14;
 
-  --md-sys-color-surface: #fdfcf5;
-  --md-sys-color-on-surface: #1b1c18;
-  --md-sys-color-surface-variant: #e1e4d5;
+  --md-sys-color-surface: #f6f8f0;
+  --md-sys-color-on-surface: #191c14;
+  --md-sys-color-surface-variant: #e1e5d8;
   --md-sys-color-on-surface-variant: #44483d;
 
   --md-sys-color-surface-container-lowest: #ffffff;
-  --md-sys-color-surface-container-low: #f5f4ec;
-  --md-sys-color-surface-container: #efeee7;
-  --md-sys-color-surface-container-high: #e9e8e1;
-  --md-sys-color-surface-container-highest: #e3e3db;
+  --md-sys-color-surface-container-low: #ffffff;
+  --md-sys-color-surface-container: #edf0e6;
+  --md-sys-color-surface-container-high: #e4e8dc;
+  --md-sys-color-surface-container-highest: #dce1d3;
 
   --md-sys-color-outline: #75796c;
-  --md-sys-color-outline-variant: #c5c8ba;
+  --md-sys-color-outline-variant: #c8cdbe;
 
   /* Custom Status Colors - Light */
   --status-draft-bg: #e3e3db;
@@ -91,19 +91,19 @@
     --md-sys-color-error-container: #93000a;
     --md-sys-color-on-error-container: #ffdad6;
 
-    --md-sys-color-background: #131410;
-    --md-sys-color-on-background: #e3e3db;
+    --md-sys-color-background: #181a15;
+    --md-sys-color-on-background: #e3e5dc;
 
-    --md-sys-color-surface: #131410;
-    --md-sys-color-on-surface: #e3e3db;
+    --md-sys-color-surface: #181a15;
+    --md-sys-color-on-surface: #e3e5dc;
     --md-sys-color-surface-variant: #44483d;
     --md-sys-color-on-surface-variant: #c5c8ba;
 
-    --md-sys-color-surface-container-lowest: #0d0f0b;
-    --md-sys-color-surface-container-low: #181a16;
-    --md-sys-color-surface-container: #1f201c;
-    --md-sys-color-surface-container-high: #292a26;
-    --md-sys-color-surface-container-highest: #343530;
+    --md-sys-color-surface-container-lowest: #0e0f0c;
+    --md-sys-color-surface-container-low: #11130e;
+    --md-sys-color-surface-container: #1b1d18;
+    --md-sys-color-surface-container-high: #252821;
+    --md-sys-color-surface-container-highest: #30332c;
 
     --md-sys-color-outline: #8f9285;
     --md-sys-color-outline-variant: #44483d;
@@ -146,19 +146,19 @@
   --md-sys-color-error-container: #93000a;
   --md-sys-color-on-error-container: #ffdad6;
 
-  --md-sys-color-background: #131410;
-  --md-sys-color-on-background: #e3e3db;
+  --md-sys-color-background: #181a15;
+  --md-sys-color-on-background: #e3e5dc;
 
-  --md-sys-color-surface: #131410;
-  --md-sys-color-on-surface: #e3e3db;
+  --md-sys-color-surface: #181a15;
+  --md-sys-color-on-surface: #e3e5dc;
   --md-sys-color-surface-variant: #44483d;
   --md-sys-color-on-surface-variant: #c5c8ba;
 
-  --md-sys-color-surface-container-lowest: #0d0f0b;
-  --md-sys-color-surface-container-low: #181a16;
-  --md-sys-color-surface-container: #1f201c;
-  --md-sys-color-surface-container-high: #292a26;
-  --md-sys-color-surface-container-highest: #343530;
+  --md-sys-color-surface-container-lowest: #0e0f0c;
+  --md-sys-color-surface-container-low: #11130e;
+  --md-sys-color-surface-container: #1b1d18;
+  --md-sys-color-surface-container-high: #252821;
+  --md-sys-color-surface-container-highest: #30332c;
 
   --md-sys-color-outline: #8f9285;
   --md-sys-color-outline-variant: #44483d;
