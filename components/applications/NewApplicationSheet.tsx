@@ -39,7 +39,7 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
 
   const supabase = createClient();
 
-  // Reset form when drawer opens
+  // Prevent background scrolling when drawer is open
   useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden';
@@ -77,6 +77,8 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
     setParseMessage(null);
     setValidationError(null);
     setIsReviewing(false);
+    setSaving(false);
+    setParsing(false);
   };
 
   const handleClose = () => {
@@ -265,7 +267,7 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: '1.5rem 1.75rem',
+            padding: '1.25rem 1.75rem',
             borderBottom: '1px solid var(--md-sys-color-outline-variant)',
             flexShrink: 0,
           }}
@@ -281,11 +283,11 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
                 marginBottom: '0.15rem',
               }}
             >
-              {isReviewing ? 'Review Extracted Job' : 'Add New Job'}
+              {isReviewing ? 'Review Application' : 'Add Job'}
             </h2>
             <p style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
               {isReviewing
-                ? 'Review and adjust AI-extracted fields before tracking.'
+                ? 'Review and adjust AI-extracted fields before saving.'
                 : 'Extract details automatically with AI or enter manually.'}
             </p>
           </div>
@@ -330,142 +332,213 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
             gap: '1.5rem',
           }}
         >
-          {/* Step 1: Input Mode Segmented Selector */}
-          {!isReviewing && (
-            <>
-              <div className="segmented-control" style={{ width: '100%' }}>
-                <button
-                  className={`segmented-control-btn ${inputMode === 'link' ? 'active' : ''}`}
-                  style={{ flex: 1 }}
-                  onClick={() => setInputMode('link')}
-                >
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
-                    <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
-                      link
-                    </span>
-                    Paste Link
-                  </span>
-                </button>
-                <button
-                  className={`segmented-control-btn ${inputMode === 'paste' ? 'active' : ''}`}
-                  style={{ flex: 1 }}
-                  onClick={() => setInputMode('paste')}
-                >
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
-                    <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
-                      description
-                    </span>
-                    Paste Text
-                  </span>
-                </button>
-                <button
-                  className={`segmented-control-btn ${inputMode === 'manual' ? 'active' : ''}`}
-                  style={{ flex: 1 }}
-                  onClick={() => {
-                    setInputMode('manual');
-                    setIsReviewing(true);
-                  }}
-                >
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
-                    <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
-                      edit
-                    </span>
-                    Manual
-                  </span>
-                </button>
-              </div>
+          {/* M3 Segmented Button Controller — ALWAYS Accessible */}
+          <div className="segmented-control" style={{ width: '100%' }}>
+            <button
+              className={`segmented-control-btn ${inputMode === 'link' && !isReviewing ? 'active' : ''}`}
+              style={{ flex: 1 }}
+              onClick={() => {
+                setInputMode('link');
+                setIsReviewing(false);
+              }}
+            >
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
+                  link
+                </span>
+                Paste Link
+              </span>
+            </button>
+            <button
+              className={`segmented-control-btn ${inputMode === 'paste' && !isReviewing ? 'active' : ''}`}
+              style={{ flex: 1 }}
+              onClick={() => {
+                setInputMode('paste');
+                setIsReviewing(false);
+              }}
+            >
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
+                  description
+                </span>
+                Paste Text
+              </span>
+            </button>
+            <button
+              className={`segmented-control-btn ${inputMode === 'manual' && !isReviewing ? 'active' : ''}`}
+              style={{ flex: 1 }}
+              onClick={() => {
+                setInputMode('manual');
+                setIsReviewing(false);
+              }}
+            >
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
+                  edit
+                </span>
+                Manual Entry
+              </span>
+            </button>
+          </div>
 
-              {parseMessage && (
-                <div
-                  style={{
-                    padding: '0.875rem 1rem',
-                    borderRadius: '12px',
-                    backgroundColor:
-                      parseMessageType === 'error'
-                        ? 'var(--md-sys-color-error-container)'
-                        : 'var(--md-sys-color-secondary-container)',
-                    color:
-                      parseMessageType === 'error'
-                        ? 'var(--md-sys-color-on-error-container)'
-                        : 'var(--md-sys-color-on-secondary-container)',
-                    fontSize: '0.8125rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.625rem',
-                  }}
-                >
-                  <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
-                    {parseMessageType === 'error' ? 'error_outline' : 'info'}
-                  </span>
-                  <span>{parseMessage}</span>
-                </div>
-              )}
-
-              {inputMode === 'link' ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                  <TextField
-                    label="Job Posting URL"
-                    placeholder="https://jobs.lever.co/company/job-id..."
-                    type="url"
-                    value={linkInput}
-                    onValueChange={setLinkInput}
-                    leadingIcon="link"
-                  />
-
-                  <p
-                    style={{
-                      fontSize: '0.75rem',
-                      color: 'var(--md-sys-color-on-surface-variant)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.35rem',
-                    }}
-                  >
-                    <span
-                      className="material-symbols-outlined"
-                      style={{ fontSize: '16px', color: 'var(--md-sys-color-primary)' }}
-                    >
-                      info
-                    </span>
-                    Supports public links (LinkedIn, Greenhouse, Lever, Ashby, Workable, etc.).
-                  </p>
-
-                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
-                    <FilledButton
-                      onClick={handleParse}
-                      disabled={parsing || !linkInput.trim()}
-                      icon="auto_awesome"
-                    >
-                      {parsing ? 'Extracting...' : 'Extract with AI'}
-                    </FilledButton>
-                  </div>
-                </div>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                  <TextArea
-                    label="Job Description Text"
-                    placeholder="Paste the full job post description text here..."
-                    rows={8}
-                    value={pasteInput}
-                    onValueChange={setPasteInput}
-                  />
-
-                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
-                    <FilledButton
-                      onClick={handleParse}
-                      disabled={parsing || !pasteInput.trim()}
-                      icon="auto_awesome"
-                    >
-                      {parsing ? 'Extracting...' : 'Extract with AI'}
-                    </FilledButton>
-                  </div>
-                </div>
-              )}
-            </>
+          {/* Error / Parse Status Message */}
+          {parseMessage && (
+            <div
+              style={{
+                padding: '0.875rem 1rem',
+                borderRadius: '12px',
+                backgroundColor:
+                  parseMessageType === 'error'
+                    ? 'var(--md-sys-color-error-container)'
+                    : 'var(--md-sys-color-secondary-container)',
+                color:
+                  parseMessageType === 'error'
+                    ? 'var(--md-sys-color-on-error-container)'
+                    : 'var(--md-sys-color-on-secondary-container)',
+                fontSize: '0.8125rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.625rem',
+              }}
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
+                {parseMessageType === 'error' ? 'error_outline' : 'info'}
+              </span>
+              <span>{parseMessage}</span>
+            </div>
           )}
 
-          {/* Step 2: Form Review Mode */}
-          {isReviewing && (
+          {/* Mode 1: Paste Link */}
+          {inputMode === 'link' && !isReviewing && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <TextField
+                label="Job Posting URL"
+                placeholder="https://jobs.lever.co/company/job-id..."
+                type="url"
+                value={linkInput}
+                onValueChange={setLinkInput}
+                leadingIcon="link"
+              />
+
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  fontSize: '0.75rem',
+                  color: 'var(--md-sys-color-on-surface-variant)',
+                  lineHeight: 1.2,
+                }}
+              >
+                <span
+                  className="material-symbols-outlined"
+                  style={{
+                    fontSize: '16px',
+                    color: 'var(--md-sys-color-primary)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  info
+                </span>
+                <span>Supports public links (LinkedIn, Greenhouse, Lever, Ashby, Workable, etc.).</span>
+              </div>
+
+              {/* AI Extraction Preview Card */}
+              <div
+                style={{
+                  padding: '1.25rem',
+                  borderRadius: '16px',
+                  backgroundColor: 'var(--md-sys-color-surface-container-low)',
+                  border: '1px solid var(--md-sys-color-outline-variant)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.75rem',
+                  marginTop: '0.5rem',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span
+                    className="material-symbols-outlined"
+                    style={{ fontSize: '18px', color: 'var(--md-sys-color-primary)' }}
+                  >
+                    auto_awesome
+                  </span>
+                  <span
+                    style={{
+                      fontFamily: 'var(--font-headline)',
+                      fontSize: '0.8125rem',
+                      fontWeight: 700,
+                      color: 'var(--md-sys-color-on-surface)',
+                    }}
+                  >
+                    AI Extraction Pipeline
+                  </span>
+                </div>
+                <p style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.5 }}>
+                  Claude AI will automatically extract and structure:
+                </p>
+                <ul
+                  style={{
+                    margin: 0,
+                    paddingLeft: '1.25rem',
+                    fontSize: '0.8125rem',
+                    color: 'var(--md-sys-color-on-surface-variant)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.25rem',
+                  }}
+                >
+                  <li>Company Name, Job Title & Seniority</li>
+                  <li>Location & Remote / Hybrid Policy</li>
+                  <li>Salary Range & Compensation</li>
+                  <li>Key Role Requirements & Skills</li>
+                </ul>
+              </div>
+            </div>
+          )}
+
+          {/* Mode 2: Paste Raw Text */}
+          {inputMode === 'paste' && !isReviewing && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <TextArea
+                label="Job Description Text"
+                placeholder="Paste the full job post description text here..."
+                rows={10}
+                value={pasteInput}
+                onValueChange={setPasteInput}
+              />
+
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  fontSize: '0.75rem',
+                  color: 'var(--md-sys-color-on-surface-variant)',
+                  lineHeight: 1.2,
+                }}
+              >
+                <span
+                  className="material-symbols-outlined"
+                  style={{
+                    fontSize: '16px',
+                    color: 'var(--md-sys-color-primary)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  info
+                </span>
+                <span>Paste the entire job posting — AI will filter and format the core fields.</span>
+              </div>
+            </div>
+          )}
+
+          {/* Mode 3: Manual Entry OR AI Review Mode */}
+          {(inputMode === 'manual' || isReviewing) && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               {validationError && (
                 <div
@@ -481,7 +554,7 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
                 </div>
               )}
 
-              {parseStatus === 'success' && (
+              {isReviewing && parseStatus === 'success' && (
                 <div
                   style={{
                     padding: '0.625rem 0.875rem',
@@ -565,7 +638,7 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
           )}
         </div>
 
-        {/* Sticky Footer Action Bar */}
+        {/* Sticky Unified Action Bar */}
         <div
           style={{
             padding: '1rem 1.75rem',
@@ -575,6 +648,7 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
             alignItems: 'center',
             justifyContent: 'space-between',
             flexShrink: 0,
+            gap: '1rem',
           }}
         >
           {isReviewing ? (
@@ -585,7 +659,28 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
             <TextButton onClick={handleClose}>Cancel</TextButton>
           )}
 
-          {isReviewing && (
+          {/* Primary Action */}
+          {!isReviewing && inputMode === 'link' && (
+            <FilledButton
+              onClick={handleParse}
+              disabled={parsing || !linkInput.trim()}
+              icon="auto_awesome"
+            >
+              {parsing ? 'Extracting...' : 'Extract with AI'}
+            </FilledButton>
+          )}
+
+          {!isReviewing && inputMode === 'paste' && (
+            <FilledButton
+              onClick={handleParse}
+              disabled={parsing || !pasteInput.trim()}
+              icon="auto_awesome"
+            >
+              {parsing ? 'Extracting...' : 'Extract with AI'}
+            </FilledButton>
+          )}
+
+          {(inputMode === 'manual' || isReviewing) && (
             <FilledButton onClick={handleSave} disabled={saving} icon="check">
               {saving ? 'Saving...' : 'Save Job'}
             </FilledButton>
