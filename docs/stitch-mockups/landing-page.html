@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CareerTrack AI - Job Application Tracking</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#fbf8ff",
+                        "outline": "#757684",
+                        "on-surface": "#1a1b22",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-highest": "#e3e1ea",
+                        "primary": "#24389c",
+                        "secondary-container": "#d0e1fb",
+                        "on-tertiary-container": "#ffc7a2",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "surface-dim": "#dbd9e2",
+                        "background": "#fbf8ff",
+                        "on-error": "#ffffff",
+                        "surface-container": "#efedf6",
+                        "on-secondary-fixed": "#0b1c30",
+                        "outline-variant": "#c5c5d4",
+                        "surface-tint": "#4355b9",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "surface-container-low": "#f4f2fc",
+                        "on-primary-container": "#cacfff",
+                        "surface-container-lowest": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-surface-variant": "#454652",
+                        "primary-fixed-dim": "#bac3ff",
+                        "tertiary": "#6c3400",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "secondary": "#505f76",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "inverse-surface": "#2f3037",
+                        "primary-fixed": "#dee0ff",
+                        "inverse-primary": "#bac3ff",
+                        "on-primary-fixed": "#00105c",
+                        "inverse-on-surface": "#f2eff9",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed": "#d3e4fe",
+                        "on-secondary-container": "#54647a",
+                        "surface-bright": "#fbf8ff",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#ffdcc6",
+                        "surface-container-high": "#e9e7f0",
+                        "primary-container": "#3f51b5",
+                        "surface-variant": "#e3e1ea",
+                        "tertiary-container": "#8f4700",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed": "#301400",
+                        "on-background": "#1a1b22"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "container-max": "1280px",
+                        "xl": "32px",
+                        "base": "4px",
+                        "xs": "4px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Inter"],
+                        "title-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "title-md": ["16px", { "lineHeight": "24px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "display-lg": ["57px", { "lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500" }],
+                        "headline-sm": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "title-lg": ["22px", { "lineHeight": "28px", "fontWeight": "500" }],
+                        "label-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-grid-pattern {
+            background-image: radial-gradient(var(--tw-colors-outline-variant) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-lg min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container">
+<!-- Minimal Marketing Header (Suppressed App Shell TopNavBar due to pre-login intent) -->
+<header class="w-full px-6 py-4 flex justify-between items-center max-w-container-max mx-auto z-50 relative">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">work</span>
+<span class="font-headline-sm text-headline-sm font-bold text-primary tracking-tight">CareerTrack AI</span>
+</div>
+<div class="flex items-center gap-4">
+<a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors" href="#">Log in</a>
+<a class="font-label-lg text-label-lg bg-primary text-on-primary px-6 py-2.5 rounded-full hover:shadow-md transition-shadow active:scale-95" href="#">Sign up</a>
+</div>
+</header>
+<main class="flex-grow flex flex-col">
+<!-- Hero Section -->
+<section class="relative pt-24 pb-32 px-6 overflow-hidden flex flex-col items-center text-center">
+<div class="absolute inset-0 bg-surface-container-low -z-10 pointer-events-none" style="clip-path: ellipse(150% 100% at 50% 0%);"></div>
+<div class="max-w-3xl mx-auto flex flex-col items-center">
+<div class="inline-flex items-center gap-2 bg-secondary-container/50 text-primary-container-highest px-4 py-1.5 rounded-full mb-8 font-label-sm text-label-sm font-medium border border-outline-variant/30">
+<span class="material-symbols-outlined text-[16px]">bolt</span>
+                    Automated Job Application Tracking
+                </div>
+<h1 class="font-display-lg text-display-lg text-on-surface mb-6 tracking-tight">
+                    Your job search, <br/><span class="text-primary">perfectly organized.</span>
+</h1>
+<p class="font-headline-sm text-headline-sm text-on-surface-variant mb-12 max-w-2xl font-normal leading-relaxed">
+                    Paste a job description → AI extracts the details → Track your application from applied to hired, effortlessly.
+                </p>
+<div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto justify-center">
+<button class="bg-primary text-on-primary font-label-lg text-label-lg px-8 py-4 rounded-full shadow-sm hover:shadow-md hover:bg-primary/90 transition-all active:scale-95 flex items-center justify-center gap-2">
+                        Get Started Free
+                        <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<button class="bg-surface text-primary border border-outline-variant font-label-lg text-label-lg px-8 py-4 rounded-full hover:bg-surface-container-lowest transition-all active:scale-95">
+                        Log in
+                    </button>
+</div>
+</div>
+</section>
+<!-- Visual Demonstration Bento Grid -->
+<section class="py-24 px-6 bg-surface-container-lowest">
+<div class="max-w-container-max mx-auto">
+<div class="text-center mb-16">
+<h2 class="font-headline-lg text-headline-lg font-semibold text-on-surface mb-4">How it works</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Three simple steps to take control of your career trajectory.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Step 1: Paste -->
+<div class="bg-surface-container-low rounded-[24px] p-8 flex flex-col relative overflow-hidden group border border-outline-variant/30 shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+<div class="absolute top-0 right-0 p-8 opacity-10 transform translate-x-4 -translate-y-4 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined text-9xl">content_paste</span>
+</div>
+<div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">content_paste</span>
+</div>
+<h3 class="font-title-lg text-title-lg font-semibold text-on-surface mb-2">1. Paste Details</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-8 flex-grow">Simply drop a link or paste the text of any job description you find online.</p>
+<div class="bg-surface rounded-xl p-4 border border-outline-variant/50 shadow-sm mt-auto relative z-10">
+<div class="flex items-center gap-2 mb-3">
+<div class="w-2.5 h-2.5 rounded-full bg-outline-variant"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-outline-variant"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-outline-variant"></div>
+</div>
+<div class="w-full h-2 bg-surface-container-highest rounded-full mb-2"></div>
+<div class="w-3/4 h-2 bg-surface-container-highest rounded-full mb-4"></div>
+<div class="w-full h-16 bg-surface-container rounded-lg border border-outline-variant/30 flex items-center justify-center text-outline font-label-sm text-label-sm">
+                                [Paste Job Description Here]
+                            </div>
+</div>
+</div>
+<!-- Step 2: AI Extract -->
+<div class="bg-surface-container rounded-[24px] p-8 flex flex-col relative overflow-hidden group border border-outline-variant/30 shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+<div class="absolute top-0 right-0 p-8 opacity-10 transform translate-x-4 -translate-y-4 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined text-9xl">auto_awesome</span>
+</div>
+<div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<h3 class="font-title-lg text-title-lg font-semibold text-on-surface mb-2">2. AI Extracts</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-8 flex-grow">Our AI instantly pulls out the role, salary, skills, and company information.</p>
+<div class="bg-surface rounded-xl p-4 border border-outline-variant/50 shadow-sm mt-auto relative z-10 flex flex-col gap-3">
+<div class="flex justify-between items-center pb-2 border-b border-outline-variant/20">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Extracted Data</span>
+<span class="material-symbols-outlined text-[16px] text-primary animate-pulse">check_circle</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="bg-secondary-container text-on-secondary-container px-2 py-1 rounded-md font-label-sm text-label-sm">Frontend Dev</span>
+<span class="bg-tertiary-container text-on-tertiary-container px-2 py-1 rounded-md font-label-sm text-label-sm">$120k-$150k</span>
+</div>
+<div class="flex flex-wrap gap-2 mt-1">
+<span class="bg-surface-container-highest text-on-surface px-2 py-0.5 rounded-full font-label-sm text-[10px]">React</span>
+<span class="bg-surface-container-highest text-on-surface px-2 py-0.5 rounded-full font-label-sm text-[10px]">TypeScript</span>
+<span class="bg-surface-container-highest text-on-surface px-2 py-0.5 rounded-full font-label-sm text-[10px]">Tailwind</span>
+</div>
+</div>
+</div>
+<!-- Step 3: Track -->
+<div class="bg-surface-container-low rounded-[24px] p-8 flex flex-col relative overflow-hidden group border border-outline-variant/30 shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+<div class="absolute top-0 right-0 p-8 opacity-10 transform translate-x-4 -translate-y-4 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined text-9xl">view_kanban</span>
+</div>
+<div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">view_kanban</span>
+</div>
+<h3 class="font-title-lg text-title-lg font-semibold text-on-surface mb-2">3. Track Progress</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-8 flex-grow">Manage your pipeline visually. Know exactly where you stand with every company.</p>
+<div class="bg-surface rounded-xl p-4 border border-outline-variant/50 shadow-sm mt-auto relative z-10 flex gap-2 overflow-hidden">
+<!-- Mini Kanban Board -->
+<div class="w-1/3 bg-surface-container-lowest border border-outline-variant/20 rounded-lg p-2 flex flex-col gap-2">
+<div class="font-label-sm text-[10px] text-on-surface-variant font-medium">Applied</div>
+<div class="bg-surface-container h-8 rounded-md border border-outline-variant/10"></div>
+<div class="bg-surface-container h-10 rounded-md border border-outline-variant/10"></div>
+</div>
+<div class="w-1/3 bg-surface-container-lowest border border-outline-variant/20 rounded-lg p-2 flex flex-col gap-2 bg-primary/5">
+<div class="font-label-sm text-[10px] text-primary font-medium">Interviewing</div>
+<div class="bg-surface shadow-sm h-12 rounded-md border border-primary/20 flex flex-col justify-center px-2">
+<div class="w-3/4 h-1.5 bg-primary/40 rounded-full mb-1"></div>
+<div class="w-1/2 h-1 bg-outline-variant/40 rounded-full"></div>
+</div>
+</div>
+<div class="w-1/3 bg-surface-container-lowest border border-outline-variant/20 rounded-lg p-2 flex flex-col gap-2 opacity-50">
+<div class="font-label-sm text-[10px] text-on-surface-variant font-medium">Offer</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Deep Dive Features -->
+<section class="py-24 px-6 bg-surface">
+<div class="max-w-container-max mx-auto flex flex-col gap-24">
+<!-- Feature 1: AI Workflow -->
+<div class="flex flex-col md:flex-row items-center gap-12 md:gap-24">
+<div class="w-full md:w-1/2 flex flex-col justify-center">
+<div class="w-12 h-12 bg-secondary-container rounded-xl flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-on-secondary-container">psychology</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg font-semibold text-on-surface mb-4">Intelligent Data Extraction</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-6">
+                            Stop manually typing out company names, job titles, and messy salary ranges. Our fine-tuned AI model reads the unstructured text of a job posting and structures it instantly into your personal database.
+                        </p>
+<ul class="flex flex-col gap-3 font-body-md text-body-md text-on-surface-variant">
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[20px]">check</span>
+                                Identifies hidden tech stack requirements
+                            </li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[20px]">check</span>
+                                Normalizes job titles and seniority levels
+                            </li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[20px]">check</span>
+                                Highlights red flags and unique perks
+                            </li>
+</ul>
+</div>
+<div class="w-full md:w-1/2 h-80 bg-surface-container-high rounded-[32px] relative overflow-hidden border border-outline-variant/20 shadow-sm flex items-center justify-center">
+<!-- Abstract representation of data parsing -->
+<div class="absolute inset-0 bg-grid-pattern opacity-30"></div>
+<div class="relative z-10 flex flex-col gap-4 w-3/4">
+<div class="bg-surface rounded-xl p-4 shadow-sm border border-outline-variant/20 transform -rotate-2 hover:rotate-0 transition-transform">
+<div class="w-1/2 h-2 bg-outline-variant/30 rounded-full mb-3"></div>
+<div class="w-full h-2 bg-outline-variant/30 rounded-full mb-2"></div>
+<div class="w-5/6 h-2 bg-outline-variant/30 rounded-full"></div>
+</div>
+<div class="flex justify-center">
+<span class="material-symbols-outlined text-primary animate-bounce">arrow_downward</span>
+</div>
+<div class="bg-primary-container text-on-primary-container rounded-xl p-4 shadow-md border border-primary/20 transform rotate-1 hover:rotate-0 transition-transform flex items-center gap-4">
+<span class="material-symbols-outlined text-[32px]">database</span>
+<div>
+<div class="font-label-lg font-bold mb-1">Structured Entry Created</div>
+<div class="font-label-sm opacity-80">Ready for tracking</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer mapped from JSON -->
+<footer class="bg-surface-container-lowest dark:bg-surface-dim full-width py-8 mt-auto border-t border-outline-variant dark:border-on-surface-variant/10">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-6 max-w-container-max mx-auto gap-4">
+<div class="font-title-md text-title-md font-semibold text-on-surface">
+                CareerTrack AI
+            </div>
+<div class="flex gap-6 items-center">
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-outline hover:text-on-surface transition-colors opacity-80 hover:opacity-100 transition-opacity hover:underline" href="#">
+                    Privacy Policy
+                </a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-outline hover:text-on-surface transition-colors opacity-80 hover:opacity-100 transition-opacity hover:underline" href="#">
+                    Terms of Service
+                </a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-outline hover:text-on-surface transition-colors opacity-80 hover:opacity-100 transition-opacity hover:underline" href="#">
+                    Data Disclosure
+                </a>
+</div>
+<div class="font-body-md text-body-md text-secondary dark:text-secondary-fixed-dim">
+                © 2024 CareerTrack AI. All rights reserved.
+            </div>
+</div>
+</footer>
+</body></html>

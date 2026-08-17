@@ -6,17 +6,17 @@ import { createClient } from '@/lib/supabase/client';
 import { Application, ApplicationStatus, APPLICATION_STATUSES } from '@/lib/types/database';
 import { ApplicationCard } from '@/components/applications/ApplicationCard';
 import { TextField } from '@/components/ui/TextField';
-import { FilterChip, ChipSet } from '@/components/ui/Chip';
 import { Select } from '@/components/ui/Select';
 import { FilledButton, OutlinedButton, TextButton } from '@/components/ui/Button';
+import { Checkbox } from '@/components/ui/Checkbox';
 import { CircularProgress } from '@/components/ui/CircularProgress';
 
 export default function DashboardPage() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedStatuses, setSelectedStatuses] = useState<ApplicationStatus[]>([]);
-  const [sortBy, setSortBy] = useState<'created_at_desc' | 'created_at_asc' | 'updated_at_desc'>('created_at_desc');
+  const [activeStatusTab, setActiveStatusTab] = useState<ApplicationStatus | 'all'>('all');
+  const [sortBy, setSortBy] = useState<'updated_at_desc' | 'created_at_desc' | 'created_at_asc'>('updated_at_desc');
   const [showClosed, setShowClosed] = useState(true);
 
   const supabase = createClient();
@@ -27,7 +27,7 @@ export default function DashboardPage() {
       const { data, error } = await supabase
         .from('applications')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('updated_at', { ascending: false });
 
       if (error) {
         console.error('Error fetching applications:', error);
@@ -40,16 +40,10 @@ export default function DashboardPage() {
     fetchApplications();
   }, [supabase]);
 
-  const toggleStatusFilter = (status: ApplicationStatus) => {
-    setSelectedStatuses((prev) =>
-      prev.includes(status) ? prev.filter((s) => s !== status) : [...prev, status]
-    );
-  };
-
   const filteredApplications = useMemo(() => {
     return applications
       .filter((app) => {
-        // Search query filter (company or title)
+        // Search query filter (company, title, location)
         if (searchQuery.trim()) {
           const q = searchQuery.toLowerCase();
           const matches =
@@ -59,13 +53,13 @@ export default function DashboardPage() {
           if (!matches) return false;
         }
 
-        // Status chips filter
-        if (selectedStatuses.length > 0) {
-          if (!selectedStatuses.includes(app.status)) return false;
+        // Active Status Tab Filter
+        if (activeStatusTab !== 'all') {
+          if (app.status !== activeStatusTab) return false;
         }
 
-        // Closed toggle filter
-        if (!showClosed) {
+        // Closed toggle filter (if false, hide rejected & withdrawn unless specifically tabbed)
+        if (!showClosed && activeStatusTab === 'all') {
           if (app.status === 'rejected' || app.status === 'withdrawn') {
             return false;
           }
@@ -74,54 +68,64 @@ export default function DashboardPage() {
         return true;
       })
       .sort((a, b) => {
+        if (sortBy === 'updated_at_desc') {
+          return new Date(b.updated_at || b.created_at).getTime() - new Date(a.updated_at || a.created_at).getTime();
+        }
         if (sortBy === 'created_at_desc') {
           return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
         }
         if (sortBy === 'created_at_asc') {
           return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
         }
-        if (sortBy === 'updated_at_desc') {
-          return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
-        }
         return 0;
       });
-  }, [applications, searchQuery, selectedStatuses, sortBy, showClosed]);
+  }, [applications, searchQuery, activeStatusTab, sortBy, showClosed]);
+
+  // Calculate status counts for badges
+  const statusCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: applications.length };
+    APPLICATION_STATUSES.forEach((s) => {
+      counts[s.value] = applications.filter((a) => a.status === s.value).length;
+    });
+    return counts;
+  }, [applications]);
 
   return (
-    <div className="container" style={{ padding: '1rem 1.25rem' }}>
-      {/* Header with Title and New Button */}
+    <div className="container" style={{ padding: '1.5rem 1.5rem 3rem 1.5rem' }}>
+      {/* Header & Main Actions */}
       <div
         style={{
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: 'center',
+          alignItems: 'flex-end',
           marginBottom: '2rem',
           flexWrap: 'wrap',
-          gap: '1rem',
+          gap: '1.25rem',
         }}
       >
         <div>
           <h1
             style={{
-              fontSize: '2rem',
+              fontSize: '2.25rem',
               fontWeight: 700,
               color: 'var(--md-sys-color-on-surface)',
               letterSpacing: '-0.02em',
+              marginBottom: '0.25rem',
             }}
           >
             My Applications
           </h1>
-          <p style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '0.9375rem' }}>
-            {applications.length} total applications tracked
+          <p style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '1rem' }}>
+            Track and manage your active job pursuits.
           </p>
         </div>
 
         <Link href="/applications/new">
-          <FilledButton icon="add">New Application</FilledButton>
+          <FilledButton icon="add">Add Application</FilledButton>
         </Link>
       </div>
 
-      {/* Filter and Search Bar */}
+      {/* Filter and Search Bar Card */}
       <div
         className="m3-card"
         style={{
@@ -131,77 +135,97 @@ export default function DashboardPage() {
           marginBottom: '2rem',
         }}
       >
+        {/* Top Row: Search & Sort & Show Closed */}
         <div
           style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+            display: 'flex',
+            flexWrap: 'wrap',
             gap: '1rem',
+            justifyContent: 'space-between',
             alignItems: 'center',
           }}
         >
-          <TextField
-            placeholder="Search company, title, or location..."
-            value={searchQuery}
-            onValueChange={setSearchQuery}
-            leadingIcon="search"
-          />
+          <div style={{ flex: '1 1 320px', maxWidth: '480px' }}>
+            <TextField
+              placeholder="Search by company, title, or location..."
+              value={searchQuery}
+              onValueChange={setSearchQuery}
+              leadingIcon="search"
+            />
+          </div>
 
-          <Select
-            label="Sort by"
-            value={sortBy}
-            onValueChange={(val) => setSortBy(val as any)}
-            options={[
-              { value: 'created_at_desc', label: 'Newest First (Created Date)' },
-              { value: 'created_at_asc', label: 'Oldest First' },
-              { value: 'updated_at_desc', label: 'Recently Updated' },
-            ]}
-          />
-        </div>
-
-        {/* Status Filter Chips */}
-        <div>
-          <span
+          <div
             style={{
-              fontSize: '0.8125rem',
-              fontWeight: 500,
-              color: 'var(--md-sys-color-on-surface-variant)',
-              marginBottom: '0.5rem',
-              display: 'block',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '1.25rem',
+              flexWrap: 'wrap',
             }}
           >
-            Filter by status:
-          </span>
-          <ChipSet>
-            {APPLICATION_STATUSES.map((status) => (
-              <FilterChip
-                key={status.value}
-                label={status.label}
-                selected={selectedStatuses.includes(status.value)}
-                onSelectedChange={() => toggleStatusFilter(status.value)}
+            <div style={{ minWidth: '180px' }}>
+              <Select
+                label="Sort by"
+                value={sortBy}
+                onValueChange={(val) => setSortBy(val as any)}
+                options={[
+                  { value: 'updated_at_desc', label: 'Updated Date' },
+                  { value: 'created_at_desc', label: 'Newest Created' },
+                  { value: 'created_at_asc', label: 'Oldest Created' },
+                ]}
               />
-            ))}
-          </ChipSet>
+            </div>
+
+            <label
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                cursor: 'pointer',
+                fontSize: '0.875rem',
+                color: 'var(--md-sys-color-on-surface-variant)',
+                fontWeight: 500,
+                userSelect: 'none',
+              }}
+            >
+              <Checkbox
+                checked={showClosed}
+                onCheckedChange={setShowClosed}
+              />
+              <span>Show closed (Rejected/Withdrawn)</span>
+            </label>
+          </div>
         </div>
 
-        {/* Closed Filter Toggle */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <TextButton
-            icon={showClosed ? 'visibility_off' : 'visibility'}
-            onClick={() => setShowClosed(!showClosed)}
-          >
-            {showClosed ? 'Hide Rejected & Withdrawn' : 'Show All (Including Closed)'}
-          </TextButton>
+        {/* Bottom Row: Segmented Control Status Tabs */}
+        <div style={{ overflowX: 'auto', paddingBottom: '2px' }}>
+          <div className="segmented-control">
+            <button
+              className={`segmented-control-btn ${activeStatusTab === 'all' ? 'active' : ''}`}
+              onClick={() => setActiveStatusTab('all')}
+            >
+              All ({statusCounts.all || 0})
+            </button>
+            {APPLICATION_STATUSES.map((status) => (
+              <button
+                key={status.value}
+                className={`segmented-control-btn ${activeStatusTab === status.value ? 'active' : ''}`}
+                onClick={() => setActiveStatusTab(status.value)}
+              >
+                {status.label} ({statusCounts[status.value] || 0})
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Applications List or Empty State */}
+      {/* Applications Grid or Empty State */}
       {loading ? (
         <div
           style={{
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            padding: '4rem 0',
+            padding: '5rem 0',
           }}
         >
           <CircularProgress />
@@ -232,7 +256,7 @@ export default function DashboardPage() {
             }}
           >
             <span className="material-symbols-outlined" style={{ fontSize: '32px' }}>
-              post_add
+              work_outline
             </span>
           </div>
 
@@ -246,8 +270,8 @@ export default function DashboardPage() {
               }}
             >
               {applications.length === 0
-                ? 'Add your first job application'
-                : 'No applications match your filters'}
+                ? 'No applications tracked yet'
+                : 'No applications match your filter'}
             </h2>
             <p
               style={{
@@ -258,19 +282,19 @@ export default function DashboardPage() {
             >
               {applications.length === 0
                 ? 'Paste a link or job description to let AI parse the details automatically, or fill out the form manually.'
-                : 'Try clearing your search or adjusting the selected status filters.'}
+                : 'Try adjusting your status tab, clearing search, or toggling "Show closed".'}
             </p>
           </div>
 
           {applications.length === 0 ? (
             <Link href="/applications/new">
-              <FilledButton icon="add">Create Application</FilledButton>
+              <FilledButton icon="add">Add First Application</FilledButton>
             </Link>
           ) : (
             <OutlinedButton
               onClick={() => {
                 setSearchQuery('');
-                setSelectedStatuses([]);
+                setActiveStatusTab('all');
                 setShowClosed(true);
               }}
             >

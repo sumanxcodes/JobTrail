@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sign In - CareerTrack AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface": "#fbf8ff",
+                        "outline": "#757684",
+                        "on-surface": "#1a1b22",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-highest": "#e3e1ea",
+                        "primary": "#24389c",
+                        "secondary-container": "#d0e1fb",
+                        "on-tertiary-container": "#ffc7a2",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "surface-dim": "#dbd9e2",
+                        "background": "#fbf8ff",
+                        "on-error": "#ffffff",
+                        "surface-container": "#efedf6",
+                        "on-secondary-fixed": "#0b1c30",
+                        "outline-variant": "#c5c5d4",
+                        "surface-tint": "#4355b9",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "surface-container-low": "#f4f2fc",
+                        "on-primary-container": "#cacfff",
+                        "surface-container-lowest": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-surface-variant": "#454652",
+                        "primary-fixed-dim": "#bac3ff",
+                        "tertiary": "#6c3400",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "secondary": "#505f76",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "inverse-surface": "#2f3037",
+                        "primary-fixed": "#dee0ff",
+                        "inverse-primary": "#bac3ff",
+                        "on-primary-fixed": "#00105c",
+                        "inverse-on-surface": "#f2eff9",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed": "#d3e4fe",
+                        "on-secondary-container": "#54647a",
+                        "surface-bright": "#fbf8ff",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#ffdcc6",
+                        "surface-container-high": "#e9e7f0",
+                        "primary-container": "#3f51b5",
+                        "surface-variant": "#e3e1ea",
+                        "tertiary-container": "#8f4700",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed": "#301400",
+                        "on-background": "#1a1b22"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "lg": "24px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "container-max": "1280px",
+                        "xl": "32px",
+                        "base": "4px",
+                        "xs": "4px",
+                        "gutter": "24px"
+                    },
+                    fontFamily: {
+                        "headline-lg-mobile": ["Inter"],
+                        "title-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "label-sm": ["Inter"]
+                    },
+                    fontSize: {
+                        "headline-lg-mobile": ["28px", { lineHeight: "36px", fontWeight: "600" }],
+                        "title-md": ["16px", { lineHeight: "24px", letterSpacing: "0.01em", fontWeight: "500" }],
+                        "display-lg": ["57px", { lineHeight: "64px", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "headline-lg": ["32px", { lineHeight: "40px", fontWeight: "600" }],
+                        "label-lg": ["14px", { lineHeight: "20px", letterSpacing: "0.1px", fontWeight: "500" }],
+                        "headline-sm": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+                        "body-lg": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+                        "body-md": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+                        "title-lg": ["22px", { lineHeight: "28px", fontWeight: "500" }],
+                        "label-sm": ["11px", { lineHeight: "16px", letterSpacing: "0.5px", fontWeight: "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer utilities {
+            .material-symbols-outlined {
+                font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            }
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-lg text-body-lg min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container">
+<!-- Main Content Canvas - Auth Focused -->
+<main class="flex-grow flex items-center justify-center p-md md:p-lg">
+<!-- Auth Container -->
+<div class="w-full max-w-[440px] bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant p-xl flex flex-col gap-xl relative overflow-hidden">
+<!-- Subtle decorative background element for depth -->
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary-container/10 rounded-bl-full -z-10 blur-2xl"></div>
+<!-- Header -->
+<div class="flex flex-col items-center text-center gap-sm">
+<!-- Logo -->
+<div class="flex items-center gap-2 text-primary mb-md">
+<span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">work</span>
+<span class="font-headline-sm text-headline-sm font-bold tracking-tight">CareerTrack AI</span>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-on-surface">Sign in</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Welcome back. Please enter your details.</p>
+</div>
+<!-- Form -->
+<form action="#" class="flex flex-col gap-lg" method="POST" onsubmit="event.preventDefault();">
+<!-- Email Field (M3 Outlined Style) -->
+<div class="relative group">
+<input class="peer w-full h-[56px] bg-transparent border border-outline text-on-surface rounded-DEFAULT px-md font-body-lg text-body-lg focus:outline-none focus:border-primary focus:border-2 focus:ring-0 transition-colors placeholder-transparent" id="email" name="email" placeholder=" " required="" type="email"/>
+<label class="absolute left-md top-1/2 -translate-y-1/2 font-body-lg text-body-lg text-on-surface-variant bg-surface-container-lowest px-1 transition-all duration-200 pointer-events-none peer-focus:top-0 peer-focus:text-primary peer-focus:font-label-sm peer-focus:text-label-sm peer-focus:translate-y-[-50%] peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:font-label-sm peer-[:not(:placeholder-shown)]:text-label-sm peer-[:not(:placeholder-shown)]:translate-y-[-50%]" for="email">
+                        Email
+                    </label>
+</div>
+<!-- Password Field (M3 Outlined Style) -->
+<div class="flex flex-col gap-sm">
+<div class="relative group">
+<input class="peer w-full h-[56px] bg-transparent border border-outline text-on-surface rounded-DEFAULT px-md font-body-lg text-body-lg focus:outline-none focus:border-primary focus:border-2 focus:ring-0 transition-colors placeholder-transparent" id="password" name="password" placeholder=" " required="" type="password"/>
+<label class="absolute left-md top-1/2 -translate-y-1/2 font-body-lg text-body-lg text-on-surface-variant bg-surface-container-lowest px-1 transition-all duration-200 pointer-events-none peer-focus:top-0 peer-focus:text-primary peer-focus:font-label-sm peer-focus:text-label-sm peer-focus:translate-y-[-50%] peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:font-label-sm peer-[:not(:placeholder-shown)]:text-label-sm peer-[:not(:placeholder-shown)]:translate-y-[-50%]" for="password">
+                            Password
+                        </label>
+<!-- Optional Visibility Toggle -->
+<button class="absolute right-md top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface focus:outline-none" type="button">
+<span class="material-symbols-outlined">visibility_off</span>
+</button>
+</div>
+<!-- Forgot Password Link -->
+<div class="flex justify-end">
+<a class="font-label-lg text-label-lg text-primary hover:text-primary-fixed-dim focus:outline-none focus:underline transition-colors" href="#">
+                            Forgot password?
+                        </a>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-col gap-md mt-sm">
+<!-- Primary Button -->
+<button class="w-full h-[48px] bg-primary text-on-primary font-label-lg text-label-lg font-medium rounded-full hover:bg-surface-tint focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface-container-lowest active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-sm" type="submit">
+                        Login
+                    </button>
+<!-- Divider -->
+<div class="relative flex items-center py-sm">
+<div class="flex-grow border-t border-outline-variant"></div>
+<span class="flex-shrink-0 mx-md font-body-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Or continue with</span>
+<div class="flex-grow border-t border-outline-variant"></div>
+</div>
+<!-- Secondary Button -->
+<button class="w-full h-[48px] bg-transparent border border-outline text-secondary font-label-lg text-label-lg font-medium rounded-full hover:bg-surface-container hover:text-on-surface focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 focus:ring-offset-surface-container-lowest active:scale-[0.98] transition-all flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined text-[20px]">magic_button</span>
+                        Magic Link
+                    </button>
+</div>
+</form>
+<!-- Sign Up Prompt -->
+<div class="text-center font-body-md text-body-md text-on-surface-variant">
+                Don't have an account? 
+                <a class="font-label-lg text-label-lg text-primary font-medium hover:underline focus:outline-none focus:underline ml-1" href="#">
+                    Sign up
+                </a>
+</div>
+</div>
+</main>
+<!-- Minimal Footer Context -->
+<footer class="bg-surface-container-lowest py-8 mt-auto border-t border-outline-variant flex flex-col justify-center items-center gap-md">
+<p class="font-label-sm text-label-sm text-secondary opacity-80">
+            © 2024 CareerTrack AI. All rights reserved.
+        </p>
+<div class="flex gap-lg">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" href="#">Terms of Service</a>
+</div>
+</footer>
+</body></html>

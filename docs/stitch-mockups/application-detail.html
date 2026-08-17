@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Application Detail - CareerTrack</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Setup -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface": "#fbf8ff",
+                        "outline": "#757684",
+                        "on-surface": "#1a1b22",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-highest": "#e3e1ea",
+                        "primary": "#24389c",
+                        "secondary-container": "#d0e1fb",
+                        "on-tertiary-container": "#ffc7a2",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "surface-dim": "#dbd9e2",
+                        "background": "#fbf8ff",
+                        "on-error": "#ffffff",
+                        "surface-container": "#efedf6",
+                        "on-secondary-fixed": "#0b1c30",
+                        "outline-variant": "#c5c5d4",
+                        "surface-tint": "#4355b9",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "surface-container-low": "#f4f2fc",
+                        "on-primary-container": "#cacfff",
+                        "surface-container-lowest": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-surface-variant": "#454652",
+                        "primary-fixed-dim": "#bac3ff",
+                        "tertiary": "#6c3400",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "secondary": "#505f76",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "inverse-surface": "#2f3037",
+                        "primary-fixed": "#dee0ff",
+                        "inverse-primary": "#bac3ff",
+                        "on-primary-fixed": "#00105c",
+                        "inverse-on-surface": "#f2eff9",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed": "#d3e4fe",
+                        "on-secondary-container": "#54647a",
+                        "surface-bright": "#fbf8ff",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#ffdcc6",
+                        "surface-container-high": "#e9e7f0",
+                        "primary-container": "#3f51b5",
+                        "surface-variant": "#e3e1ea",
+                        "tertiary-container": "#8f4700",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed": "#301400",
+                        "on-background": "#1a1b22"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "lg": "24px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "container-max": "1280px",
+                        "xl": "32px",
+                        "base": "4px",
+                        "xs": "4px",
+                        "gutter": "24px"
+                    },
+                    fontFamily: {
+                        "headline-lg-mobile": ["Inter"],
+                        "title-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "label-sm": ["Inter"]
+                    },
+                    fontSize: {
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "title-md": ["16px", { "lineHeight": "24px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "display-lg": ["57px", { "lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500" }],
+                        "headline-sm": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "title-lg": ["22px", { "lineHeight": "28px", "fontWeight": "500" }],
+                        "label-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        /* Custom scrollbar for textareas */
+        textarea::-webkit-scrollbar { width: 8px; }
+        textarea::-webkit-scrollbar-track { background: transparent; }
+        textarea::-webkit-scrollbar-thumb { background-color: theme('colors.outline-variant'); border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-lg min-h-screen flex flex-col antialiased">
+<!-- Shared Component: TopNavBar -->
+<header class="bg-surface/80 dark:bg-surface-on-variant/80 backdrop-blur-md docked full-width top-0 sticky z-50 border-b border-outline-variant dark:border-on-surface-variant/20 flat no shadows">
+<div class="flex justify-between items-center w-full px-6 py-3 max-w-container-max mx-auto">
+<!-- Brand & Search Container -->
+<div class="flex items-center gap-6">
+<a class="font-headline-sm text-headline-sm font-bold text-primary dark:text-primary-fixed-dim flex items-center gap-2" href="#">
+<span class="material-symbols-outlined filled text-primary">work</span>
+                    CareerTrack
+                </a>
+<!-- Search Bar (on_left) -->
+<div class="hidden md:flex relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full focus:ring-2 focus:ring-primary text-body-md w-64 placeholder:text-outline-variant text-on-surface" placeholder="Search applications..." type="text"/>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="hidden md:flex items-center gap-1 text-label-lg font-label-lg">
+<a class="text-on-surface-variant dark:text-outline hover:text-primary dark:hover:text-primary-fixed-dim transition-colors hover:bg-surface-container-low dark:hover:bg-surface-container-highest/10 rounded-lg px-4 py-2 active:scale-95 transition-transform duration-150" href="#">Dashboard</a>
+<!-- Active Nav Item -->
+<a class="text-primary dark:text-primary-fixed-dim border-b-2 border-primary dark:border-primary-fixed-dim pb-1 font-bold hover:bg-surface-container-low dark:hover:bg-surface-container-highest/10 rounded-lg px-4 py-2 active:scale-95 transition-transform duration-150" href="#">Job Board</a>
+<a class="text-on-surface-variant dark:text-outline hover:text-primary dark:hover:text-primary-fixed-dim transition-colors hover:bg-surface-container-low dark:hover:bg-surface-container-highest/10 rounded-lg px-4 py-2 active:scale-95 transition-transform duration-150" href="#">Insights</a>
+</nav>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-4">
+<button class="hidden md:flex items-center gap-2 bg-primary text-on-primary px-4 py-2 rounded-full font-label-lg text-label-lg hover:shadow-md transition-all active:scale-95">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                    Add Application
+                </button>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<button class="p-2 hover:bg-surface-container-low rounded-full transition-colors active:scale-95">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 hover:bg-surface-container-low rounded-full transition-colors active:scale-95">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<button class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant ml-2">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a corporate user on a clean light background, facing forward." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrDv9E_pm2qluOlMhZuwGz7FkttEBrfZVikOEAjhlcJRXSoMJ86NrLJae8Hj7SJqdcWKhUDyY0sI71xZxbAqKkoKgIYBbUTqAv3U96Wuo81AOInjMJf1tdxRAT_d2tmK_glKBo0efNmEAc1bKne4TE0ZYnloNiMcMTewb2PAE8zg_VRePZlzaqypo-Ug4961VfG8G-K493IJJLCZecH_e9zwQM7dD48m-lNUZ230XeCEIKM-tRe-JG"/>
+</button>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 w-full max-w-container-max mx-auto px-4 md:px-6 py-8 flex flex-col gap-8">
+<!-- Breadcrumb / Back Action -->
+<nav class="flex items-center text-label-sm font-label-sm text-on-surface-variant gap-2">
+<a class="hover:text-primary flex items-center gap-1" href="#"><span class="material-symbols-outlined text-[16px]">arrow_back</span> Back to Job Board</a>
+</nav>
+<!-- Header Section -->
+<section class="flex flex-col md:flex-row md:items-start justify-between gap-6">
+<div class="flex gap-6 items-start">
+<!-- Company Logo -->
+<div class="w-16 h-16 md:w-20 md:h-20 bg-surface-container rounded-xl flex items-center justify-center shrink-0 border border-outline-variant shadow-sm overflow-hidden p-2">
+<img alt="CrowdStrike Logo" class="w-full h-full object-contain" data-alt="A modern, high-contrast corporate logo of a cybersecurity firm featuring a stylized geometric shield or falcon, deep red and black accents on a white background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDF3nKRzbXj0ZVDV9RkEPuPhCzjEfzYM7Wd8dnH82hz7eShxROPUAZOcoCU4XL4pLpzjlhcHJBD2D1zGHuaEyNmiqRk5CAnDxGzfD9Adt7fgB4eoG7B3tWHu-YNMI1HCjltfi9X6ULOT_tC2fIYLw8jHB-R18rB12ICGFwzGb5wNmfAD9477kYaRsDqbXfPoMm1M_81c7jXwuU6mat2GQj780UZZuMib3RwJ2KEiiE9kAkzrUgAQyXQ"/>
+</div>
+<div class="flex flex-col gap-2">
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">Cyber Security Engineer</h1>
+<div class="flex items-center gap-3 font-title-md text-title-md text-on-surface-variant">
+<span>CrowdStrike</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<a class="flex items-center gap-1 text-primary hover:underline" href="#"><span class="material-symbols-outlined text-[16px]">open_in_new</span> View Posting</a>
+</div>
+<!-- Status Chip (Prominent) -->
+<div class="mt-2 inline-flex items-center gap-2 bg-secondary-container/30 border border-secondary-container text-primary font-label-lg text-label-lg px-3 py-1 rounded-full w-max">
+<span class="material-symbols-outlined filled text-[18px]">event_available</span>
+                        Interviewing
+                    </div>
+</div>
+</div>
+<!-- Header Actions -->
+<div class="flex items-center gap-3 w-full md:w-auto">
+<button class="flex-1 md:flex-none flex items-center justify-center gap-2 border border-outline text-on-surface px-4 py-2 rounded-full font-label-lg text-label-lg hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+                    Edit
+                </button>
+<button class="flex-1 md:flex-none flex items-center justify-center gap-2 text-error hover:bg-error-container/50 px-4 py-2 rounded-full font-label-lg text-label-lg transition-colors">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+                    Delete
+                </button>
+</div>
+</section>
+<!-- Main Content Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Left Column: Details, Notes, Description (Span 2) -->
+<div class="lg:col-span-2 flex flex-col gap-6">
+<!-- Main Info Grid (Bento Style) -->
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+<!-- Location -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 flex flex-col gap-1 shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">location_on</span> Location</span>
+<span class="font-title-md text-title-md text-on-surface">Remote (US)</span>
+</div>
+<!-- Salary -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 flex flex-col gap-1 shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">payments</span> Target Salary</span>
+<span class="font-title-md text-title-md text-on-surface">$150k - $180k</span>
+</div>
+<!-- Seniority -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 flex flex-col gap-1 shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">stairs</span> Seniority</span>
+<span class="font-title-md text-title-md text-on-surface">Mid-Senior Level</span>
+</div>
+<!-- Source -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 flex flex-col gap-1 shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">share</span> Source</span>
+<span class="font-title-md text-title-md text-on-surface">LinkedIn</span>
+</div>
+<!-- Dates -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 flex flex-col gap-1 shadow-[0_1px_3px_rgba(0,0,0,0.05)] col-span-2 sm:col-span-2 flex-row items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Created On</span>
+<span class="font-body-md text-body-md text-on-surface">Oct 10, 2024</span>
+</div>
+<div class="w-px h-8 bg-outline-variant"></div>
+<div class="flex flex-col text-right">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Last Updated</span>
+<span class="font-body-md text-body-md text-on-surface">Oct 20, 2024</span>
+</div>
+</div>
+</div>
+<!-- Notes Section -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.05)] flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<h2 class="font-title-lg text-title-lg text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">edit_note</span> Application Notes
+                        </h2>
+<button class="text-primary font-label-lg text-label-lg hover:underline flex items-center gap-1">
+                            Save Notes
+                        </button>
+</div>
+<textarea class="w-full bg-surface-container-low border border-outline-variant rounded-lg p-4 font-body-md text-body-md text-on-surface focus:ring-2 focus:ring-primary focus:border-primary resize-y min-h-[160px]" placeholder="Add your interview prep notes, contacts, or thoughts here...">Spoke with recruiter Sarah J. on Oct 18th.
+They use AWS and are heavy into Go and Python.
+Need to brush up on specific CrowdStrike Falcon platform architecture before the technical round next week.
+
+Questions to ask:
+- How does the team handle on-call rotations?
+- What is the primary metric for success in the first 90 days?</textarea>
+</section>
+<!-- Raw Job Description (Collapsible) -->
+<details class="group bg-surface-container-lowest border border-outline-variant rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.05)] overflow-hidden">
+<summary class="flex justify-between items-center cursor-pointer p-6 list-none hover:bg-surface-container-low transition-colors">
+<h2 class="font-title-lg text-title-lg text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-outline">description</span> Raw Job Description
+                        </h2>
+<span class="material-symbols-outlined text-outline transition-transform duration-200 group-open:rotate-180">expand_more</span>
+</summary>
+<div class="p-6 pt-0 border-t border-outline-variant bg-surface-container-low/50">
+<div class="font-body-md text-body-md text-on-surface-variant whitespace-pre-wrap mt-4">
+About the Role:
+We are looking for a highly motivated Cyber Security Engineer to join our growing threat intelligence team. You will be responsible for developing and implementing advanced security measures to protect our infrastructure...
+
+Responsibilities:
+- Design and implement security systems and architectures.
+- Conduct vulnerability assessments and penetration testing.
+- Respond to security incidents and investigate breaches.
+- Collaborate with engineering teams to integrate security best practices.
+
+Requirements:
+- 5+ years of experience in Cyber Security.
+- Strong knowledge of network security, cryptography, and application security.
+- Experience with SIEM tools, IDS/IPS, and endpoint protection.
+- Proficiency in Python, Go, or similar scripting languages.
+                        </div>
+</div>
+</details>
+</div>
+<!-- Right Column: Status & Timeline (Span 1) -->
+<div class="lg:col-span-1 flex flex-col gap-6">
+<!-- Quick Status Update Card -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.05)] flex flex-col gap-4">
+<h3 class="font-title-md text-title-md text-on-surface">Update Status</h3>
+<div class="flex flex-wrap gap-2">
+<button class="flex-1 min-w-[100px] border border-outline-variant text-on-surface-variant font-label-sm text-label-sm py-2 px-3 rounded-lg hover:bg-surface-container-low transition-colors text-center">Draft</button>
+<button class="flex-1 min-w-[100px] border border-outline-variant text-on-surface-variant font-label-sm text-label-sm py-2 px-3 rounded-lg hover:bg-surface-container-low transition-colors text-center">Applied</button>
+<button class="flex-1 min-w-[100px] bg-primary text-on-primary font-label-sm text-label-sm py-2 px-3 rounded-lg shadow-sm text-center ring-2 ring-primary ring-offset-2 ring-offset-surface">Interviewing</button>
+<button class="flex-1 min-w-[100px] border border-outline-variant text-on-surface-variant font-label-sm text-label-sm py-2 px-3 rounded-lg hover:bg-surface-container-low transition-colors text-center">Offer</button>
+<button class="flex-1 min-w-[100px] border border-outline-variant text-on-surface-variant font-label-sm text-label-sm py-2 px-3 rounded-lg hover:bg-surface-container-low transition-colors text-center">Rejected</button>
+</div>
+</section>
+<!-- Status History Timeline -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.05)] flex flex-col gap-6">
+<h3 class="font-title-md text-title-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-outline">history</span> Application Timeline
+                    </h3>
+<div class="relative pl-4 border-l-2 border-surface-container-highest flex flex-col gap-8">
+<!-- Timeline Item: Interviewing (Current) -->
+<div class="relative">
+<!-- Dot -->
+<div class="absolute -left-[21px] top-1 w-3 h-3 rounded-full bg-primary ring-4 ring-surface-container-lowest"></div>
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-title-md text-title-md text-on-surface">Interviewing</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Oct 20, 2024</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface-variant">Scheduled Technical Screen with Hiring Manager.</span>
+</div>
+</div>
+<!-- Timeline Item: Applied -->
+<div class="relative">
+<div class="absolute -left-[21px] top-1 w-3 h-3 rounded-full bg-surface-container-highest ring-4 ring-surface-container-lowest"></div>
+<div class="flex flex-col gap-1 opacity-80">
+<div class="flex items-center justify-between">
+<span class="font-title-md text-title-md text-on-surface">Applied</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Oct 12, 2024</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface-variant">Submitted application via Workday portal.</span>
+</div>
+</div>
+<!-- Timeline Item: Draft -->
+<div class="relative">
+<div class="absolute -left-[21px] top-1 w-3 h-3 rounded-full bg-surface-container-highest ring-4 ring-surface-container-lowest"></div>
+<div class="flex flex-col gap-1 opacity-60">
+<div class="flex items-center justify-between">
+<span class="font-title-md text-title-md text-on-surface">Draft Created</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Oct 10, 2024</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface-variant">Saved job posting from LinkedIn.</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- Shared Component: Footer -->
+<footer class="bg-surface-container-lowest dark:bg-surface-dim full-width py-8 mt-auto border-t border-outline-variant dark:border-on-surface-variant/10 flat no shadows">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-6 max-w-container-max mx-auto gap-4">
+<div class="font-title-md text-title-md font-semibold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">work</span>
+                CareerTrack
+            </div>
+<nav class="flex flex-wrap justify-center gap-6 font-label-sm text-label-sm text-on-surface-variant dark:text-outline">
+<a class="hover:text-on-surface transition-colors opacity-80 hover:opacity-100 transition-opacity hover:underline" href="#">Privacy Policy</a>
+<a class="hover:text-on-surface transition-colors opacity-80 hover:opacity-100 transition-opacity hover:underline" href="#">Terms of Service</a>
+<a class="hover:text-on-surface transition-colors opacity-80 hover:opacity-100 transition-opacity hover:underline" href="#">Data Disclosure</a>
+</nav>
+<div class="font-label-sm text-label-sm text-secondary dark:text-secondary-fixed-dim">
+                © 2024 CareerTrack AI. All rights reserved.
+            </div>
+</div>
+</footer>
+</body></html>

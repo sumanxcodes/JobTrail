@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Applications - CareerTrack</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface": "#fbf8ff",
+                        "outline": "#757684",
+                        "on-surface": "#1a1b22",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-highest": "#e3e1ea",
+                        "primary": "#24389c",
+                        "secondary-container": "#d0e1fb",
+                        "on-tertiary-container": "#ffc7a2",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "surface-dim": "#dbd9e2",
+                        "background": "#fbf8ff",
+                        "on-error": "#ffffff",
+                        "surface-container": "#efedf6",
+                        "on-secondary-fixed": "#0b1c30",
+                        "outline-variant": "#c5c5d4",
+                        "surface-tint": "#4355b9",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "surface-container-low": "#f4f2fc",
+                        "on-primary-container": "#cacfff",
+                        "surface-container-lowest": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-surface-variant": "#454652",
+                        "primary-fixed-dim": "#bac3ff",
+                        "tertiary": "#6c3400",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "secondary": "#505f76",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "inverse-surface": "#2f3037",
+                        "primary-fixed": "#dee0ff",
+                        "inverse-primary": "#bac3ff",
+                        "on-primary-fixed": "#00105c",
+                        "inverse-on-surface": "#f2eff9",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed": "#d3e4fe",
+                        "on-secondary-container": "#54647a",
+                        "surface-bright": "#fbf8ff",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#ffdcc6",
+                        "surface-container-high": "#e9e7f0",
+                        "primary-container": "#3f51b5",
+                        "surface-variant": "#e3e1ea",
+                        "tertiary-container": "#8f4700",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed": "#301400",
+                        "on-background": "#1a1b22"
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px"
+                    },
+                    spacing: {
+                        lg: "24px",
+                        sm: "8px",
+                        md: "16px",
+                        "container-max": "1280px",
+                        xl: "32px",
+                        base: "4px",
+                        xs: "4px",
+                        gutter: "24px"
+                    },
+                    fontFamily: {
+                        "headline-lg-mobile": ["Inter"],
+                        "title-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "label-sm": ["Inter"]
+                    },
+                    fontSize: {
+                        "headline-lg-mobile": ["28px", { lineHeight: "36px", fontWeight: "600" }],
+                        "title-md": ["16px", { lineHeight: "24px", letterSpacing: "0.01em", fontWeight: "500" }],
+                        "display-lg": ["57px", { lineHeight: "64px", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "headline-lg": ["32px", { lineHeight: "40px", fontWeight: "600" }],
+                        "label-lg": ["14px", { lineHeight: "20px", letterSpacing: "0.1px", fontWeight: "500" }],
+                        "headline-sm": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+                        "body-lg": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+                        "body-md": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+                        "title-lg": ["22px", { lineHeight: "28px", fontWeight: "500" }],
+                        "label-sm": ["11px", { lineHeight: "16px", letterSpacing: "0.5px", fontWeight: "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: theme('colors.background'); }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .icon-fill { font-variation-settings: 'FILL' 1; }
+        
+        /* Custom Scrollbar for Segmented Control */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="text-on-surface min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="bg-surface/80 backdrop-blur-md docked full-width top-0 sticky z-50 border-b border-outline-variant flat no shadows">
+<div class="flex justify-between items-center w-full px-6 py-3 max-w-container-max mx-auto">
+<!-- Brand -->
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined icon-fill text-primary text-[28px]">rocket_launch</span>
+<span class="font-headline-sm text-headline-sm font-bold text-primary">CareerTrack</span>
+</div>
+<!-- Navigation Links (Web) -->
+<nav class="hidden md:flex gap-lg h-full items-center">
+<a class="font-label-lg text-label-lg text-primary border-b-2 border-primary pb-1 font-bold" href="#">Dashboard</a>
+<a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-container-low rounded-lg px-2 py-1" href="#">Job Board</a>
+<a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-container-low rounded-lg px-2 py-1" href="#">Insights</a>
+</nav>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-md">
+<!-- Search (Mobile hidden, integrated in layout below for desktop) -->
+<button class="hidden md:flex items-center gap-sm bg-primary text-on-primary font-label-lg text-label-lg px-4 py-2 rounded-lg hover:opacity-90 transition-opacity active:scale-95 duration-150">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                    Add Application
+                </button>
+<div class="flex gap-sm">
+<button class="text-on-surface-variant hover:text-primary hover:bg-surface-container-low rounded-lg p-2 transition-colors active:scale-95">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary hover:bg-surface-container-low rounded-lg p-2 transition-colors active:scale-95">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+<div class="w-8 h-8 rounded-full bg-surface-container-high overflow-hidden border border-outline-variant cursor-pointer ml-2">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a young professional in a light-filled office, calm and confident expression, high quality corporate saas style avatar, modern lighting, clear focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGMyevQijER5XeGRTucHuu8imbqP4lHyHLLeOi_YpR0IXFISg5xAzfnWX3FaX3Kvcn4A2n5tGF-md8gLKri_-CY8KbGk8Qw2uFkRtuMClHaEWrnS3g9djrrmeXnFvsYYK6AYZKALA6zG87RmGeMym2BBLgqswqcy4Tb9JKnoDYLBEqMDUlIEtJ7KmJd6ZFz7sPulCN49yTl7zXCitHHVA4w194x2Z12Cr3jT7fkWXVaPVlSeFemlr_"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow w-full max-w-container-max mx-auto px-4 md:px-6 py-lg flex flex-col gap-lg">
+<!-- Page Header & Global Actions -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-md">
+<div>
+<h1 class="font-display-lg text-display-lg text-on-surface mb-sm">My Applications</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Track and manage your active job pursuits.</p>
+</div>
+<!-- Mobile Add Button -->
+<button class="md:hidden w-full flex justify-center items-center gap-sm bg-primary text-on-primary font-label-lg text-label-lg px-4 py-3 rounded-lg hover:opacity-90 transition-opacity active:scale-95 duration-150 shadow-sm">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                Add Application
+            </button>
+</div>
+<!-- Filters & Search Bar -->
+<div class="bg-surface-container-lowest rounded-xl p-md border border-outline-variant shadow-[0_1px_3px_rgba(0,0,0,0.05)] flex flex-col gap-md">
+<!-- Top Row: Search & Sort -->
+<div class="flex flex-col md:flex-row gap-md justify-between items-center w-full">
+<!-- Search -->
+<div class="relative w-full md:max-w-md flex-grow">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" placeholder="Search by company or title..." type="text"/>
+</div>
+<!-- Sort & Toggles -->
+<div class="flex items-center gap-md w-full md:w-auto overflow-x-auto hide-scrollbar pb-1 md:pb-0">
+<div class="flex items-center gap-2 min-w-max">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Sort By:</label>
+<select class="bg-surface border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface py-1.5 pl-3 pr-8 focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer appearance-none">
+<option>Updated Date</option>
+<option>Created Date</option>
+</select>
+</div>
+<div class="h-6 w-px bg-outline-variant hidden md:block"></div>
+<label class="flex items-center gap-2 cursor-pointer min-w-max">
+<div class="relative">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-surface-container-high peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-surface after:border-outline-variant after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+</div>
+<span class="font-label-lg text-label-lg text-on-surface-variant">Show closed</span>
+</label>
+</div>
+</div>
+<!-- Bottom Row: Status Segmented Control -->
+<div class="w-full overflow-x-auto hide-scrollbar -mx-md px-md md:mx-0 md:px-0">
+<div class="inline-flex bg-surface-container rounded-lg p-1 min-w-max">
+<button class="px-4 py-1.5 rounded-md bg-surface shadow-sm font-label-lg text-label-lg text-on-surface transition-all">All</button>
+<button class="px-4 py-1.5 rounded-md hover:bg-surface-container-high font-label-lg text-label-lg text-on-surface-variant transition-all">Draft</button>
+<button class="px-4 py-1.5 rounded-md hover:bg-surface-container-high font-label-lg text-label-lg text-on-surface-variant transition-all">Applied</button>
+<button class="px-4 py-1.5 rounded-md hover:bg-surface-container-high font-label-lg text-label-lg text-on-surface-variant transition-all">Interviewing</button>
+<button class="px-4 py-1.5 rounded-md hover:bg-surface-container-high font-label-lg text-label-lg text-on-surface-variant transition-all">Offer</button>
+<button class="px-4 py-1.5 rounded-md hover:bg-surface-container-high font-label-lg text-label-lg text-on-surface-variant transition-all">Rejected</button>
+<button class="px-4 py-1.5 rounded-md hover:bg-surface-container-high font-label-lg text-label-lg text-on-surface-variant transition-all">Withdrawn</button>
+</div>
+</div>
+</div>
+<!-- Job Cards Grid (Bento/Asymmetric style approach) -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-md">
+<!-- Card 1: Interviewing -->
+<div class="group bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col gap-md hover:shadow-[0_4px_6px_rgba(0,0,0,0.07)] transition-shadow duration-200 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
+<div class="flex justify-between items-start">
+<div class="flex gap-md items-center">
+<div class="w-12 h-12 rounded-lg bg-surface-container border border-outline-variant flex items-center justify-center p-2">
+<img alt="CrowdStrike Logo" class="w-full h-full object-contain" data-alt="A stylized logo for CrowdStrike, modern corporate tech identity, crisp lines, red and white tones, clean vector style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2jxPOnqdqtYVB9euwDBXRwZrNDgwcksJaPWoQg4dE1pInj5JncrmlrAlsQW25tbNs40MrpuvMaACrOLnq_nUfkQNPrP-FlP6RssE9zaaTreZHs7bPrMqVLNSfSMNxwUUP-jWylekl1yaoitKZR-0nJmb1N0F9UGndKJUfTAkW61M1YKcs-8zyZhrY1Syez9jQllkBFWRpVHNJd72LLjKFUaK8o8sU_WOhnT3CSWZiWa08cilBA-bj"/>
+</div>
+<div>
+<h3 class="font-title-lg text-title-lg text-on-surface leading-tight">Cyber Security Engineer</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">CrowdStrike</p>
+</div>
+</div>
+<!-- Status Chip: Interviewing (Purple/Primary tint) -->
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-label-sm text-label-sm bg-primary/10 text-primary border border-primary/20">
+                        Interviewing
+                    </span>
+</div>
+<div class="flex flex-wrap gap-sm mt-auto pt-md border-t border-outline-variant/50">
+<div class="flex items-center gap-xs text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined text-[16px]">location_on</span> SF
+                    </div>
+<div class="flex items-center gap-xs text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined text-[16px]">payments</span> $160k - $200k
+                    </div>
+<div class="flex items-center gap-xs text-outline font-label-sm text-label-sm ml-auto">
+<span class="material-symbols-outlined text-[14px]">history</span> 12d ago
+                    </div>
+</div>
+</div>
+<!-- Card 2: Applied -->
+<div class="group bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col gap-md hover:shadow-[0_4px_6px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+<div class="flex justify-between items-start">
+<div class="flex gap-md items-center">
+<div class="w-12 h-12 rounded-lg bg-surface-container border border-outline-variant flex items-center justify-center p-2">
+<img alt="SentinelOne Logo" class="w-full h-full object-contain" data-alt="A stylized logo for SentinelOne, minimalist geometric icon, purple and black tones, clean corporate saas style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXTRwvUR_W4SHrWcF5KdW79J_P9EL7ZYvUwneHUg05RiTpcNbp8dXFy8nGm3WLN_eajo_rP7dxYE93fHt7de8WORZHFYRmZkvliNg8wImd8ULINXmE1fCyD6o4ARgX9gZ-_UybuWANBDs7Gc1GL72CZHqcAAk9soJaROaqBW9ccJUNehWTPZRqjfuCRNR0O5hpzJpeQ69Dc9xN5CnQW8gACpMSaIP8_M97jSHg5KnZ-HlLCQh-G-M7"/>
+</div>
+<div>
+<h3 class="font-title-lg text-title-lg text-on-surface leading-tight">SOC Analyst</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">SentinelOne</p>
+</div>
+</div>
+<!-- Status Chip: Applied (Blue/Secondary tint) -->
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-label-sm text-label-sm bg-secondary/10 text-secondary border border-secondary/20">
+                        Applied
+                    </span>
+</div>
+<div class="flex flex-wrap gap-sm mt-auto pt-md border-t border-outline-variant/50">
+<div class="flex items-center gap-xs text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined text-[16px]">public</span> Remote
+                    </div>
+<div class="flex items-center gap-xs text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined text-[16px]">payments</span> $110k
+                    </div>
+<div class="flex items-center gap-xs text-outline font-label-sm text-label-sm ml-auto">
+<span class="material-symbols-outlined text-[14px]">history</span> 4d ago
+                    </div>
+</div>
+</div>
+<!-- Card 3: Offer -->
+<div class="group bg-surface-container-lowest border border-primary/30 shadow-[0_1px_3px_rgba(0,0,0,0.05)] rounded-xl p-lg flex flex-col gap-md hover:shadow-[0_4px_6px_rgba(0,0,0,0.07)] transition-shadow duration-200 relative">
+<div class="absolute inset-0 bg-gradient-to-br from-tertiary/5 to-transparent rounded-xl pointer-events-none"></div>
+<div class="flex justify-between items-start z-10">
+<div class="flex gap-md items-center">
+<div class="w-12 h-12 rounded-lg bg-surface-container border border-outline-variant flex items-center justify-center p-2">
+<img alt="Palo Alto Networks Logo" class="w-full h-full object-contain" data-alt="A stylized logo for Palo Alto Networks, shield or tech shape, green and dark blue tones, solid vector corporate design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNcycu4CN2n_GtRs4Ze2YHn6kSMbv9J9I-lF6DjFIqmx1CFmfD07AoV1fS2fF3y_xq2hSn4DIzcu64rL0UUog8O7MicXWUnR0evQnFOHK7MNSxzD4BwkgemNih5F-Bqgsj8_7aPJBqD5ucLW-ecsg2g8SVqlYIYBr2Qs0A2nhevT6U3Aurn_6JPKvOdkIKU7iRPdzBFhBo70ufDu4r_WaXFtQtJotKAbJAmPP5tSZTLHkVth-mRpwJ"/>
+</div>
+<div>
+<h3 class="font-title-lg text-title-lg text-on-surface leading-tight">Cloud Security Engineer</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Palo Alto Networks</p>
+</div>
+</div>
+<!-- Status Chip: Offer (Green/Tertiary tint) -->
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-label-sm text-label-sm bg-tertiary/10 text-tertiary border border-tertiary/20">
+                        Offer
+                    </span>
+</div>
+<div class="flex flex-wrap gap-sm mt-auto pt-md border-t border-outline-variant/50 z-10">
+<div class="flex items-center gap-xs text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined text-[16px]">location_on</span> New York
+                    </div>
+<div class="flex items-center gap-xs text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined text-[16px]">payments</span> $185k
+                    </div>
+<div class="flex items-center gap-xs text-outline font-label-sm text-label-sm ml-auto">
+<span class="material-symbols-outlined text-[14px]">history</span> 28d ago
+                    </div>
+</div>
+</div>
+<!-- Card 4: Draft -->
+<div class="group bg-surface border border-outline-variant border-dashed rounded-xl p-lg flex flex-col gap-md hover:border-solid hover:shadow-[0_4px_6px_rgba(0,0,0,0.07)] transition-all duration-200">
+<div class="flex justify-between items-start">
+<div class="flex gap-md items-center opacity-80">
+<div class="w-12 h-12 rounded-lg bg-surface-container border border-outline-variant flex items-center justify-center p-2">
+<img alt="Cloudflare Logo" class="w-full h-full object-contain" data-alt="A stylized logo for Cloudflare, cloud shape, bright orange and white tones, modern tech corporate identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRuj4agMZkGazPxhAhBJVRLYN-Yo0HHUy9alPoCyuBldz6cVoMuNwAOOJPkfaUQ5bpup23gSWXdh34GlF_0kpfFfOCLtsRzGgkMz2r07Y-pgM5eM31HAKdlebDD62hIznYDobwPtlzGy7tNDf8_ZalGPAGOFaTd0F3AWGjFmfYFuKTn1VeyyCfWeXuP5gjbD9TyHhVOwbLpVPfF_LPHMRZsRPD-iTuXXJUfB0vBUt6zt-EJAJZvhH6"/>
+</div>
+<div>
+<h3 class="font-title-lg text-title-lg text-on-surface leading-tight">Security Analyst</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Cloudflare</p>
+</div>
+</div>
+<!-- Status Chip: Draft (Gray/Outline tint) -->
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-label-sm text-label-sm bg-outline/10 text-on-surface-variant border border-outline/20">
+                        Draft
+                    </span>
+</div>
+<div class="flex flex-wrap gap-sm mt-auto pt-md border-t border-outline-variant/30">
+<div class="flex items-center gap-xs text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined text-[16px]">location_on</span> Austin
+                    </div>
+<div class="flex items-center gap-xs text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined text-[16px]">payments</span> $125k
+                    </div>
+<button class="ml-auto font-label-sm text-label-sm text-primary hover:underline">Complete Application</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest full-width py-8 mt-auto border-t border-outline-variant flat no shadows">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-6 max-w-container-max mx-auto gap-4">
+<span class="font-title-md text-title-md font-semibold text-on-surface">CareerTrack AI</span>
+<div class="flex gap-md">
+<a class="font-label-sm text-label-sm text-secondary hover:text-on-surface transition-colors hover:underline opacity-80 hover:opacity-100 transition-opacity" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-secondary hover:text-on-surface transition-colors hover:underline opacity-80 hover:opacity-100 transition-opacity" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm text-secondary hover:text-on-surface transition-colors hover:underline opacity-80 hover:opacity-100 transition-opacity" href="#">Data Disclosure</a>
+</div>
+<span class="font-body-md text-body-md text-secondary">© 2024 CareerTrack AI. All rights reserved.</span>
+</div>
+</footer>
+</body></html>

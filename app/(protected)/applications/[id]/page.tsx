@@ -12,6 +12,13 @@ import { StatusBadge } from '@/components/applications/StatusBadge';
 import { StatusSelector } from '@/components/applications/StatusSelector';
 import { CircularProgress } from '@/components/ui/CircularProgress';
 
+function getInitials(name: string): string {
+  if (!name) return 'JT';
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[1][0]).toUpperCase();
+}
+
 export default function ApplicationDetailPage() {
   const params = useParams();
   const applicationId = params?.id as string;
@@ -168,7 +175,7 @@ export default function ApplicationDetailPage() {
 
   if (!application) {
     return (
-      <div className="container" style={{ maxWidth: '640px', padding: '2rem 1.25rem' }}>
+      <div className="container" style={{ maxWidth: '640px', padding: '2rem 1.5rem' }}>
         <div className="m3-card" style={{ textAlign: 'center', padding: '3rem 1.5rem' }}>
           <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Application Not Found</h2>
           <p style={{ color: 'var(--md-sys-color-on-surface-variant)', marginBottom: '1.5rem' }}>
@@ -182,28 +189,155 @@ export default function ApplicationDetailPage() {
     );
   }
 
+  const initials = getInitials(application.company);
+
   return (
-    <div className="container" style={{ maxWidth: '840px', padding: '1rem 1.25rem' }}>
-      {/* Header and Back Link */}
+    <div className="container" style={{ padding: '1.5rem 1.5rem 3rem 1.5rem' }}>
+      {/* Breadcrumb Navigation */}
+      <div style={{ marginBottom: '1.5rem' }}>
+        <Link href="/dashboard">
+          <TextButton icon="arrow_back">Back to Applications</TextButton>
+        </Link>
+      </div>
+
+      {successMsg && (
+        <div
+          style={{
+            padding: '0.75rem 1rem',
+            borderRadius: '8px',
+            backgroundColor: 'var(--status-offer-bg)',
+            color: 'var(--status-offer-text)',
+            fontSize: '0.875rem',
+            marginBottom: '1.25rem',
+          }}
+        >
+          {successMsg}
+        </div>
+      )}
+
+      {errorMsg && (
+        <div
+          style={{
+            padding: '0.75rem 1rem',
+            borderRadius: '8px',
+            backgroundColor: 'var(--md-sys-color-error-container)',
+            color: 'var(--md-sys-color-on-error-container)',
+            fontSize: '0.875rem',
+            marginBottom: '1.25rem',
+          }}
+        >
+          {errorMsg}
+        </div>
+      )}
+
+      {/* Main Header Banner (Stitch Application Detail style) */}
       <div
+        className="m3-card"
         style={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          marginBottom: '1.5rem',
           flexWrap: 'wrap',
-          gap: '1rem',
+          gap: '1.5rem',
+          marginBottom: '2rem',
         }}
       >
-        <Link href="/dashboard">
-          <TextButton icon="arrow_back">Back to Dashboard</TextButton>
-        </Link>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+          {/* Company Avatar */}
+          <div
+            style={{
+              width: '64px',
+              height: '64px',
+              borderRadius: '14px',
+              backgroundColor: 'var(--md-sys-color-surface-container)',
+              border: '1px solid var(--md-sys-color-outline-variant)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontWeight: 700,
+              fontSize: '1.25rem',
+              color: 'var(--md-sys-color-primary)',
+              flexShrink: 0,
+            }}
+          >
+            {initials}
+          </div>
 
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <div>
+            <h1
+              style={{
+                fontSize: '1.75rem',
+                fontWeight: 700,
+                color: 'var(--md-sys-color-on-surface)',
+                lineHeight: 1.2,
+                marginBottom: '0.35rem',
+              }}
+            >
+              {application.title}
+            </h1>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.75rem',
+                fontSize: '0.9375rem',
+                color: 'var(--md-sys-color-on-surface-variant)',
+                flexWrap: 'wrap',
+              }}
+            >
+              <span style={{ fontWeight: 600, color: 'var(--md-sys-color-on-surface)' }}>
+                {application.company}
+              </span>
+              {application.job_url && (
+                <>
+                  <span>•</span>
+                  <a
+                    href={application.job_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      color: 'var(--md-sys-color-primary)',
+                      textDecoration: 'underline',
+                      fontWeight: 500,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.25rem',
+                    }}
+                  >
+                    View Original Posting
+                    <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>
+                      open_in_new
+                    </span>
+                  </a>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Header Right: Status Selector + Actions */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+          <StatusSelector
+            applicationId={application.id}
+            currentStatus={application.status}
+            onStatusChange={(newStatus) => {
+              setApplication((prev) => (prev ? { ...prev, status: newStatus } : null));
+              setHistory((prev) => [
+                {
+                  id: Math.random().toString(),
+                  application_id: application.id,
+                  status: newStatus,
+                  changed_at: new Date().toISOString(),
+                },
+                ...prev,
+              ]);
+            }}
+          />
+
           {!isEditing ? (
             <>
               <OutlinedButton icon="edit" onClick={() => setIsEditing(true)}>
-                Edit Details
+                Edit
               </OutlinedButton>
               <OutlinedButton
                 icon="delete"
@@ -230,356 +364,387 @@ export default function ApplicationDetailPage() {
                 Cancel
               </OutlinedButton>
               <FilledButton icon="save" onClick={handleSaveEdit} disabled={saving}>
-                {saving ? <CircularProgress /> : 'Save Changes'}
+                {saving ? <CircularProgress /> : 'Save'}
               </FilledButton>
             </>
           )}
         </div>
       </div>
 
-      {successMsg && (
-        <div
-          style={{
-            padding: '0.75rem 1rem',
-            borderRadius: '8px',
-            backgroundColor: 'var(--status-offer-bg)',
-            color: 'var(--status-offer-text)',
-            fontSize: '0.875rem',
-            marginBottom: '1rem',
-          }}
-        >
-          {successMsg}
-        </div>
-      )}
-
-      {errorMsg && (
-        <div
-          style={{
-            padding: '0.75rem 1rem',
-            borderRadius: '8px',
-            backgroundColor: 'var(--md-sys-color-error-container)',
-            color: 'var(--md-sys-color-on-error-container)',
-            fontSize: '0.875rem',
-            marginBottom: '1rem',
-          }}
-        >
-          {errorMsg}
-        </div>
-      )}
-
-      {/* Main Details Card */}
+      {/* 2-Column Main Content Layout */}
       <div
-        className="m3-card"
         style={{
-          display: 'flex',
-          flexDirection: 'column',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
           gap: '1.5rem',
-          marginBottom: '2rem',
+          alignItems: 'start',
         }}
       >
-        {!isEditing ? (
-          <>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'flex-start',
-                flexWrap: 'wrap',
-                gap: '1rem',
-                borderBottom: '1px solid var(--md-sys-color-outline-variant)',
-                paddingBottom: '1.25rem',
-              }}
-            >
-              <div>
-                <h1
-                  style={{
-                    fontSize: '1.75rem',
-                    fontWeight: 700,
-                    color: 'var(--md-sys-color-on-surface)',
-                    marginBottom: '0.25rem',
-                  }}
-                >
-                  {application.title}
-                </h1>
-                <p
+        {/* Left Column: Bento Grid Info + Notes + Raw JD */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', flex: '2 1 500px' }}>
+          {!isEditing ? (
+            <>
+              {/* Bento Info Grid */}
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+                  gap: '1rem',
+                }}
+              >
+                {/* Location */}
+                <div className="m3-bento-tile">
+                  <span
+                    style={{
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
+                      textTransform: 'uppercase',
+                      color: 'var(--md-sys-color-secondary)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.35rem',
+                      marginBottom: '0.35rem',
+                    }}
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: '15px' }}>
+                      location_on
+                    </span>
+                    Location
+                  </span>
+                  <p style={{ fontSize: '1rem', fontWeight: 600 }}>
+                    {application.location || 'Not specified'}
+                  </p>
+                </div>
+
+                {/* Salary */}
+                <div className="m3-bento-tile">
+                  <span
+                    style={{
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
+                      textTransform: 'uppercase',
+                      color: 'var(--md-sys-color-secondary)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.35rem',
+                      marginBottom: '0.35rem',
+                    }}
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: '15px' }}>
+                      payments
+                    </span>
+                    Salary Range
+                  </span>
+                  <p style={{ fontSize: '1rem', fontWeight: 600 }}>
+                    {application.salary_range || 'Not specified'}
+                  </p>
+                </div>
+
+                {/* Seniority */}
+                <div className="m3-bento-tile">
+                  <span
+                    style={{
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
+                      textTransform: 'uppercase',
+                      color: 'var(--md-sys-color-secondary)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.35rem',
+                      marginBottom: '0.35rem',
+                    }}
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: '15px' }}>
+                      stairs
+                    </span>
+                    Seniority
+                  </span>
+                  <p style={{ fontSize: '1rem', fontWeight: 600 }}>
+                    {application.seniority || 'Not specified'}
+                  </p>
+                </div>
+
+                {/* Source */}
+                <div className="m3-bento-tile">
+                  <span
+                    style={{
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
+                      textTransform: 'uppercase',
+                      color: 'var(--md-sys-color-secondary)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.35rem',
+                      marginBottom: '0.35rem',
+                    }}
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: '15px' }}>
+                      share
+                    </span>
+                    Source Type
+                  </span>
+                  <p style={{ fontSize: '1rem', fontWeight: 600, textTransform: 'capitalize' }}>
+                    {application.source_type || 'Manual'}
+                  </p>
+                </div>
+
+                {/* Timestamps Tile (Full Row) */}
+                <div className="m3-bento-tile" style={{ gridColumn: '1 / -1' }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      flexWrap: 'wrap',
+                      gap: '1rem',
+                    }}
+                  >
+                    <div>
+                      <span
+                        style={{
+                          fontSize: '0.75rem',
+                          color: 'var(--md-sys-color-secondary)',
+                          display: 'block',
+                        }}
+                      >
+                        Created On
+                      </span>
+                      <span style={{ fontSize: '0.9375rem', fontWeight: 500 }}>
+                        {new Date(application.created_at).toLocaleDateString(undefined, {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                        })}
+                      </span>
+                    </div>
+
+                    <div
+                      style={{
+                        width: '1px',
+                        height: '24px',
+                        backgroundColor: 'var(--md-sys-color-outline-variant)',
+                      }}
+                    />
+
+                    <div>
+                      <span
+                        style={{
+                          fontSize: '0.75rem',
+                          color: 'var(--md-sys-color-secondary)',
+                          display: 'block',
+                        }}
+                      >
+                        Last Updated
+                      </span>
+                      <span style={{ fontSize: '0.9375rem', fontWeight: 500 }}>
+                        {new Date(application.updated_at).toLocaleDateString(undefined, {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                        })}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Notes Card */}
+              <div className="m3-card">
+                <h3
                   style={{
                     fontSize: '1.125rem',
                     fontWeight: 600,
-                    color: 'var(--md-sys-color-primary)',
-                  }}
-                >
-                  {application.company}
-                </p>
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
-                <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
-                  Current Status:
-                </span>
-                <StatusSelector
-                  applicationId={application.id}
-                  currentStatus={application.status}
-                  onStatusChange={(newStatus) => {
-                    setApplication((prev) => (prev ? { ...prev, status: newStatus } : null));
-                    setHistory((prev) => [
-                      {
-                        id: Math.random().toString(),
-                        application_id: application.id,
-                        status: newStatus,
-                        changed_at: new Date().toISOString(),
-                      },
-                      ...prev,
-                    ]);
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* Grid of Key Info */}
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                gap: '1.25rem',
-              }}
-            >
-              <div>
-                <span
-                  style={{
-                    fontSize: '0.8125rem',
-                    color: 'var(--md-sys-color-on-surface-variant)',
-                    display: 'block',
-                    marginBottom: '0.25rem',
-                  }}
-                >
-                  Location
-                </span>
-                <p style={{ fontWeight: 500 }}>{application.location || 'Not specified'}</p>
-              </div>
-
-              <div>
-                <span
-                  style={{
-                    fontSize: '0.8125rem',
-                    color: 'var(--md-sys-color-on-surface-variant)',
-                    display: 'block',
-                    marginBottom: '0.25rem',
-                  }}
-                >
-                  Salary / Compensation
-                </span>
-                <p style={{ fontWeight: 500 }}>{application.salary_range || 'Not specified'}</p>
-              </div>
-
-              <div>
-                <span
-                  style={{
-                    fontSize: '0.8125rem',
-                    color: 'var(--md-sys-color-on-surface-variant)',
-                    display: 'block',
-                    marginBottom: '0.25rem',
-                  }}
-                >
-                  Seniority Level
-                </span>
-                <p style={{ fontWeight: 500 }}>{application.seniority || 'Not specified'}</p>
-              </div>
-
-              <div>
-                <span
-                  style={{
-                    fontSize: '0.8125rem',
-                    color: 'var(--md-sys-color-on-surface-variant)',
-                    display: 'block',
-                    marginBottom: '0.25rem',
-                  }}
-                >
-                  Job Posting URL
-                </span>
-                {application.job_url ? (
-                  <a
-                    href={application.job_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      color: 'var(--md-sys-color-primary)',
-                      textDecoration: 'underline',
-                      fontWeight: 500,
-                      wordBreak: 'break-all',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '0.25rem',
-                    }}
-                  >
-                    Open Link
-                    <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>
-                      open_in_new
-                    </span>
-                  </a>
-                ) : (
-                  <p style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>None</p>
-                )}
-              </div>
-            </div>
-
-            {/* Notes */}
-            {application.notes && (
-              <div>
-                <h3
-                  style={{
-                    fontSize: '1rem',
-                    fontWeight: 600,
-                    marginBottom: '0.5rem',
+                    marginBottom: '0.75rem',
                     color: 'var(--md-sys-color-on-surface)',
                   }}
                 >
                   Notes & Details
                 </h3>
-                <div
-                  style={{
-                    padding: '1rem',
-                    borderRadius: '8px',
-                    backgroundColor: 'var(--md-sys-color-surface-container)',
-                    whiteSpace: 'pre-wrap',
-                    fontSize: '0.9375rem',
-                    lineHeight: 1.5,
-                  }}
-                >
-                  {application.notes}
-                </div>
-              </div>
-            )}
-
-            {/* Raw JD (Accordion / Box) */}
-            {application.raw_jd && (
-              <div>
-                <h3
-                  style={{
-                    fontSize: '1rem',
-                    fontWeight: 600,
-                    marginBottom: '0.5rem',
-                    color: 'var(--md-sys-color-on-surface)',
-                  }}
-                >
-                  Original Job Description (Preserved)
-                </h3>
-                <details
-                  style={{
-                    padding: '0.75rem 1rem',
-                    borderRadius: '8px',
-                    backgroundColor: 'var(--md-sys-color-surface-container-highest)',
-                    fontSize: '0.875rem',
-                  }}
-                >
-                  <summary style={{ cursor: 'pointer', fontWeight: 500 }}>
-                    Click to expand full original text
-                  </summary>
+                {application.notes ? (
                   <div
                     style={{
-                      marginTop: '0.75rem',
-                      maxHeight: '300px',
-                      overflowY: 'auto',
+                      padding: '1rem',
+                      borderRadius: '10px',
+                      backgroundColor: 'var(--md-sys-color-surface-container-low)',
                       whiteSpace: 'pre-wrap',
-                      lineHeight: 1.5,
-                      color: 'var(--md-sys-color-on-surface-variant)',
+                      fontSize: '0.9375rem',
+                      lineHeight: 1.6,
                     }}
                   >
-                    {application.raw_jd}
+                    {application.notes}
                   </div>
-                </details>
+                ) : (
+                  <p style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '0.875rem' }}>
+                    No additional notes. Click Edit to add notes, referral info, or salary discussions.
+                  </p>
+                )}
               </div>
-            )}
-          </>
-        ) : (
-          /* Editable Form */
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Edit Job Application</h2>
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-                gap: '1.25rem',
-              }}
-            >
-              <TextField
-                label="Company Name *"
-                value={company}
-                onValueChange={setCompany}
-                required
-              />
-              <TextField label="Job Title *" value={title} onValueChange={setTitle} required />
-              <TextField label="Location" value={location} onValueChange={setLocation} />
-              <TextField
-                label="Salary / Compensation"
-                value={salaryRange}
-                onValueChange={setSalaryRange}
-              />
-              <TextField
-                label="Seniority Level"
-                value={seniority}
-                onValueChange={setSeniority}
-              />
-              <TextField
-                label="Job Posting URL"
-                type="url"
-                value={jobUrl}
-                onValueChange={setJobUrl}
-              />
-            </div>
-            <TextArea
-              label="Notes & Details"
-              value={notes}
-              onValueChange={setNotes}
-              rows={4}
-            />
-          </div>
-        )}
-      </div>
 
-      {/* Status History Timeline */}
-      <div className="m3-card">
-        <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1rem' }}>
-          Status Timeline
-        </h2>
-        {history.length === 0 ? (
-          <p style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '0.9375rem' }}>
-            No status changes recorded yet.
-          </p>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {history.map((entry, idx) => (
+              {/* Collapsible Preserved Raw JD */}
+              {application.raw_jd && (
+                <div className="m3-card">
+                  <h3
+                    style={{
+                      fontSize: '1.125rem',
+                      fontWeight: 600,
+                      marginBottom: '0.75rem',
+                      color: 'var(--md-sys-color-on-surface)',
+                    }}
+                  >
+                    Original Job Description
+                  </h3>
+                  <details
+                    style={{
+                      padding: '0.875rem 1rem',
+                      borderRadius: '10px',
+                      backgroundColor: 'var(--md-sys-color-surface-container-high)',
+                      fontSize: '0.875rem',
+                    }}
+                  >
+                    <summary style={{ cursor: 'pointer', fontWeight: 600 }}>
+                      Click to expand preserved job description
+                    </summary>
+                    <div
+                      style={{
+                        marginTop: '1rem',
+                        maxHeight: '350px',
+                        overflowY: 'auto',
+                        whiteSpace: 'pre-wrap',
+                        lineHeight: 1.6,
+                        color: 'var(--md-sys-color-on-surface-variant)',
+                      }}
+                    >
+                      {application.raw_jd}
+                    </div>
+                  </details>
+                </div>
+              )}
+            </>
+          ) : (
+            /* Edit Form */
+            <div className="m3-card" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Edit Job Details</h2>
               <div
-                key={entry.id || idx}
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '1rem',
-                  paddingBottom: idx !== history.length - 1 ? '1rem' : 0,
-                  borderBottom:
-                    idx !== history.length - 1
-                      ? '1px solid var(--md-sys-color-outline-variant)'
-                      : 'none',
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+                  gap: '1.25rem',
                 }}
               >
-                <StatusBadge status={entry.status} size="small" />
-                <span
-                  style={{
-                    fontSize: '0.875rem',
-                    color: 'var(--md-sys-color-on-surface-variant)',
-                  }}
-                >
-                  {new Date(entry.changed_at).toLocaleString(undefined, {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
-                </span>
+                <TextField
+                  label="Company Name *"
+                  value={company}
+                  onValueChange={setCompany}
+                  required
+                />
+                <TextField label="Job Title *" value={title} onValueChange={setTitle} required />
+                <TextField label="Location" value={location} onValueChange={setLocation} />
+                <TextField
+                  label="Salary Range"
+                  value={salaryRange}
+                  onValueChange={setSalaryRange}
+                />
+                <TextField
+                  label="Seniority Level"
+                  value={seniority}
+                  onValueChange={setSeniority}
+                />
+                <TextField
+                  label="Job Posting URL"
+                  type="url"
+                  value={jobUrl}
+                  onValueChange={setJobUrl}
+                />
               </div>
-            ))}
+              <TextArea
+                label="Notes & Details"
+                value={notes}
+                onValueChange={setNotes}
+                rows={5}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Right Column: Status Timeline Card */}
+        <div style={{ flex: '1 1 300px' }}>
+          <div className="m3-card">
+            <h3
+              style={{
+                fontSize: '1.125rem',
+                fontWeight: 600,
+                marginBottom: '1.25rem',
+                color: 'var(--md-sys-color-on-surface)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+              }}
+            >
+              <span className="material-symbols-outlined" style={{ color: 'var(--md-sys-color-primary)' }}>
+                timeline
+              </span>
+              Status Timeline
+            </h3>
+
+            {history.length === 0 ? (
+              <p style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '0.875rem' }}>
+                No status changes recorded yet.
+              </p>
+            ) : (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '1rem',
+                  position: 'relative',
+                }}
+              >
+                {history.map((entry, idx) => (
+                  <div
+                    key={entry.id || idx}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.25rem',
+                      paddingLeft: '1rem',
+                      borderLeft: '2px solid var(--md-sys-color-primary)',
+                      position: 'relative',
+                    }}
+                  >
+                    {/* Timeline bullet dot */}
+                    <div
+                      style={{
+                        position: 'absolute',
+                        left: '-6px',
+                        top: '4px',
+                        width: '10px',
+                        height: '10px',
+                        borderRadius: '50%',
+                        backgroundColor: 'var(--md-sys-color-primary)',
+                      }}
+                    />
+                    <StatusBadge status={entry.status} size="small" />
+                    <span
+                      style={{
+                        fontSize: '0.75rem',
+                        color: 'var(--md-sys-color-on-surface-variant)',
+                        marginTop: '0.15rem',
+                      }}
+                    >
+                      {new Date(entry.changed_at).toLocaleString(undefined, {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
 
       {/* Delete Confirmation Dialog */}
@@ -598,7 +763,8 @@ export default function ApplicationDetailPage() {
       >
         <p style={{ color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.5 }}>
           Are you sure you want to delete <strong>{application.title}</strong> at{' '}
-          <strong>{application.company}</strong>? This action is permanent and cannot be undone.
+          <strong>{application.company}</strong>? All associated status history will be permanently
+          removed.
         </p>
       </Dialog>
     </div>

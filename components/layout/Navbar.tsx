@@ -2,13 +2,14 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { FilledButton, OutlinedButton, TextButton } from '@/components/ui/Button';
 
 export function Navbar() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const pathname = usePathname();
   const router = useRouter();
   const supabase = createClient();
 
@@ -43,11 +44,12 @@ export function Navbar() {
   return (
     <header
       style={{
-        backgroundColor: 'var(--md-sys-color-surface-container-low)',
+        backgroundColor: 'var(--md-sys-color-surface-container-lowest)',
         borderBottom: '1px solid var(--md-sys-color-outline-variant)',
         position: 'sticky',
         top: 0,
         zIndex: 50,
+        backdropFilter: 'blur(8px)',
       }}
     >
       <div
@@ -56,37 +58,47 @@ export function Navbar() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          height: '64px',
+          height: '68px',
         }}
       >
+        {/* Brand */}
         <Link
           href={userEmail ? '/dashboard' : '/'}
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '0.5rem',
+            gap: '0.625rem',
             fontWeight: 700,
-            fontSize: '1.25rem',
+            fontSize: '1.35rem',
             color: 'var(--md-sys-color-primary)',
+            letterSpacing: '-0.02em',
           }}
         >
-          <span className="material-symbols-outlined" style={{ fontSize: '28px' }}>
+          <span className="material-symbols-outlined" style={{ fontSize: '26px' }}>
             work
           </span>
           <span>JobTrail</span>
         </Link>
 
+        {/* Navigation Actions */}
         <nav style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           {!loading && (
             <>
               {userEmail ? (
                 <>
                   <Link href="/dashboard">
-                    <TextButton icon="dashboard">Dashboard</TextButton>
+                    <TextButton
+                      icon="dashboard"
+                      className={pathname === '/dashboard' ? 'active' : ''}
+                    >
+                      Dashboard
+                    </TextButton>
                   </Link>
+
                   <Link href="/applications/new">
-                    <FilledButton icon="add">New Application</FilledButton>
+                    <FilledButton icon="add">Add Application</FilledButton>
                   </Link>
+
                   <TextButton icon="logout" onClick={handleLogout}>
                     Log out
                   </TextButton>

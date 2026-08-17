@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Add Application - CareerTrack</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#fbf8ff",
+                        "outline": "#757684",
+                        "on-surface": "#1a1b22",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-highest": "#e3e1ea",
+                        "primary": "#24389c",
+                        "secondary-container": "#d0e1fb",
+                        "on-tertiary-container": "#ffc7a2",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "surface-dim": "#dbd9e2",
+                        "background": "#fbf8ff",
+                        "on-error": "#ffffff",
+                        "surface-container": "#efedf6",
+                        "on-secondary-fixed": "#0b1c30",
+                        "outline-variant": "#c5c5d4",
+                        "surface-tint": "#4355b9",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "surface-container-low": "#f4f2fc",
+                        "on-primary-container": "#cacfff",
+                        "surface-container-lowest": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-surface-variant": "#454652",
+                        "primary-fixed-dim": "#bac3ff",
+                        "tertiary": "#6c3400",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "secondary": "#505f76",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "inverse-surface": "#2f3037",
+                        "primary-fixed": "#dee0ff",
+                        "inverse-primary": "#bac3ff",
+                        "on-primary-fixed": "#00105c",
+                        "inverse-on-surface": "#f2eff9",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed": "#d3e4fe",
+                        "on-secondary-container": "#54647a",
+                        "surface-bright": "#fbf8ff",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#ffdcc6",
+                        "surface-container-high": "#e9e7f0",
+                        "primary-container": "#3f51b5",
+                        "surface-variant": "#e3e1ea",
+                        "tertiary-container": "#8f4700",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed": "#301400",
+                        "on-background": "#1a1b22"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "container-max": "1280px",
+                        "xl": "32px",
+                        "base": "4px",
+                        "xs": "4px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Inter"],
+                        "title-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "title-md": ["16px", { "lineHeight": "24px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "display-lg": ["57px", { "lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500" }],
+                        "headline-sm": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "title-lg": ["22px", { "lineHeight": "28px", "fontWeight": "500" }],
+                        "label-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        [data-weight="fill"] {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        .tab-indicator {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .slide-fade-enter {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        .slide-fade-enter-active {
+            transition: all 0.3s ease-out;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .slide-fade-exit {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .slide-fade-exit-active {
+            transition: all 0.2s ease-in;
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-lg">
+<!-- TopNavBar (Transactional Intent - Suppressed) -->
+<!-- Navigation is suppressed because this is a focused "Add Application" task-focused page with a "Close/Cancel" action implying temporary departure from main flow. -->
+<main class="flex-grow flex flex-col items-center pt-xl px-md sm:px-lg pb-xl max-w-container-max mx-auto w-full">
+<!-- Header Section -->
+<div class="w-full max-w-[600px] mb-lg flex justify-between items-center slide-fade-enter-active">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-xs">Add Application</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Let AI parse the details so you can focus on applying.</p>
+</div>
+<a aria-label="Close" class="p-2 rounded-full hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="close">close</span>
+</a>
+</div>
+<!-- Main Content Canvas -->
+<div class="w-full max-w-[600px] bg-surface-container-lowest rounded-xl border border-outline-variant/30 shadow-[0px_1px_3px_rgba(0,0,0,0.05)] overflow-hidden slide-fade-enter-active" style="transition-delay: 50ms;">
+<!-- Segmented Control -->
+<div class="p-sm bg-surface-container-low border-b border-outline-variant/30">
+<div class="relative flex p-1 bg-surface-container rounded-lg" role="tablist">
+<!-- Background Indicator -->
+<div class="absolute inset-y-1 left-1 w-[calc(50%-4px)] bg-surface-container-lowest rounded-md shadow-sm tab-indicator" id="tab-indicator" style="transform: translateX(0%);"></div>
+<button aria-selected="true" class="relative z-10 flex-1 py-2 text-center font-label-lg text-label-lg text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-inset rounded-md transition-colors" id="tab-link" onclick="switchTab('link')" role="tab">
+<span class="flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="link">link</span>
+                            Paste Link
+                        </span>
+</button>
+<button aria-selected="false" class="relative z-10 flex-1 py-2 text-center font-label-lg text-label-lg text-on-surface-variant focus:outline-none focus:ring-2 focus:ring-primary focus:ring-inset rounded-md transition-colors hover:text-on-surface" id="tab-jd" onclick="switchTab('jd')" role="tab">
+<span class="flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="description">description</span>
+                            Paste Job Description
+                        </span>
+</button>
+</div>
+</div>
+<!-- Forms Container -->
+<div class="p-lg relative min-h-[300px]">
+<!-- Mode A: Paste Link -->
+<div class="absolute inset-x-lg top-lg transition-opacity duration-300 opacity-100 z-10" id="panel-link" role="tabpanel">
+<div class="space-y-md">
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs" for="job-url">Job Posting URL</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline" data-icon="public">public</span>
+</span>
+<input class="block w-full pl-10 pr-3 py-3 border border-outline-variant rounded-lg bg-surface focus:ring-2 focus:ring-primary focus:border-primary font-body-lg text-body-lg text-on-surface placeholder-outline-variant" id="job-url" placeholder="https://www.linkedin.com/jobs/view/..." type="url"/>
+</div>
+<p class="mt-2 font-body-md text-body-md text-on-surface-variant flex items-start gap-1">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="auto_awesome">auto_awesome</span>
+                                Paste a link from LinkedIn, Indeed, or the company website. Our AI will automatically extract the title, company, and key requirements.
+                            </p>
+</div>
+<div class="pt-sm">
+<button class="w-full flex justify-center items-center gap-2 py-3 px-4 bg-primary text-on-primary rounded-lg font-label-lg text-label-lg hover:bg-primary/90 hover:shadow-[0px_4px_6px_rgba(0,0,0,0.07)] active:scale-[0.98] transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background">
+<span class="material-symbols-outlined" data-icon="magic_button">magic_button</span>
+                                Parse with AI
+                            </button>
+</div>
+</div>
+</div>
+<!-- Mode B: Paste Job Description -->
+<div class="absolute inset-x-lg top-lg transition-opacity duration-300 opacity-0 pointer-events-none z-0" id="panel-jd" role="tabpanel">
+<div class="space-y-md">
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs" for="job-description">Job Description Text</label>
+<textarea class="block w-full p-3 border border-outline-variant rounded-lg bg-surface focus:ring-2 focus:ring-primary focus:border-primary font-body-lg text-body-lg text-on-surface placeholder-outline-variant resize-none" id="job-description" placeholder="Paste the full job description here..." rows="6"></textarea>
+<p class="mt-2 font-body-md text-body-md text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="info">info</span>
+                                Useful for PDFs or private job boards where links aren't accessible.
+                            </p>
+</div>
+<div class="pt-sm">
+<button class="w-full flex justify-center items-center gap-2 py-3 px-4 bg-primary text-on-primary rounded-lg font-label-lg text-label-lg hover:bg-primary/90 hover:shadow-[0px_4px_6px_rgba(0,0,0,0.07)] active:scale-[0.98] transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background">
+<span class="material-symbols-outlined" data-icon="document_scanner">document_scanner</span>
+                                Parse Text with AI
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Fallback/Manual Entry Link -->
+<div class="mt-lg text-center slide-fade-enter-active" style="transition-delay: 100ms;">
+<button class="font-label-lg text-label-lg text-secondary hover:text-primary transition-colors focus:outline-none underline underline-offset-4">
+                Enter details manually instead
+            </button>
+</div>
+</main>
+<!-- Footer (Minimal) -->
+<footer class="bg-surface-container-lowest dark:bg-surface-dim border-t border-outline-variant dark:border-on-surface-variant/10 full-width py-8 mt-auto">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-6 max-w-container-max mx-auto gap-4">
+<div class="font-title-md text-title-md font-semibold text-on-surface">
+                © 2024 CareerTrack AI. All rights reserved.
+            </div>
+<div class="flex gap-4">
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-outline hover:text-on-surface transition-colors hover:underline opacity-80 hover:opacity-100 transition-opacity" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-outline hover:text-on-surface transition-colors hover:underline opacity-80 hover:opacity-100 transition-opacity" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-outline hover:text-on-surface transition-colors hover:underline opacity-80 hover:opacity-100 transition-opacity" href="#">Data Disclosure</a>
+</div>
+</div>
+</footer>
+<script>
+        function switchTab(mode) {
+            const indicator = document.getElementById('tab-indicator');
+            const linkTab = document.getElementById('tab-link');
+            const jdTab = document.getElementById('tab-jd');
+            const linkPanel = document.getElementById('panel-link');
+            const jdPanel = document.getElementById('panel-jd');
+
+            if (mode === 'link') {
+                // Update indicator
+                indicator.style.transform = 'translateX(0%)';
+                
+                // Update tab styles
+                linkTab.classList.replace('text-on-surface-variant', 'text-primary');
+                jdTab.classList.replace('text-primary', 'text-on-surface-variant');
+                linkTab.setAttribute('aria-selected', 'true');
+                jdTab.setAttribute('aria-selected', 'false');
+
+                // Update panels
+                jdPanel.classList.remove('opacity-100', 'z-10');
+                jdPanel.classList.add('opacity-0', 'pointer-events-none', 'z-0');
+                
+                setTimeout(() => {
+                    linkPanel.classList.remove('opacity-0', 'pointer-events-none', 'z-0');
+                    linkPanel.classList.add('opacity-100', 'z-10');
+                }, 150); // slight delay for crossfade effect
+
+            } else {
+                // Update indicator
+                indicator.style.transform = 'translateX(calc(100% + 4px))';
+                
+                // Update tab styles
+                jdTab.classList.replace('text-on-surface-variant', 'text-primary');
+                linkTab.classList.replace('text-primary', 'text-on-surface-variant');
+                jdTab.setAttribute('aria-selected', 'true');
+                linkTab.setAttribute('aria-selected', 'false');
+
+                // Update panels
+                linkPanel.classList.remove('opacity-100', 'z-10');
+                linkPanel.classList.add('opacity-0', 'pointer-events-none', 'z-0');
+                
+                setTimeout(() => {
+                    jdPanel.classList.remove('opacity-0', 'pointer-events-none', 'z-0');
+                    jdPanel.classList.add('opacity-100', 'z-10');
+                }, 150);
+            }
+        }
+    </script>
+</body></html>

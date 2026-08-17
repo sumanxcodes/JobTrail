@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sign Up - CareerTrack AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface": "#fbf8ff",
+                      "outline": "#757684",
+                      "on-surface": "#1a1b22",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-highest": "#e3e1ea",
+                      "primary": "#24389c",
+                      "secondary-container": "#d0e1fb",
+                      "on-tertiary-container": "#ffc7a2",
+                      "on-tertiary-fixed-variant": "#713700",
+                      "surface-dim": "#dbd9e2",
+                      "background": "#fbf8ff",
+                      "on-error": "#ffffff",
+                      "surface-container": "#efedf6",
+                      "on-secondary-fixed": "#0b1c30",
+                      "outline-variant": "#c5c5d4",
+                      "surface-tint": "#4355b9",
+                      "on-primary-fixed-variant": "#293ca0",
+                      "surface-container-low": "#f4f2fc",
+                      "on-primary-container": "#cacfff",
+                      "surface-container-lowest": "#ffffff",
+                      "error-container": "#ffdad6",
+                      "on-surface-variant": "#454652",
+                      "primary-fixed-dim": "#bac3ff",
+                      "tertiary": "#6c3400",
+                      "secondary-fixed-dim": "#b7c8e1",
+                      "secondary": "#505f76",
+                      "on-secondary-fixed-variant": "#38485d",
+                      "inverse-surface": "#2f3037",
+                      "primary-fixed": "#dee0ff",
+                      "inverse-primary": "#bac3ff",
+                      "on-primary-fixed": "#00105c",
+                      "inverse-on-surface": "#f2eff9",
+                      "error": "#ba1a1a",
+                      "tertiary-fixed-dim": "#ffb784",
+                      "on-primary": "#ffffff",
+                      "secondary-fixed": "#d3e4fe",
+                      "on-secondary-container": "#54647a",
+                      "surface-bright": "#fbf8ff",
+                      "on-error-container": "#93000a",
+                      "tertiary-fixed": "#ffdcc6",
+                      "surface-container-high": "#e9e7f0",
+                      "primary-container": "#3f51b5",
+                      "surface-variant": "#e3e1ea",
+                      "tertiary-container": "#8f4700",
+                      "on-secondary": "#ffffff",
+                      "on-tertiary-fixed": "#301400",
+                      "on-background": "#1a1b22"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "lg": "24px",
+                      "sm": "8px",
+                      "md": "16px",
+                      "container-max": "1280px",
+                      "xl": "32px",
+                      "base": "4px",
+                      "xs": "4px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": [
+                              "Inter"
+                      ],
+                      "title-md": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "label-lg": [
+                              "Inter"
+                      ],
+                      "headline-sm": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "title-lg": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "title-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "display-lg": [
+                              "57px",
+                              {
+                                      "lineHeight": "64px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-lg": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.1px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-sm": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "title-lg": [
+                              "22px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "label-sm": [
+                              "11px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.5px",
+                                      "fontWeight": "500"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+          .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+          }
+          .material-symbols-outlined.fill {
+            font-variation-settings:
+            'FILL' 1,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+          }
+      </style>
+</head>
+<body class="bg-surface h-full flex flex-col justify-center items-center text-on-surface p-md">
+<div class="w-full max-w-md bg-surface-container-lowest rounded-xl p-xl shadow-[0px_10px_15px_rgba(0,0,0,0.1)] border border-outline-variant/30 flex flex-col gap-lg relative overflow-hidden">
+<!-- Abstract Decoration -->
+<div class="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 bg-primary-container rounded-full blur-3xl opacity-30 pointer-events-none"></div>
+<!-- Header -->
+<div class="flex flex-col items-center text-center gap-sm mt-sm">
+<div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center text-on-primary mb-2 shadow-[0px_4px_6px_rgba(0,0,0,0.07)]">
+<span class="material-symbols-outlined fill text-[28px]" data-icon="rocket_launch">rocket_launch</span>
+</div>
+<h1 class="font-headline-sm text-headline-sm text-on-surface">Create account</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Join CareerTrack AI today.</p>
+</div>
+<!-- Form -->
+<form class="flex flex-col gap-md">
+<!-- Email Field -->
+<div class="relative group">
+<input class="block w-full px-md py-3 text-on-surface bg-transparent border border-outline rounded-lg appearance-none focus:outline-none focus:ring-0 focus:border-primary peer font-body-lg text-body-lg" id="email" placeholder=" " required="" type="email"/>
+<label class="absolute font-body-md text-body-md text-on-surface-variant duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-surface-container-lowest px-2 peer-focus:px-2 peer-focus:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-3" for="email">Email address</label>
+</div>
+<!-- Password Field -->
+<div class="relative group">
+<input class="block w-full px-md py-3 text-on-surface bg-transparent border border-outline rounded-lg appearance-none focus:outline-none focus:ring-0 focus:border-primary peer font-body-lg text-body-lg" id="password" placeholder=" " required="" type="password"/>
+<label class="absolute font-body-md text-body-md text-on-surface-variant duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-surface-container-lowest px-2 peer-focus:px-2 peer-focus:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-3" for="password">Password</label>
+<button aria-label="Toggle password visibility" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-outline hover:text-on-surface-variant focus:outline-none" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="visibility">visibility</span>
+</button>
+</div>
+<!-- Password Requirements Checklist (Simulated State) -->
+<div class="flex flex-col gap-1 px-1">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-[16px] fill" data-icon="check_circle">check_circle</span>
+<span class="font-label-sm text-label-sm">At least 8 characters</span>
+</div>
+<div class="flex items-center gap-2 text-outline-variant">
+<span class="material-symbols-outlined text-[16px]" data-icon="radio_button_unchecked">radio_button_unchecked</span>
+<span class="font-label-sm text-label-sm">Contains a number</span>
+</div>
+<div class="flex items-center gap-2 text-outline-variant">
+<span class="material-symbols-outlined text-[16px]" data-icon="radio_button_unchecked">radio_button_unchecked</span>
+<span class="font-label-sm text-label-sm">Contains a special character</span>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex flex-col gap-sm mt-sm">
+<button class="w-full bg-primary text-on-primary font-label-lg text-label-lg py-3 rounded-full hover:bg-on-primary-fixed-variant transition-colors shadow-[0px_1px_3px_rgba(0,0,0,0.1)] active:scale-[0.98]" type="submit">
+                    Sign up
+                </button>
+<button class="w-full bg-transparent border border-outline text-on-surface font-label-lg text-label-lg py-3 rounded-full hover:bg-surface-container-low transition-colors flex items-center justify-center gap-2 active:scale-[0.98]" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="magic_button">magic_button</span>
+                    Sign up with Magic Link
+                </button>
+</div>
+</form>
+<!-- Footer Links -->
+<div class="text-center mt-2">
+<span class="font-body-md text-body-md text-on-surface-variant">Already have an account? </span>
+<a class="font-label-lg text-label-lg text-primary hover:underline font-medium" href="#">Log in</a>
+</div>
+</div>
+</body></html>

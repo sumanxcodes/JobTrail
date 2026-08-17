@@ -7,7 +7,6 @@ import { createClient } from '@/lib/supabase/client';
 import { TextField, TextArea } from '@/components/ui/TextField';
 import { FilledButton, OutlinedButton, TextButton } from '@/components/ui/Button';
 import { CircularProgress } from '@/components/ui/CircularProgress';
-import { FilterChip, ChipSet } from '@/components/ui/Chip';
 import { ParseStatus, SourceType } from '@/lib/types/database';
 
 export default function NewApplicationPage() {
@@ -31,6 +30,7 @@ export default function NewApplicationPage() {
   const [parseStatus, setParseStatus] = useState<ParseStatus | null>(null);
 
   const [isReviewing, setIsReviewing] = useState(false);
+  const [isEditingFields, setIsEditingFields] = useState(false);
   const [saving, setSaving] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
 
@@ -46,7 +46,7 @@ export default function NewApplicationPage() {
     }
 
     setParsing(true);
-    setParseMessage('Parsing job details with Claude AI...');
+    setParseMessage('AI is extracting company, role, location, salary, and requirements...');
     setParseMessageType('info');
 
     try {
@@ -64,6 +64,8 @@ export default function NewApplicationPage() {
         setInputMode('manual');
         setRawJd(content);
         if (inputMode === 'link') setJobUrl(content);
+        setIsReviewing(true);
+        setIsEditingFields(true);
         return;
       }
 
@@ -72,16 +74,18 @@ export default function NewApplicationPage() {
           setParseMessage("We couldn't read that page — paste the job description text instead.");
           setInputMode('paste');
         } else if (data.reason === 'content_too_short') {
-          setParseMessage('The page did not contain enough text. Please paste the job description directly.');
+          setParseMessage('The page content was too brief. Paste the job description text directly.');
           setInputMode('paste');
         } else {
-          setParseMessage('AI extraction failed. Please review and fill in the details manually.');
+          setParseMessage('AI extraction was unable to parse structured fields. Fill in details manually.');
+          setInputMode('manual');
         }
         setParseMessageType('error');
         setRawJd(data.raw_jd || content);
         setParseStatus('failed');
         setSourceType(inputMode);
         setIsReviewing(true);
+        setIsEditingFields(true);
         return;
       }
 
@@ -94,21 +98,22 @@ export default function NewApplicationPage() {
       setSeniority(extracted.seniority || '');
       setJobUrl(extracted.job_url || (inputMode === 'link' ? content : ''));
       if (extracted.requirements_summary) {
-        setNotes(`Summary: ${extracted.requirements_summary}`);
+        setNotes(extracted.requirements_summary);
       }
       setRawJd(data?.raw_jd || content);
       setSourceType(inputMode);
       setParseStatus(data?.status || 'success');
       setIsReviewing(true);
-      setParseMessage('Extraction complete! Review the fields below before saving.');
-      setParseMessageType('success');
+      setIsEditingFields(false);
+      setParseMessage(null);
     } catch (err: any) {
       console.error('Edge function error:', err);
-      setParseMessage('Unable to connect to parser. You can proceed with manual entry.');
+      setParseMessage('Unable to connect to AI parser. You can proceed with manual entry.');
       setParseMessageType('error');
       setRawJd(content);
       if (inputMode === 'link') setJobUrl(content);
       setIsReviewing(true);
+      setIsEditingFields(true);
     } finally {
       setParsing(false);
     }
@@ -116,7 +121,8 @@ export default function NewApplicationPage() {
 
   const handleSave = async () => {
     if (!company.trim() || !title.trim()) {
-      setValidationError('Company name and Job title are required fields.');
+      setValidationError('Company name and Job title are required to save.');
+      setIsEditingFields(true);
       return;
     }
 
@@ -174,141 +180,219 @@ export default function NewApplicationPage() {
   };
 
   return (
-    <div className="container" style={{ maxWidth: '720px', padding: '1rem 1.25rem' }}>
-      <div style={{ marginBottom: '1.5rem' }}>
-        <Link href="/dashboard">
-          <TextButton icon="arrow_back">Back to Dashboard</TextButton>
-        </Link>
-      </div>
-
-      <div className="m3-card" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div className="container" style={{ maxWidth: '780px', padding: '1.5rem 1.5rem 3rem 1.5rem' }}>
+      {/* Header Section */}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '1.5rem',
+        }}
+      >
         <div>
           <h1
             style={{
-              fontSize: '1.75rem',
+              fontSize: '1.875rem',
               fontWeight: 700,
               color: 'var(--md-sys-color-on-surface)',
               marginBottom: '0.25rem',
             }}
           >
-            Add New Job Application
+            {isReviewing ? 'Review Parsed Application' : 'Add Application'}
           </h1>
           <p style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '0.9375rem' }}>
-            Choose how you would like to input the job details.
+            {isReviewing
+              ? 'Review the details extracted by AI before saving to your tracker.'
+              : 'Let AI parse the details so you can focus on applying.'}
           </p>
         </div>
 
-        {/* Input Mode Selector */}
+        <Link href="/dashboard">
+          <TextButton icon="close">Close</TextButton>
+        </Link>
+      </div>
+
+      {/* Main Canvas Card */}
+      <div
+        className="m3-card"
+        style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', padding: '1.75rem' }}
+      >
+        {/* Step 1: Mode Segmented Control (if not reviewing) */}
         {!isReviewing && (
-          <div>
-            <span
-              style={{
-                fontSize: '0.875rem',
-                fontWeight: 500,
-                color: 'var(--md-sys-color-on-surface-variant)',
-                marginBottom: '0.5rem',
-                display: 'block',
-              }}
-            >
-              Input Method:
-            </span>
-            <ChipSet>
-              <FilterChip
-                label="Paste a Link"
-                icon="link"
-                selected={inputMode === 'link'}
-                onSelectedChange={() => setInputMode('link')}
-              />
-              <FilterChip
-                label="Paste Job Description"
-                icon="description"
-                selected={inputMode === 'paste'}
-                onSelectedChange={() => setInputMode('paste')}
-              />
-              <FilterChip
-                label="Manual Entry"
-                icon="edit"
-                selected={inputMode === 'manual'}
-                onSelectedChange={() => {
-                  setInputMode('manual');
-                  setIsReviewing(true);
+          <>
+            <div className="segmented-control" style={{ width: '100%' }}>
+              <button
+                className={`segmented-control-btn ${inputMode === 'link' ? 'active' : ''}`}
+                style={{ flex: 1 }}
+                onClick={() => setInputMode('link')}
+              >
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
+                    link
+                  </span>
+                  Paste Link
+                </span>
+              </button>
+              <button
+                className={`segmented-control-btn ${inputMode === 'paste' ? 'active' : ''}`}
+                style={{ flex: 1 }}
+                onClick={() => setInputMode('paste')}
+              >
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
+                    description
+                  </span>
+                  Paste Job Description
+                </span>
+              </button>
+            </div>
+
+            {/* Parse Notification message */}
+            {parseMessage && (
+              <div
+                style={{
+                  padding: '0.875rem 1rem',
+                  borderRadius: '10px',
+                  backgroundColor:
+                    parseMessageType === 'error'
+                      ? 'var(--md-sys-color-error-container)'
+                      : 'var(--md-sys-color-primary-container)',
+                  color:
+                    parseMessageType === 'error'
+                      ? 'var(--md-sys-color-on-error-container)'
+                      : 'var(--md-sys-color-on-primary-container)',
+                  fontSize: '0.875rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.75rem',
                 }}
-              />
-            </ChipSet>
-          </div>
-        )}
-
-        {/* Parsing Progress / Messages */}
-        {parseMessage && (
-          <div
-            style={{
-              padding: '0.75rem 1rem',
-              borderRadius: '8px',
-              backgroundColor:
-                parseMessageType === 'error'
-                  ? 'var(--md-sys-color-error-container)'
-                  : parseMessageType === 'success'
-                  ? 'var(--status-offer-bg)'
-                  : 'var(--md-sys-color-primary-container)',
-              color:
-                parseMessageType === 'error'
-                  ? 'var(--md-sys-color-on-error-container)'
-                  : parseMessageType === 'success'
-                  ? 'var(--status-offer-text)'
-                  : 'var(--md-sys-color-on-primary-container)',
-              fontSize: '0.875rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-            }}
-          >
-            {parsing && <CircularProgress />}
-            <span>{parseMessage}</span>
-          </div>
-        )}
-
-        {/* Link / Paste Extraction Step */}
-        {!isReviewing && inputMode !== 'manual' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-            {inputMode === 'link' ? (
-              <TextField
-                label="Job Posting URL"
-                placeholder="https://www.linkedin.com/jobs/view/..."
-                type="url"
-                value={linkInput}
-                onValueChange={setLinkInput}
-                leadingIcon="link"
-              />
-            ) : (
-              <TextArea
-                label="Job Description Text"
-                placeholder="Paste the full job description text here..."
-                value={pasteInput}
-                onValueChange={setPasteInput}
-                rows={8}
-              />
+              >
+                {parsing && <CircularProgress />}
+                <span>{parseMessage}</span>
+              </div>
             )}
 
-            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
-              <OutlinedButton
+            {/* Input Panels */}
+            {inputMode === 'link' ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                <TextField
+                  label="Job Posting URL"
+                  placeholder="https://www.linkedin.com/jobs/view/... or https://..."
+                  type="url"
+                  value={linkInput}
+                  onValueChange={setLinkInput}
+                  leadingIcon="public"
+                />
+
+                <p
+                  style={{
+                    fontSize: '0.875rem',
+                    color: 'var(--md-sys-color-on-surface-variant)',
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '0.5rem',
+                    lineHeight: 1.5,
+                  }}
+                >
+                  <span
+                    className="material-symbols-outlined"
+                    style={{ fontSize: '18px', color: 'var(--md-sys-color-primary)', flexShrink: 0 }}
+                  >
+                    auto_awesome
+                  </span>
+                  Paste a link from LinkedIn, Indeed, Greenhouse, or any careers page. Our AI will automatically extract the title, company, location, salary, and requirements.
+                </p>
+
+                <div style={{ paddingTop: '0.5rem' }}>
+                  <FilledButton
+                    onClick={handleParse}
+                    disabled={parsing}
+                    icon="auto_awesome"
+                    className="w-full"
+                  >
+                    {parsing ? 'Parsing with AI...' : 'Parse with AI'}
+                  </FilledButton>
+                </div>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                <TextArea
+                  label="Job Description Text"
+                  placeholder="Paste the full job description text here..."
+                  value={pasteInput}
+                  onValueChange={setPasteInput}
+                  rows={8}
+                />
+
+                <p
+                  style={{
+                    fontSize: '0.875rem',
+                    color: 'var(--md-sys-color-on-surface-variant)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                  }}
+                >
+                  <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
+                    info
+                  </span>
+                  Ideal for text copied from private job boards, emails, PDFs, or internal postings.
+                </p>
+
+                <div style={{ paddingTop: '0.5rem' }}>
+                  <FilledButton
+                    onClick={handleParse}
+                    disabled={parsing}
+                    icon="document_scanner"
+                  >
+                    {parsing ? 'Parsing Text with AI...' : 'Parse Text with AI'}
+                  </FilledButton>
+                </div>
+              </div>
+            )}
+
+            {/* Manual Entry Fallback Button */}
+            <div style={{ textAlign: 'center', marginTop: '0.5rem' }}>
+              <TextButton
                 onClick={() => {
                   setInputMode('manual');
                   setIsReviewing(true);
+                  setIsEditingFields(true);
                 }}
               >
-                Skip to Manual Entry
-              </OutlinedButton>
-
-              <FilledButton onClick={handleParse} disabled={parsing} icon="auto_awesome">
-                {parsing ? 'Parsing with AI...' : 'Parse with AI'}
-              </FilledButton>
+                Enter details manually instead
+              </TextButton>
             </div>
-          </div>
+          </>
         )}
 
-        {/* Review / Manual Entry Form */}
+        {/* Step 2: Review / Edit Extracted Details */}
         {isReviewing && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            {/* Status chip banner */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '0.625rem 1rem',
+                borderRadius: '9999px',
+                backgroundColor: 'var(--md-sys-color-primary-container)',
+                color: 'var(--md-sys-color-on-primary-container)',
+                fontSize: '0.875rem',
+                fontWeight: 500,
+              }}
+            >
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
+                  check_circle
+                </span>
+                AI Extraction Complete
+              </span>
+              <span style={{ fontSize: '0.75rem', opacity: 0.85 }}>Source: {sourceType}</span>
+            </div>
+
             {validationError && (
               <div
                 style={{
@@ -323,73 +407,339 @@ export default function NewApplicationPage() {
               </div>
             )}
 
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                gap: '1.25rem',
-              }}
-            >
-              <TextField
-                label="Company Name *"
-                value={company}
-                onValueChange={setCompany}
-                required
-                leadingIcon="business"
-                error={!company && !!validationError}
-              />
+            {/* Bento Form Fields */}
+            {isEditingFields ? (
+              /* Editable Inputs */
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+                  gap: '1.25rem',
+                }}
+              >
+                <TextField
+                  label="Company Name *"
+                  value={company}
+                  onValueChange={setCompany}
+                  required
+                  leadingIcon="business"
+                />
+                <TextField
+                  label="Job Title *"
+                  value={title}
+                  onValueChange={setTitle}
+                  required
+                  leadingIcon="badge"
+                />
+                <TextField
+                  label="Location"
+                  placeholder="e.g. San Francisco, CA or Remote"
+                  value={location}
+                  onValueChange={setLocation}
+                  leadingIcon="location_on"
+                />
+                <TextField
+                  label="Salary Range"
+                  placeholder="e.g. $150k - $200k"
+                  value={salaryRange}
+                  onValueChange={setSalaryRange}
+                  leadingIcon="payments"
+                />
+                <TextField
+                  label="Seniority Level"
+                  placeholder="e.g. Senior, Lead, Mid-Level"
+                  value={seniority}
+                  onValueChange={setSeniority}
+                  leadingIcon="stairs"
+                />
+                <TextField
+                  label="Job Posting URL"
+                  type="url"
+                  value={jobUrl}
+                  onValueChange={setJobUrl}
+                  leadingIcon="link"
+                />
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <TextArea
+                    label="Notes & Extracted Highlights"
+                    value={notes}
+                    onValueChange={setNotes}
+                    rows={4}
+                  />
+                </div>
+              </div>
+            ) : (
+              /* Bento Review Grid (from Stitch review-extracted.html) */
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+                  gap: '1rem',
+                }}
+              >
+                {/* Company Tile */}
+                <div className="m3-bento-tile">
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginBottom: '0.35rem',
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: '0.75rem',
+                        fontWeight: 600,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em',
+                        color: 'var(--md-sys-color-secondary)',
+                      }}
+                    >
+                      Company
+                    </span>
+                    <span
+                      className="material-symbols-outlined"
+                      style={{ fontSize: '15px', color: 'var(--md-sys-color-primary)' }}
+                    >
+                      auto_awesome
+                    </span>
+                  </div>
+                  <p
+                    style={{
+                      fontSize: '1.05rem',
+                      fontWeight: 600,
+                      color: company ? 'var(--md-sys-color-on-surface)' : 'var(--md-sys-color-error)',
+                    }}
+                  >
+                    {company || 'Missing - Click Edit Fields'}
+                  </p>
+                </div>
 
-              <TextField
-                label="Job Title *"
-                value={title}
-                onValueChange={setTitle}
-                required
-                leadingIcon="badge"
-                error={!title && !!validationError}
-              />
+                {/* Job Title Tile */}
+                <div className="m3-bento-tile">
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginBottom: '0.35rem',
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: '0.75rem',
+                        fontWeight: 600,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em',
+                        color: 'var(--md-sys-color-secondary)',
+                      }}
+                    >
+                      Job Title
+                    </span>
+                    <span
+                      className="material-symbols-outlined"
+                      style={{ fontSize: '15px', color: 'var(--md-sys-color-primary)' }}
+                    >
+                      auto_awesome
+                    </span>
+                  </div>
+                  <p
+                    style={{
+                      fontSize: '1.05rem',
+                      fontWeight: 600,
+                      color: title ? 'var(--md-sys-color-on-surface)' : 'var(--md-sys-color-error)',
+                    }}
+                  >
+                    {title || 'Missing - Click Edit Fields'}
+                  </p>
+                </div>
 
-              <TextField
-                label="Location"
-                placeholder="e.g. San Francisco, CA or Remote"
-                value={location}
-                onValueChange={setLocation}
-                leadingIcon="location_on"
-              />
+                {/* Location Tile */}
+                <div className="m3-bento-tile">
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginBottom: '0.35rem',
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: '0.75rem',
+                        fontWeight: 600,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em',
+                        color: 'var(--md-sys-color-secondary)',
+                      }}
+                    >
+                      Location
+                    </span>
+                    <span
+                      className="material-symbols-outlined"
+                      style={{ fontSize: '15px', color: 'var(--md-sys-color-primary)' }}
+                    >
+                      auto_awesome
+                    </span>
+                  </div>
+                  <p style={{ fontSize: '1.05rem', fontWeight: 500 }}>
+                    {location || 'Not Specified'}
+                  </p>
+                </div>
 
-              <TextField
-                label="Salary / Compensation"
-                placeholder="e.g. $140,000 - $170,000"
-                value={salaryRange}
-                onValueChange={setSalaryRange}
-                leadingIcon="payments"
-              />
+                {/* Salary Range Tile */}
+                <div className="m3-bento-tile">
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginBottom: '0.35rem',
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: '0.75rem',
+                        fontWeight: 600,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em',
+                        color: 'var(--md-sys-color-secondary)',
+                      }}
+                    >
+                      Salary Range
+                    </span>
+                    <span
+                      className="material-symbols-outlined"
+                      style={{ fontSize: '15px', color: 'var(--md-sys-color-primary)' }}
+                    >
+                      auto_awesome
+                    </span>
+                  </div>
+                  <p style={{ fontSize: '1.05rem', fontWeight: 500 }}>
+                    {salaryRange || 'Not Specified'}
+                  </p>
+                </div>
 
-              <TextField
-                label="Seniority Level"
-                placeholder="e.g. Senior, Mid-level, Lead"
-                value={seniority}
-                onValueChange={setSeniority}
-                leadingIcon="trending_up"
-              />
+                {/* Seniority Tile */}
+                <div className="m3-bento-tile">
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginBottom: '0.35rem',
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: '0.75rem',
+                        fontWeight: 600,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em',
+                        color: 'var(--md-sys-color-secondary)',
+                      }}
+                    >
+                      Seniority
+                    </span>
+                    <span
+                      className="material-symbols-outlined"
+                      style={{ fontSize: '15px', color: 'var(--md-sys-color-primary)' }}
+                    >
+                      auto_awesome
+                    </span>
+                  </div>
+                  <p style={{ fontSize: '1.05rem', fontWeight: 500 }}>
+                    {seniority || 'Not Specified'}
+                  </p>
+                </div>
 
-              <TextField
-                label="Job Posting URL"
-                placeholder="https://..."
-                type="url"
-                value={jobUrl}
-                onValueChange={setJobUrl}
-                leadingIcon="link"
-              />
-            </div>
+                {/* Job URL Tile */}
+                <div className="m3-bento-tile">
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginBottom: '0.35rem',
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: '0.75rem',
+                        fontWeight: 600,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em',
+                        color: 'var(--md-sys-color-secondary)',
+                      }}
+                    >
+                      Job URL
+                    </span>
+                    <span
+                      className="material-symbols-outlined"
+                      style={{ fontSize: '15px', color: 'var(--md-sys-color-primary)' }}
+                    >
+                      auto_awesome
+                    </span>
+                  </div>
+                  <p
+                    style={{
+                      fontSize: '0.9375rem',
+                      fontWeight: 500,
+                      color: 'var(--md-sys-color-primary)',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {jobUrl || 'None'}
+                  </p>
+                </div>
 
-            <TextArea
-              label="Notes & Requirements"
-              placeholder="Additional notes, key requirements, referral contacts, etc."
-              value={notes}
-              onValueChange={setNotes}
-              rows={4}
-            />
+                {/* Highlights / Summary Tile (Full Width) */}
+                {notes && (
+                  <div className="m3-bento-tile" style={{ gridColumn: '1 / -1' }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        marginBottom: '0.5rem',
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontSize: '0.75rem',
+                          fontWeight: 600,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.05em',
+                          color: 'var(--md-sys-color-secondary)',
+                        }}
+                      >
+                        Extracted Highlights
+                      </span>
+                      <span
+                        className="material-symbols-outlined"
+                        style={{ fontSize: '15px', color: 'var(--md-sys-color-primary)' }}
+                      >
+                        auto_awesome
+                      </span>
+                    </div>
+                    <p
+                      style={{
+                        fontSize: '0.9375rem',
+                        lineHeight: 1.6,
+                        color: 'var(--md-sys-color-on-surface-variant)',
+                      }}
+                    >
+                      {notes}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
 
+            {/* Action Footer */}
             <div
               style={{
                 display: 'flex',
@@ -398,22 +748,26 @@ export default function NewApplicationPage() {
                 borderTop: '1px solid var(--md-sys-color-outline-variant)',
                 paddingTop: '1.25rem',
                 flexWrap: 'wrap',
-                gap: '1rem',
+                gap: '0.75rem',
               }}
             >
               <TextButton
                 onClick={() => {
                   setIsReviewing(false);
-                  setParseMessage(null);
+                  setIsEditingFields(false);
                 }}
               >
-                Change Input Mode
+                Start Over
               </TextButton>
 
-              <div style={{ display: 'flex', gap: '1rem' }}>
-                <Link href="/dashboard">
-                  <OutlinedButton>Cancel</OutlinedButton>
-                </Link>
+              <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                <OutlinedButton
+                  icon={isEditingFields ? 'visibility' : 'edit'}
+                  onClick={() => setIsEditingFields(!isEditingFields)}
+                >
+                  {isEditingFields ? 'View Summary' : 'Edit Fields'}
+                </OutlinedButton>
+
                 <FilledButton onClick={handleSave} disabled={saving} icon="save">
                   {saving ? <CircularProgress /> : 'Save Application'}
                 </FilledButton>
