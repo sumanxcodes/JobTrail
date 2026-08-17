@@ -57,6 +57,15 @@
   /* "Premium Corporate" Combo Typography */
   --font-headline: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-body: 'Roboto Flex', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* Material Web Components (Shadow DOM) Typography Tokens */
+  --md-sys-typescale-label-large-font: var(--font-headline);
+  --md-sys-typescale-body-large-font: var(--font-body);
+  --md-sys-typescale-body-medium-font: var(--font-body);
+  --md-outlined-text-field-label-text-font: var(--font-body);
+  --md-outlined-text-field-input-text-font: var(--font-body);
+  --md-outlined-text-field-supporting-text-font: var(--font-body);
+  --md-outlined-text-field-container-shape: 12px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -282,6 +291,30 @@ a {
 
 .nav-action-filled:hover {
   filter: brightness(1.08);
+}
+
+/* M3 Back Pill Button */
+.btn-back-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  height: 36px;
+  padding: 0 0.875rem;
+  border-radius: 9999px;
+  background-color: var(--md-sys-color-surface-container-low);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  color: var(--md-sys-color-on-surface-variant);
+  font-family: var(--font-headline);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.btn-back-pill:hover {
+  background-color: var(--md-sys-color-surface-container-high);
+  color: var(--md-sys-color-on-surface);
+  border-color: var(--md-sys-color-outline);
 }
 
 @media (max-width: 480px) {

@@ -110,18 +110,7 @@ export default function LoginPage() {
 
               <Link
                 href="/"
-                style={{
-                  fontSize: '0.8125rem',
-                  fontFamily: 'var(--font-headline)',
-                  fontWeight: 600,
-                  color: 'var(--md-sys-color-on-surface-variant)',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.25rem',
-                  padding: '0.35rem 0.65rem',
-                  borderRadius: '8px',
-                  transition: 'color 0.15s ease',
-                }}
+                className="btn-back-pill"
               >
                 <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
                   arrow_back
