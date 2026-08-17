@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Application, ApplicationStatus, APPLICATION_STATUSES } from '@/lib/types/database';
 import { StatusBadge } from '@/components/applications/StatusBadge';
@@ -26,6 +26,7 @@ export default function ApplicationsPage() {
   const [sortBy, setSortBy] = useState<'updated_desc' | 'created_desc' | 'company_asc'>('updated_desc');
   const [isNewSheetOpen, setIsNewSheetOpen] = useState(false);
 
+  const router = useRouter();
   const searchParams = useSearchParams();
   const supabase = createClient();
 
@@ -87,7 +88,7 @@ export default function ApplicationsPage() {
       })
       .sort((a, b) => {
         if (sortBy === 'updated_desc') {
-          return new Date(b.updated_at || b.created_at).getTime() - new Date(a.updated_at || a.created_at).getTime();
+          return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
         }
         if (sortBy === 'created_desc') {
           return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
@@ -100,27 +101,33 @@ export default function ApplicationsPage() {
   }, [applications, searchQuery, activeStatus, sortBy]);
 
   const handleDelete = async (id: string, e: React.MouseEvent) => {
-    e.preventDefault();
     e.stopPropagation();
-    if (!confirm('Are you sure you want to delete this application?')) return;
+    e.preventDefault();
+    if (!window.confirm('Are you sure you want to delete this application?')) {
+      return;
+    }
 
-    const { error } = await supabase.from('applications').delete().eq('id', id);
-    if (!error) {
+    try {
+      const { error } = await supabase.from('applications').delete().eq('id', id);
+      if (error) throw error;
       setApplications((prev) => prev.filter((a) => a.id !== id));
+    } catch (err) {
+      console.error('Delete error:', err);
+      alert('Failed to delete application.');
     }
   };
 
   return (
-    <div style={{ padding: '2rem 2.5rem 4rem 2.5rem', maxWidth: '1200px', margin: '0 auto' }}>
-      {/* Header & Main Actions */}
+    <div style={{ maxWidth: '1280px', padding: '2rem 1.5rem 4rem 1.5rem', margin: '0 auto' }}>
+      {/* Top Header */}
       <div
         style={{
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: 'flex-start',
-          marginBottom: '2rem',
+          alignItems: 'center',
+          marginBottom: '1.5rem',
           flexWrap: 'wrap',
-          gap: '1.25rem',
+          gap: '1rem',
         }}
       >
         <div>
@@ -130,8 +137,8 @@ export default function ApplicationsPage() {
               fontFamily: 'var(--font-headline)',
               fontWeight: 800,
               color: 'var(--md-sys-color-on-surface)',
-              letterSpacing: '-0.02em',
-              marginBottom: '0.25rem',
+              letterSpacing: '-0.025em',
+              marginBottom: '0.2rem',
             }}
           >
             Applications
@@ -152,337 +159,434 @@ export default function ApplicationsPage() {
         </FilledButton>
       </div>
 
-      {/* Search & Filter Toolbar */}
+      {/* Unified M3 Workspace Card (Toolbar + Data Table inside One Container) */}
       <div
         className="m3-card"
         style={{
+          padding: 0,
+          overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
-          gap: '1.25rem',
-          marginBottom: '1.5rem',
-          padding: '1.25rem 1.5rem',
+          backgroundColor: 'var(--md-sys-color-surface-container-low)',
+          border: '1px solid var(--md-sys-color-outline-variant)',
+          borderRadius: '24px',
         }}
       >
-        {/* Search Bar & Sort Dropdown */}
+        {/* Integrated Toolbar Header */}
         <div
           style={{
+            padding: '1.25rem 1.5rem',
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
+            flexDirection: 'column',
             gap: '1rem',
-            flexWrap: 'wrap',
+            borderBottom: '1px solid var(--md-sys-color-outline-variant)',
           }}
         >
-          <div style={{ flex: 1, minWidth: '240px', maxWidth: '480px' }}>
-            <TextField
-              label="Search company, title, location..."
-              value={searchQuery}
-              onValueChange={setSearchQuery}
-              leadingIcon="search"
-            />
-          </div>
-
-          {/* M3 Sort Chip */}
+          {/* Row 1: Search Input & Sort Selector */}
           <div
             style={{
-              position: 'relative',
-              display: 'inline-flex',
+              display: 'flex',
               alignItems: 'center',
-              height: '40px',
-              padding: '0 1rem 0 0.875rem',
-              borderRadius: '9999px',
-              border: '1px solid var(--md-sys-color-outline-variant)',
-              backgroundColor: 'var(--md-sys-color-surface-container-low)',
-              color: 'var(--md-sys-color-on-surface)',
-              gap: '0.5rem',
-              cursor: 'pointer',
-              transition: 'background-color 0.2s ease, border-color 0.2s ease',
+              justifyContent: 'space-between',
+              gap: '1rem',
+              flexWrap: 'wrap',
             }}
           >
-            <span
-              className="material-symbols-outlined"
-              style={{
-                fontSize: '18px',
-                color: 'var(--md-sys-color-on-surface-variant)',
-                pointerEvents: 'none',
-              }}
-            >
-              sort
-            </span>
-            <span
-              style={{
-                fontFamily: 'var(--font-headline)',
-                fontSize: '0.8125rem',
-                fontWeight: 600,
-                color: 'var(--md-sys-color-on-surface-variant)',
-                pointerEvents: 'none',
-              }}
-            >
-              Sort:
-            </span>
-            <span
-              style={{
-                fontFamily: 'var(--font-headline)',
-                fontSize: '0.8125rem',
-                fontWeight: 700,
-                color: 'var(--md-sys-color-on-surface)',
-                pointerEvents: 'none',
-              }}
-            >
-              {sortBy === 'updated_desc'
-                ? 'Recently Updated'
-                : sortBy === 'created_desc'
-                ? 'Recently Created'
-                : 'Company (A-Z)'}
-            </span>
-            <span
-              className="material-symbols-outlined"
-              style={{
-                fontSize: '18px',
-                color: 'var(--md-sys-color-on-surface-variant)',
-                pointerEvents: 'none',
-                marginLeft: '0.15rem',
-              }}
-            >
-              expand_more
-            </span>
+            <div style={{ flex: 1, minWidth: '240px', maxWidth: '460px' }}>
+              <TextField
+                label="Search company, title, location..."
+                value={searchQuery}
+                onValueChange={setSearchQuery}
+                leadingIcon="search"
+              />
+            </div>
 
-            {/* Native Select Overlay for accessibility & menu popup */}
-            <select
-              value={sortBy}
-              onChange={(e: any) => setSortBy(e.target.value)}
-              aria-label="Sort applications"
+            {/* M3 Sort Selector Chip */}
+            <div
               style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                opacity: 0,
-                cursor: 'pointer',
-                appearance: 'none',
-              }}
-            >
-              <option value="updated_desc">Recently Updated</option>
-              <option value="created_desc">Recently Created</option>
-              <option value="company_asc">Company (A-Z)</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Status Filter Chips */}
-        <div
-          style={{
-            display: 'flex',
-            gap: '0.5rem',
-            overflowX: 'auto',
-            paddingBottom: '0.25rem',
-            scrollbarWidth: 'none',
-          }}
-        >
-          <button
-            onClick={() => setActiveStatus('all')}
-            style={{
-              padding: '0.4rem 0.875rem',
-              borderRadius: '9999px',
-              border: activeStatus === 'all' ? '1px solid transparent' : '1px solid var(--md-sys-color-outline-variant)',
-              backgroundColor:
-                activeStatus === 'all'
-                  ? 'var(--md-sys-color-secondary-container)'
-                  : 'var(--md-sys-color-surface-container-low)',
-              color:
-                activeStatus === 'all'
-                  ? 'var(--md-sys-color-on-secondary-container)'
-                  : 'var(--md-sys-color-on-surface-variant)',
-              fontFamily: 'var(--font-headline)',
-              fontSize: '0.8125rem',
-              fontWeight: 600,
-              cursor: 'pointer',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.4rem',
-              whiteSpace: 'nowrap',
-              transition: 'all 0.15s ease',
-            }}
-          >
-            <span>All</span>
-            <span
-              style={{
-                fontSize: '0.75rem',
-                padding: '0.1rem 0.45rem',
+                position: 'relative',
+                display: 'inline-flex',
+                alignItems: 'center',
+                height: '40px',
+                padding: '0 1rem 0 0.875rem',
                 borderRadius: '9999px',
-                backgroundColor: activeStatus === 'all' ? 'rgba(0,0,0,0.08)' : 'var(--md-sys-color-surface-container-highest)',
-                color: 'inherit',
-                fontWeight: 700,
+                border: '1px solid var(--md-sys-color-outline-variant)',
+                backgroundColor: 'var(--md-sys-color-surface-container-low)',
+                color: 'var(--md-sys-color-on-surface)',
+                gap: '0.5rem',
+                cursor: 'pointer',
+                transition: 'background-color 0.2s ease, border-color 0.2s ease',
               }}
             >
-              {statusCounts.all || 0}
-            </span>
-          </button>
-
-          {APPLICATION_STATUSES.map((status) => {
-            const isActive = activeStatus === status.value;
-            const count = statusCounts[status.value] || 0;
-            return (
-              <button
-                key={status.value}
-                onClick={() => setActiveStatus(status.value)}
+              <span
+                className="material-symbols-outlined"
                 style={{
-                  padding: '0.4rem 0.875rem',
-                  borderRadius: '9999px',
-                  border: isActive ? '1px solid transparent' : '1px solid var(--md-sys-color-outline-variant)',
-                  backgroundColor: isActive
-                    ? 'var(--md-sys-color-secondary-container)'
-                    : 'var(--md-sys-color-surface-container-low)',
-                  color: isActive
-                    ? 'var(--md-sys-color-on-secondary-container)'
-                    : 'var(--md-sys-color-on-surface-variant)',
+                  fontSize: '18px',
+                  color: 'var(--md-sys-color-on-surface-variant)',
+                  pointerEvents: 'none',
+                }}
+              >
+                sort
+              </span>
+              <span
+                style={{
                   fontFamily: 'var(--font-headline)',
                   fontSize: '0.8125rem',
                   fontWeight: 600,
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.4rem',
-                  whiteSpace: 'nowrap',
-                  transition: 'all 0.15s ease',
+                  color: 'var(--md-sys-color-on-surface-variant)',
+                  pointerEvents: 'none',
                 }}
               >
-                <span>{status.label}</span>
-                <span
-                  style={{
-                    fontSize: '0.75rem',
-                    padding: '0.1rem 0.45rem',
-                    borderRadius: '9999px',
-                    backgroundColor: isActive ? 'rgba(0,0,0,0.08)' : 'var(--md-sys-color-surface-container-highest)',
-                    color: 'inherit',
-                    fontWeight: 700,
-                  }}
-                >
-                  {count}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
+                Sort:
+              </span>
+              <span
+                style={{
+                  fontFamily: 'var(--font-headline)',
+                  fontSize: '0.8125rem',
+                  fontWeight: 700,
+                  color: 'var(--md-sys-color-on-surface)',
+                  pointerEvents: 'none',
+                }}
+              >
+                {sortBy === 'updated_desc'
+                  ? 'Recently Updated'
+                  : sortBy === 'created_desc'
+                  ? 'Recently Created'
+                  : 'Company (A-Z)'}
+              </span>
+              <span
+                className="material-symbols-outlined"
+                style={{
+                  fontSize: '18px',
+                  color: 'var(--md-sys-color-on-surface-variant)',
+                  pointerEvents: 'none',
+                }}
+              >
+                expand_more
+              </span>
 
-      {/* Main Content: Table or Loading / Empty States */}
-      {loading ? (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '5rem 1rem',
-            gap: '1.25rem',
-          }}
-        >
-          <CircularProgress indeterminate />
-          <p style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '0.9375rem' }}>
-            Loading applications...
-          </p>
-        </div>
-      ) : filteredApplications.length === 0 ? (
-        <div
-          className="m3-card"
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '4rem 1.5rem',
-            textAlign: 'center',
-            gap: '1.25rem',
-          }}
-        >
+              <select
+                value={sortBy}
+                onChange={(e: any) => setSortBy(e.target.value)}
+                aria-label="Sort applications"
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  opacity: 0,
+                  cursor: 'pointer',
+                  appearance: 'none',
+                }}
+              >
+                <option value="updated_desc">Recently Updated</option>
+                <option value="created_desc">Recently Created</option>
+                <option value="company_asc">Company (A-Z)</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Row 2: Status Filter Chips */}
           <div
             style={{
-              width: '56px',
-              height: '56px',
-              borderRadius: '16px',
-              backgroundColor: 'var(--md-sys-color-surface-container)',
               display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'var(--md-sys-color-primary)',
+              gap: '0.5rem',
+              overflowX: 'auto',
+              paddingBottom: '0.25rem',
+              scrollbarWidth: 'none',
             }}
           >
-            <span className="material-symbols-outlined" style={{ fontSize: '28px' }}>
-              work_outline
-            </span>
-          </div>
-
-          <div>
-            <h3
+            <button
+              onClick={() => setActiveStatus('all')}
               style={{
-                fontSize: '1.25rem',
+                padding: '0.35rem 0.85rem',
+                borderRadius: '9999px',
+                border: activeStatus === 'all' ? '1px solid transparent' : '1px solid var(--md-sys-color-outline-variant)',
+                backgroundColor:
+                  activeStatus === 'all'
+                    ? 'var(--md-sys-color-secondary-container)'
+                    : 'transparent',
+                color:
+                  activeStatus === 'all'
+                    ? 'var(--md-sys-color-on-secondary-container)'
+                    : 'var(--md-sys-color-on-surface-variant)',
                 fontFamily: 'var(--font-headline)',
-                fontWeight: 700,
-                color: 'var(--md-sys-color-on-surface)',
-                marginBottom: '0.35rem',
+                fontSize: '0.8125rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                whiteSpace: 'nowrap',
+                transition: 'all 0.15s ease',
               }}
             >
-              {searchQuery || activeStatus !== 'all'
-                ? 'No matching applications'
-                : 'No applications tracked yet'}
-            </h3>
+              <span>All</span>
+              <span
+                style={{
+                  fontSize: '0.75rem',
+                  padding: '0.05rem 0.4rem',
+                  borderRadius: '9999px',
+                  backgroundColor: activeStatus === 'all' ? 'rgba(0,0,0,0.08)' : 'var(--md-sys-color-surface-container-high)',
+                  color: 'inherit',
+                  fontWeight: 700,
+                }}
+              >
+                {statusCounts.all || 0}
+              </span>
+            </button>
 
-            <p
-              style={{
-                color: 'var(--md-sys-color-on-surface-variant)',
-                maxWidth: '420px',
-                fontSize: '0.875rem',
-                lineHeight: 1.5,
-              }}
-            >
-              {searchQuery || activeStatus !== 'all'
-                ? 'Try changing your search keywords or switching status filters.'
-                : 'Add your first job application with automated AI job description extraction.'}
-            </p>
-          </div>
-
-          <div style={{ marginTop: '0.5rem' }}>
-            <FilledButton icon="add" onClick={() => setIsNewSheetOpen(true)}>
-              Add Job
-            </FilledButton>
+            {APPLICATION_STATUSES.map((status) => {
+              const isActive = activeStatus === status.value;
+              const count = statusCounts[status.value] || 0;
+              return (
+                <button
+                  key={status.value}
+                  onClick={() => setActiveStatus(status.value)}
+                  style={{
+                    padding: '0.35rem 0.85rem',
+                    borderRadius: '9999px',
+                    border: isActive ? '1px solid transparent' : '1px solid var(--md-sys-color-outline-variant)',
+                    backgroundColor: isActive
+                      ? 'var(--md-sys-color-secondary-container)'
+                      : 'transparent',
+                    color: isActive
+                      ? 'var(--md-sys-color-on-secondary-container)'
+                      : 'var(--md-sys-color-on-surface-variant)',
+                    fontFamily: 'var(--font-headline)',
+                    fontSize: '0.8125rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.4rem',
+                    whiteSpace: 'nowrap',
+                    transition: 'all 0.15s ease',
+                  }}
+                >
+                  <span>{status.label}</span>
+                  <span
+                    style={{
+                      fontSize: '0.75rem',
+                      padding: '0.05rem 0.4rem',
+                      borderRadius: '9999px',
+                      backgroundColor: isActive ? 'rgba(0,0,0,0.08)' : 'var(--md-sys-color-surface-container-high)',
+                      color: 'inherit',
+                      fontWeight: 700,
+                    }}
+                  >
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
-      ) : (
-        /* M3 Data Table */
-        <div className="m3-data-table-container">
-          <div className="m3-table-wrapper">
-            <table className="m3-data-table">
+
+        {/* Main Content Area: Loading / Empty / Data Table */}
+        {loading ? (
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '5rem 1rem',
+              gap: '1.25rem',
+            }}
+          >
+            <CircularProgress indeterminate />
+            <p style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '0.875rem' }}>
+              Loading applications...
+            </p>
+          </div>
+        ) : filteredApplications.length === 0 ? (
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '4rem 1.5rem',
+              textAlign: 'center',
+              gap: '1.25rem',
+            }}
+          >
+            <div
+              style={{
+                width: '52px',
+                height: '52px',
+                borderRadius: '16px',
+                backgroundColor: 'var(--md-sys-color-surface-container-high)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--md-sys-color-primary)',
+              }}
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: '26px' }}>
+                work_outline
+              </span>
+            </div>
+
+            <div>
+              <h3
+                style={{
+                  fontSize: '1.125rem',
+                  fontFamily: 'var(--font-headline)',
+                  fontWeight: 700,
+                  color: 'var(--md-sys-color-on-surface)',
+                  marginBottom: '0.25rem',
+                }}
+              >
+                {searchQuery || activeStatus !== 'all'
+                  ? 'No matching applications'
+                  : 'No applications tracked yet'}
+              </h3>
+
+              <p
+                style={{
+                  color: 'var(--md-sys-color-on-surface-variant)',
+                  maxWidth: '400px',
+                  fontSize: '0.8125rem',
+                  lineHeight: 1.5,
+                }}
+              >
+                {searchQuery || activeStatus !== 'all'
+                  ? 'Try adjusting your search keywords or switching status filters.'
+                  : 'Add your first job application using automated AI parsing or manual entry.'}
+              </p>
+            </div>
+
+            <div style={{ marginTop: '0.25rem' }}>
+              <FilledButton icon="add" onClick={() => setIsNewSheetOpen(true)}>
+                Add Job
+              </FilledButton>
+            </div>
+          </div>
+        ) : (
+          /* M3 Data Table */
+          <div style={{ overflowX: 'auto', width: '100%' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
               <thead>
-                <tr>
-                  <th className="m3-table-th">Company & Role</th>
-                  <th className="m3-table-th">Status</th>
-                  <th className="m3-table-th">Location</th>
-                  <th className="m3-table-th">Applied Date</th>
-                  <th className="m3-table-th">Salary Range</th>
-                  <th className="m3-table-th" style={{ textAlign: 'right' }}>
+                <tr
+                  style={{
+                    borderBottom: '1px solid var(--md-sys-color-outline-variant)',
+                    backgroundColor: 'var(--md-sys-color-surface-container)',
+                  }}
+                >
+                  <th
+                    style={{
+                      padding: '0.875rem 1.5rem',
+                      fontSize: '0.6875rem',
+                      fontFamily: 'var(--font-headline)',
+                      fontWeight: 700,
+                      color: 'var(--md-sys-color-on-surface-variant)',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.06em',
+                      width: '32%',
+                    }}
+                  >
+                    Company & Role
+                  </th>
+                  <th
+                    style={{
+                      padding: '0.875rem 1rem',
+                      fontSize: '0.6875rem',
+                      fontFamily: 'var(--font-headline)',
+                      fontWeight: 700,
+                      color: 'var(--md-sys-color-on-surface-variant)',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.06em',
+                      width: '14%',
+                    }}
+                  >
+                    Status
+                  </th>
+                  <th
+                    style={{
+                      padding: '0.875rem 1rem',
+                      fontSize: '0.6875rem',
+                      fontFamily: 'var(--font-headline)',
+                      fontWeight: 700,
+                      color: 'var(--md-sys-color-on-surface-variant)',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.06em',
+                      width: '24%',
+                    }}
+                  >
+                    Location
+                  </th>
+                  <th
+                    style={{
+                      padding: '0.875rem 1rem',
+                      fontSize: '0.6875rem',
+                      fontFamily: 'var(--font-headline)',
+                      fontWeight: 700,
+                      color: 'var(--md-sys-color-on-surface-variant)',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.06em',
+                      width: '12%',
+                    }}
+                  >
+                    Applied
+                  </th>
+                  <th
+                    style={{
+                      padding: '0.875rem 1rem',
+                      fontSize: '0.6875rem',
+                      fontFamily: 'var(--font-headline)',
+                      fontWeight: 700,
+                      color: 'var(--md-sys-color-on-surface-variant)',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.06em',
+                      width: '12%',
+                    }}
+                  >
+                    Salary
+                  </th>
+                  <th
+                    style={{
+                      padding: '0.875rem 1.5rem',
+                      fontSize: '0.6875rem',
+                      fontFamily: 'var(--font-headline)',
+                      fontWeight: 700,
+                      color: 'var(--md-sys-color-on-surface-variant)',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.06em',
+                      textAlign: 'right',
+                      width: '6%',
+                    }}
+                  >
                     Actions
                   </th>
                 </tr>
               </thead>
               <tbody>
                 {filteredApplications.map((app) => (
-                  <tr key={app.id} className="m3-table-row">
-                    <td className="m3-table-td">
-                      <Link
-                        href={`/applications/${app.id}`}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '0.75rem',
-                          textDecoration: 'none',
-                          color: 'inherit',
-                        }}
-                      >
+                  <tr
+                    key={app.id}
+                    onClick={() => router.push(`/applications/${app.id}`)}
+                    style={{
+                      borderBottom: '1px solid var(--md-sys-color-outline-variant)',
+                      cursor: 'pointer',
+                      transition: 'background-color 0.15s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor =
+                        'var(--md-sys-color-surface-container)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }}
+                  >
+                    {/* Company & Role */}
+                    <td style={{ padding: '1rem 1.5rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem' }}>
                         <div
                           className="company-avatar"
-                          style={{ width: '38px', height: '38px', fontSize: '0.8125rem' }}
+                          style={{ width: '40px', height: '40px', fontSize: '0.875rem' }}
                         >
                           {getInitials(app.company)}
                         </div>
@@ -507,14 +611,16 @@ export default function ApplicationsPage() {
                             {app.title}
                           </span>
                         </div>
-                      </Link>
+                      </div>
                     </td>
 
-                    <td className="m3-table-td">
+                    {/* Status Badge */}
+                    <td style={{ padding: '1rem 1rem' }}>
                       <StatusBadge status={app.status} size="small" />
                     </td>
 
-                    <td className="m3-table-td">
+                    {/* Location */}
+                    <td style={{ padding: '1rem 1rem' }}>
                       <span
                         style={{
                           fontSize: '0.8125rem',
@@ -525,7 +631,8 @@ export default function ApplicationsPage() {
                       </span>
                     </td>
 
-                    <td className="m3-table-td">
+                    {/* Applied Date */}
+                    <td style={{ padding: '1rem 1rem' }}>
                       <span
                         style={{
                           fontSize: '0.8125rem',
@@ -540,7 +647,8 @@ export default function ApplicationsPage() {
                       </span>
                     </td>
 
-                    <td className="m3-table-td">
+                    {/* Salary */}
+                    <td style={{ padding: '1rem 1rem' }}>
                       <span
                         style={{
                           fontSize: '0.8125rem',
@@ -551,58 +659,74 @@ export default function ApplicationsPage() {
                       </span>
                     </td>
 
-                    <td className="m3-table-td" style={{ textAlign: 'right' }}>
+                    {/* Row Action Icons */}
+                    <td style={{ padding: '1rem 1.5rem', textAlign: 'right' }}>
                       <div
                         style={{
-                          display: 'flex',
+                          display: 'inline-flex',
                           alignItems: 'center',
-                          justifyContent: 'flex-end',
-                          gap: '0.5rem',
+                          gap: '0.25rem',
                         }}
                       >
-                        <Link href={`/applications/${app.id}`} style={{ textDecoration: 'none' }}>
-                          <button
-                            title="View details"
-                            aria-label="View application details"
-                            style={{
-                              background: 'none',
-                              border: '1px solid var(--md-sys-color-outline-variant)',
-                              borderRadius: '8px',
-                              padding: '0.35rem 0.6rem',
-                              color: 'var(--md-sys-color-primary)',
-                              cursor: 'pointer',
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: '0.25rem',
-                              fontFamily: 'var(--font-headline)',
-                              fontSize: '0.75rem',
-                              fontWeight: 600,
-                            }}
-                          >
-                            <span>View</span>
-                            <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>
-                              arrow_forward
-                            </span>
-                          </button>
-                        </Link>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            router.push(`/applications/${app.id}`);
+                          }}
+                          title="View details"
+                          aria-label="View application details"
+                          style={{
+                            width: '32px',
+                            height: '32px',
+                            borderRadius: '50%',
+                            border: 'none',
+                            backgroundColor: 'transparent',
+                            color: 'var(--md-sys-color-on-surface-variant)',
+                            cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            transition: 'background-color 0.15s ease',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor =
+                              'var(--md-sys-color-surface-container-high)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = 'transparent';
+                          }}
+                        >
+                          <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
+                            arrow_forward
+                          </span>
+                        </button>
 
                         <button
                           onClick={(e) => handleDelete(app.id, e)}
                           title="Delete application"
                           aria-label="Delete application"
                           style={{
-                            background: 'none',
-                            border: '1px solid var(--md-sys-color-outline-variant)',
-                            borderRadius: '8px',
-                            padding: '0.35rem',
+                            width: '32px',
+                            height: '32px',
+                            borderRadius: '50%',
+                            border: 'none',
+                            backgroundColor: 'transparent',
                             color: 'var(--md-sys-color-error)',
                             cursor: 'pointer',
                             display: 'inline-flex',
                             alignItems: 'center',
                             justifyContent: 'center',
+                            transition: 'background-color 0.15s ease',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor =
+                              'var(--md-sys-color-error-container)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = 'transparent';
                           }}
                         >
-                          <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
+                          <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
                             delete
                           </span>
                         </button>
@@ -613,8 +737,8 @@ export default function ApplicationsPage() {
               </tbody>
             </table>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* M3 Side Sheet Drawer for In-Context Creation */}
       <NewApplicationSheet
