@@ -5,8 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { TextField } from '@/components/ui/TextField';
-import { FilledButton } from '@/components/ui/Button';
-import { CircularProgress } from '@/components/ui/CircularProgress';
+import { Logo } from '@/components/ui/Logo';
 
 export default function SignupPage() {
   const [email, setEmail] = useState('');
@@ -63,78 +62,149 @@ export default function SignupPage() {
   };
 
   return (
-    <div style={{ position: 'relative', minHeight: 'calc(100vh - 180px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div className="hero-curve-bg" />
+    <div
+      style={{
+        minHeight: 'calc(100vh - 200px)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '1.5rem 1rem',
+      }}
+    >
+      <div
+        className="container"
+        style={{
+          maxWidth: '440px',
+          padding: 0,
+        }}
+      >
+        <div
+          className="m3-card"
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1.5rem',
+            padding: '2.25rem 2rem',
+            borderRadius: '28px',
+            backgroundColor: 'var(--md-sys-color-surface-container-lowest)',
+            border: '1px solid var(--md-sys-color-outline-variant)',
+            boxShadow: '0 4px 24px rgba(0, 0, 0, 0.04)',
+          }}
+        >
+          {/* Card Header & Brand Icon */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div
+                style={{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '16px',
+                  backgroundColor: 'var(--md-sys-color-primary-container)',
+                  color: 'var(--md-sys-color-on-primary-container)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Logo size={26} color="var(--md-sys-color-on-primary-container)" />
+              </div>
 
-      <div className="container" style={{ maxWidth: '460px', padding: '2rem 1.25rem', position: 'relative', zIndex: 1 }}>
-        <div className="m3-card" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', padding: '2rem' }}>
-          <div>
-            <div
-              style={{
-                width: '44px',
-                height: '44px',
-                borderRadius: '12px',
-                backgroundColor: 'var(--md-sys-color-primary-container)',
-                color: 'var(--md-sys-color-on-primary-container)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginBottom: '1rem',
-              }}
-            >
-              <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>
-                person_add
-              </span>
+              <Link
+                href="/"
+                style={{
+                  fontSize: '0.8125rem',
+                  fontFamily: 'var(--font-headline)',
+                  fontWeight: 600,
+                  color: 'var(--md-sys-color-on-surface-variant)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.25rem',
+                  padding: '0.35rem 0.65rem',
+                  borderRadius: '8px',
+                  transition: 'color 0.15s ease',
+                }}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
+                  arrow_back
+                </span>
+                <span>Home</span>
+              </Link>
             </div>
 
-            <h1
-              style={{
-                fontSize: '1.75rem',
-                fontWeight: 700,
-                color: 'var(--md-sys-color-on-surface)',
-                marginBottom: '0.25rem',
-              }}
-            >
-              Create Account
-            </h1>
-            <p style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '0.9375rem' }}>
-              Track all your job applications in one organized place.
-            </p>
+            <div>
+              <h1
+                style={{
+                  fontSize: '1.75rem',
+                  fontFamily: 'var(--font-headline)',
+                  fontWeight: 800,
+                  color: 'var(--md-sys-color-on-surface)',
+                  letterSpacing: '-0.02em',
+                  marginBottom: '0.35rem',
+                }}
+              >
+                Create Account
+              </h1>
+              <p
+                style={{
+                  color: 'var(--md-sys-color-on-surface-variant)',
+                  fontSize: '0.9375rem',
+                  fontFamily: 'var(--font-body)',
+                  lineHeight: 1.5,
+                }}
+              >
+                Start tracking all your job applications in one unified workspace.
+              </p>
+            </div>
           </div>
 
+          {/* Feedback Alerts */}
           {errorMsg && (
             <div
               style={{
-                padding: '0.75rem 1rem',
-                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '0.625rem',
+                padding: '0.875rem 1rem',
+                borderRadius: '14px',
                 backgroundColor: 'var(--md-sys-color-error-container)',
                 color: 'var(--md-sys-color-on-error-container)',
                 fontSize: '0.875rem',
+                fontFamily: 'var(--font-body)',
+                lineHeight: 1.4,
               }}
             >
-              {errorMsg}
+              <span className="material-symbols-outlined" style={{ fontSize: '20px', flexShrink: 0 }}>
+                error
+              </span>
+              <span>{errorMsg}</span>
             </div>
           )}
 
           {successMsg && (
             <div
               style={{
-                padding: '0.75rem 1rem',
-                borderRadius: '8px',
-                backgroundColor: 'var(--status-offer-bg)',
-                color: 'var(--status-offer-text)',
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '0.625rem',
+                padding: '0.875rem 1rem',
+                borderRadius: '14px',
+                backgroundColor: 'var(--md-sys-color-primary-container)',
+                color: 'var(--md-sys-color-on-primary-container)',
                 fontSize: '0.875rem',
+                fontFamily: 'var(--font-body)',
+                lineHeight: 1.4,
               }}
             >
-              {successMsg}
+              <span className="material-symbols-outlined" style={{ fontSize: '20px', flexShrink: 0 }}>
+                check_circle
+              </span>
+              <span>{successMsg}</span>
             </div>
           )}
 
+          {/* Form */}
           <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSignup();
-            }}
+            onSubmit={handleSignup}
             style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}
           >
             <TextField
@@ -153,6 +223,7 @@ export default function SignupPage() {
               onValueChange={setPassword}
               required
               leadingIcon="lock"
+              supportingText="Must be at least 6 characters"
             />
 
             <TextField
@@ -164,26 +235,70 @@ export default function SignupPage() {
               leadingIcon="lock_reset"
             />
 
-            <FilledButton onClick={() => handleSignup()} disabled={loading}>
-              {loading ? <CircularProgress /> : 'Create Free Account'}
-            </FilledButton>
+            {/* M3 Primary Full-Width Submit Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-pill-primary"
+              style={{
+                width: '100%',
+                height: '48px',
+                fontSize: '0.9375rem',
+                fontWeight: 700,
+                marginTop: '0.5rem',
+                opacity: loading ? 0.7 : 1,
+                cursor: loading ? 'not-allowed' : 'pointer',
+              }}
+            >
+              {loading ? (
+                <span
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                  }}
+                >
+                  <span
+                    className="material-symbols-outlined"
+                    style={{
+                      fontSize: '20px',
+                      animation: 'spin 1s linear infinite',
+                    }}
+                  >
+                    progress_activity
+                  </span>
+                  <span>Creating account...</span>
+                </span>
+              ) : (
+                'Create Free Account'
+              )}
+            </button>
           </form>
 
+          {/* Footer Actions */}
           <div
             style={{
               display: 'flex',
               justifyContent: 'center',
               borderTop: '1px solid var(--md-sys-color-outline-variant)',
-              paddingTop: '1rem',
+              paddingTop: '1.25rem',
             }}
           >
-            <p style={{ fontSize: '0.875rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
+            <p
+              style={{
+                fontSize: '0.875rem',
+                fontFamily: 'var(--font-body)',
+                color: 'var(--md-sys-color-on-surface-variant)',
+              }}
+            >
               Already have an account?{' '}
               <Link
                 href="/login"
                 style={{
                   color: 'var(--md-sys-color-primary)',
-                  fontWeight: 600,
+                  fontFamily: 'var(--font-headline)',
+                  fontWeight: 700,
+                  textDecoration: 'none',
                 }}
               >
                 Log in
