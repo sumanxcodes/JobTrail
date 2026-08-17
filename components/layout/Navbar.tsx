@@ -43,7 +43,7 @@ export function Navbar() {
   return (
     <header
       style={{
-        backgroundColor: 'var(--md-sys-color-surface-container-lowest)',
+        backgroundColor: 'var(--md-sys-color-surface)',
         borderBottom: '1px solid var(--md-sys-color-outline-variant)',
         position: 'sticky',
         top: 0,

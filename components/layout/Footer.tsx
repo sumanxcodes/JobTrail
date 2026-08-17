@@ -8,7 +8,7 @@ export function Footer() {
       style={{
         marginTop: 'auto',
         borderTop: '1px solid var(--md-sys-color-outline-variant)',
-        backgroundColor: 'var(--md-sys-color-surface-container-lowest)',
+        backgroundColor: 'var(--md-sys-color-surface)',
         paddingTop: '3.5rem',
         paddingBottom: '2.5rem',
         color: 'var(--md-sys-color-on-surface-variant)',

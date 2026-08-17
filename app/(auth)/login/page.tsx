@@ -85,9 +85,6 @@ export default function LoginPage() {
             gap: '1.5rem',
             padding: '2.25rem 2rem',
             borderRadius: '28px',
-            backgroundColor: 'var(--md-sys-color-surface-container-lowest)',
-            border: '1px solid var(--md-sys-color-outline-variant)',
-            boxShadow: 'none',
           }}
         >
           {/* Card Header & Brand Icon */}

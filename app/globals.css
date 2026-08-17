@@ -544,7 +544,7 @@ a {
 
 /* M3 Outlined Card Surfaces (0dp Resting Elevation, Outline Only) */
 .m3-card {
-  background-color: var(--md-sys-color-surface-container-lowest);
+  background-color: var(--md-sys-color-surface-container-low);
   border: 1px solid var(--md-sys-color-outline-variant);
   border-radius: 20px;
   padding: 1.5rem;
@@ -553,6 +553,7 @@ a {
 }
 
 .m3-card:hover {
+  background-color: var(--md-sys-color-surface-container);
   box-shadow: none;
 }
 
@@ -986,11 +987,11 @@ md-text-button [slot="icon"] {
    ========================================================================== */
 
 .m3-data-table-container {
-  background-color: var(--md-sys-color-surface-container-lowest);
+  background-color: var(--md-sys-color-surface-container-low);
   border: 1px solid var(--md-sys-color-outline-variant);
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  box-shadow: none;
   transition: background-color 0.25s ease, border-color 0.25s ease;
 }
 
@@ -1016,7 +1017,7 @@ md-text-button [slot="icon"] {
   text-transform: uppercase;
   color: var(--md-sys-color-on-surface-variant);
   border-bottom: 1px solid var(--md-sys-color-outline-variant);
-  background-color: var(--md-sys-color-surface-container-low);
+  background-color: var(--md-sys-color-surface-container);
   user-select: none;
 }
 
@@ -1035,7 +1036,7 @@ md-text-button [slot="icon"] {
 }
 
 .m3-table-row:hover td {
-  background-color: var(--md-sys-color-surface-container-low);
+  background-color: var(--md-sys-color-surface-container);
 }
 
 .m3-table-row:last-child td {
@@ -1044,7 +1045,7 @@ md-text-button [slot="icon"] {
 
 /* KPI Metric Card (Outlined M3 Variant) */
 .kpi-card {
-  background-color: var(--md-sys-color-surface-container-lowest);
+  background-color: var(--md-sys-color-surface-container-low);
   border: 1px solid var(--md-sys-color-outline-variant);
   border-radius: 20px;
   padding: 1.5rem;
@@ -1057,7 +1058,7 @@ md-text-button [slot="icon"] {
 
 .kpi-card:hover {
   transform: translateY(-2px);
-  background-color: var(--md-sys-color-surface-container-low);
+  background-color: var(--md-sys-color-surface-container);
   box-shadow: none;
 }
 
