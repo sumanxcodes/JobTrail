@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 
 export function ThemeToggle() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
-  const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('jobtrail_theme');
@@ -18,15 +17,10 @@ export function ThemeToggle() {
   }, []);
 
   const toggleTheme = () => {
-    setIsAnimating(true);
     const nextTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(nextTheme);
     document.documentElement.setAttribute('data-theme', nextTheme);
     localStorage.setItem('jobtrail_theme', nextTheme);
-
-    setTimeout(() => {
-      setIsAnimating(false);
-    }, 400);
   };
 
   const isDark = theme === 'dark';
@@ -51,9 +45,7 @@ export function ThemeToggle() {
         cursor: 'pointer',
         outline: 'none',
         boxShadow: 'none',
-        transform: isAnimating ? 'scale(0.92)' : 'scale(1)',
-        transition:
-          'transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease',
+        transition: 'background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease',
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container-high)';
@@ -66,7 +58,7 @@ export function ThemeToggle() {
         e.currentTarget.style.borderColor = 'var(--md-sys-color-outline-variant)';
       }}
     >
-      {/* Sun Icon (Visible in Dark Mode to switch to Light) */}
+      {/* Sun Icon (Slide in from bottom when entering Dark mode) */}
       <span
         className="material-symbols-outlined"
         style={{
@@ -87,7 +79,7 @@ export function ThemeToggle() {
         light_mode
       </span>
 
-      {/* Moon Icon (Visible in Light Mode to switch to Dark) */}
+      {/* Moon Icon (Slide in from top when entering Light mode) */}
       <span
         className="material-symbols-outlined"
         style={{
