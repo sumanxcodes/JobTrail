@@ -86,7 +86,7 @@ export function NavigationRail() {
               <span
                 className="material-symbols-outlined"
                 style={{
-                  fontSize: '22px',
+                  fontSize: '24px',
                   fontVariationSettings: isInsightsActive ? "'FILL' 1" : "'FILL' 0",
                 }}
               >
@@ -106,7 +106,7 @@ export function NavigationRail() {
               <span
                 className="material-symbols-outlined"
                 style={{
-                  fontSize: '22px',
+                  fontSize: '24px',
                   fontVariationSettings: isApplicationsActive ? "'FILL' 1" : "'FILL' 0",
                 }}
               >

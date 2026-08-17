@@ -35,7 +35,7 @@ export function BottomNavigationBar() {
           <span
             className="material-symbols-outlined"
             style={{
-              fontSize: '22px',
+              fontSize: '24px',
               fontVariationSettings: isInsightsActive ? "'FILL' 1" : "'FILL' 0",
             }}
           >
@@ -55,7 +55,7 @@ export function BottomNavigationBar() {
           <span
             className="material-symbols-outlined"
             style={{
-              fontSize: '22px',
+              fontSize: '24px',
               fontVariationSettings: isApplicationsActive ? "'FILL' 1" : "'FILL' 0",
             }}
           >
@@ -75,7 +75,7 @@ export function BottomNavigationBar() {
           <span
             className="material-symbols-outlined"
             style={{
-              fontSize: '22px',
+              fontSize: '24px',
               fontVariationSettings: isNewActive ? "'FILL' 1" : "'FILL' 0",
             }}
           >
@@ -99,7 +99,7 @@ export function BottomNavigationBar() {
         aria-label="Log out"
       >
         <div className="m3-active-pill">
-          <span className="material-symbols-outlined" style={{ fontSize: '22px', color: 'var(--md-sys-color-error)' }}>
+          <span className="material-symbols-outlined" style={{ fontSize: '24px', color: 'var(--md-sys-color-error)' }}>
             logout
           </span>
         </div>
