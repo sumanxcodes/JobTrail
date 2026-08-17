@@ -37,28 +37,24 @@ export function NavigationRail() {
 
   return (
     <aside className="m3-nav-rail" aria-label="Main Navigation">
-      {/* Top Group: Brand Logo & FAB */}
+      {/* Top Group: Brand Logo & M3 FAB */}
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.25rem', width: '100%' }}>
-        {/* Brand Step Arch Logo */}
+        {/* Brand Stepped-Arch Anchor */}
         <Link
           href="/dashboard"
-          title="JobTrail Dashboard"
+          title="JobTrail Workspace"
           style={{
-            width: '48px',
-            height: '48px',
-            borderRadius: '16px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: 'var(--md-sys-color-surface-container-lowest)',
-            border: '1px solid var(--md-sys-color-outline-variant)',
-            transition: 'all 0.2s ease',
+            padding: '4px',
+            textDecoration: 'none',
           }}
         >
-          <Logo size={24} color="var(--md-sys-color-primary)" />
+          <Logo size={28} color="var(--md-sys-color-primary)" />
         </Link>
 
-        {/* M3 Floating Action Button (FAB) -> + Add Application */}
+        {/* Canonical M3 Floating Action Button (FAB) -> 56×56px Squircle */}
         <Link
           href="/applications/new"
           className="m3-fab-btn"
@@ -70,13 +66,21 @@ export function NavigationRail() {
           </span>
         </Link>
 
-        {/* Middle Navigation Destinations */}
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%', marginTop: '0.5rem' }}>
-          {/* Insights Dashboard Item */}
+        {/* Middle Navigation Destinations (20px Rhythm) */}
+        <nav
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1.25rem',
+            width: '100%',
+            marginTop: '0.75rem',
+          }}
+        >
+          {/* Insights Destination */}
           <Link
             href="/dashboard"
             className={`m3-nav-item ${isInsightsActive ? 'active' : ''}`}
-            title="Insights & Analytics"
+            title="Insights & Overview"
           >
             <div className="m3-active-pill">
               <span
@@ -92,7 +96,7 @@ export function NavigationRail() {
             <span className="m3-nav-label">Insights</span>
           </Link>
 
-          {/* Applications Table Item */}
+          {/* Applications Table Destination */}
           <Link
             href="/applications"
             className={`m3-nav-item ${isApplicationsActive ? 'active' : ''}`}
@@ -114,7 +118,7 @@ export function NavigationRail() {
         </nav>
       </div>
 
-      {/* Bottom Group: Theme Toggle & User Menu */}
+      {/* Bottom Group: Circular Outlined Action Controls (48×48px) */}
       <div
         style={{
           display: 'flex',
@@ -125,43 +129,40 @@ export function NavigationRail() {
           position: 'relative',
         }}
       >
-        {/* Theme Toggle */}
-        <ThemeToggle />
-
-        {/* User Avatar & Logout Trigger */}
+        {/* User Account / Profile Circular Outlined Button */}
         <div style={{ position: 'relative' }}>
           <button
             onClick={() => setShowUserMenu(!showUserMenu)}
+            className="m3-rail-circle-btn"
             title={userEmail ? `Logged in as ${userEmail}` : 'User Profile'}
             aria-label="User Account Menu"
-            style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              backgroundColor: 'var(--md-sys-color-primary-container)',
-              color: 'var(--md-sys-color-on-primary-container)',
-              fontFamily: 'var(--font-headline)',
-              fontWeight: 700,
-              fontSize: '0.875rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              border: '1px solid var(--md-sys-color-outline-variant)',
-              cursor: 'pointer',
-              textTransform: 'uppercase',
-            }}
           >
-            {userEmail ? userEmail.charAt(0) : <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>person</span>}
+            {userEmail ? (
+              <span
+                style={{
+                  fontFamily: 'var(--font-headline)',
+                  fontWeight: 700,
+                  fontSize: '0.875rem',
+                  textTransform: 'uppercase',
+                }}
+              >
+                {userEmail.charAt(0)}
+              </span>
+            ) : (
+              <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
+                person
+              </span>
+            )}
           </button>
 
-          {/* User Popover Menu */}
+          {/* Account Popover Menu */}
           {showUserMenu && (
             <div
               style={{
                 position: 'absolute',
-                bottom: '48px',
-                left: '48px',
-                width: '220px',
+                bottom: '56px',
+                left: '52px',
+                width: '230px',
                 backgroundColor: 'var(--md-sys-color-surface-container-lowest)',
                 border: '1px solid var(--md-sys-color-outline-variant)',
                 borderRadius: '16px',
@@ -173,9 +174,26 @@ export function NavigationRail() {
                 gap: '0.5rem',
               }}
             >
-              <div style={{ padding: '0.25rem 0.5rem', borderBottom: '1px solid var(--md-sys-color-outline-variant)', paddingBottom: '0.5rem' }}>
-                <p style={{ fontSize: '0.75rem', color: 'var(--md-sys-color-outline)', fontFamily: 'var(--font-headline)' }}>Account</p>
-                <p style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface)', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <div
+                style={{
+                  padding: '0.25rem 0.5rem',
+                  borderBottom: '1px solid var(--md-sys-color-outline-variant)',
+                  paddingBottom: '0.5rem',
+                }}
+              >
+                <p style={{ fontSize: '0.75rem', color: 'var(--md-sys-color-outline)', fontFamily: 'var(--font-headline)' }}>
+                  Account
+                </p>
+                <p
+                  style={{
+                    fontSize: '0.8125rem',
+                    color: 'var(--md-sys-color-on-surface)',
+                    fontWeight: 600,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
                   {userEmail || 'User'}
                 </p>
               </div>
@@ -209,6 +227,9 @@ export function NavigationRail() {
             </div>
           )}
         </div>
+
+        {/* Circular Outlined Theme Switcher Button (48×48px) */}
+        <ThemeToggle />
       </div>
     </aside>
   );

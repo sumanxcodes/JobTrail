@@ -10,9 +10,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Desktop/Tablet M3 Vertical Navigation Rail */}
       <NavigationRail />
 
-      {/* Main Workspace Canvas */}
+      {/* Main Workspace Floating Canvas (28px M3 Curvature) */}
       <div className="m3-workspace-canvas">
-        <main style={{ flex: 1 }}>{children}</main>
+        <div className="m3-canvas-surface">
+          {children}
+        </div>
       </div>
 
       {/* Mobile M3 Bottom Navigation Bar (< 768px) */}

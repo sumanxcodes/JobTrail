@@ -192,10 +192,10 @@ export default function ApplicationDetailPage() {
   const initials = getInitials(application.company);
 
   return (
-    <div className="container" style={{ padding: '1.5rem 1.5rem 3rem 1.5rem' }}>
+    <div style={{ padding: '2rem 2.5rem 4rem 2.5rem', maxWidth: '1200px', margin: '0 auto' }}>
       {/* Breadcrumb Navigation */}
       <div style={{ marginBottom: '1.5rem' }}>
-        <Link href="/dashboard">
+        <Link href="/applications" style={{ textDecoration: 'none' }}>
           <TextButton icon="arrow_back">Back to Applications</TextButton>
         </Link>
       </div>

@@ -180,7 +180,7 @@ export default function NewApplicationPage() {
   };
 
   return (
-    <div className="container" style={{ maxWidth: '780px', padding: '1.5rem 1.5rem 3rem 1.5rem' }}>
+    <div style={{ maxWidth: '820px', padding: '2rem 1.5rem 4rem 1.5rem', margin: '0 auto' }}>
       {/* Header Section */}
       <div
         style={{

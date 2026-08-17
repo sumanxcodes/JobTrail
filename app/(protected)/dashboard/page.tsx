@@ -69,7 +69,7 @@ export default function DashboardInsightsPage() {
   }, [applications]);
 
   return (
-    <div className="container" style={{ padding: '2rem 1.5rem 3.5rem 1.5rem', maxWidth: '1200px' }}>
+    <div style={{ padding: '2rem 2.5rem 3.5rem 2.5rem', maxWidth: '1200px', margin: '0 auto' }}>
       {/* Header & Quick Navigation */}
       <div
         style={{
