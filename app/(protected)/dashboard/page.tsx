@@ -112,14 +112,9 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-          <Link href="/applications" style={{ textDecoration: 'none' }}>
-            <OutlinedButton icon="table_chart">Applications</OutlinedButton>
-          </Link>
-          <Link href="/applications/new" style={{ textDecoration: 'none' }}>
-            <FilledButton icon="add">Add Job</FilledButton>
-          </Link>
-        </div>
+        <Link href="/applications/new" style={{ textDecoration: 'none' }}>
+          <FilledButton icon="add">Add Job</FilledButton>
+        </Link>
       </div>
 
       {loading ? (
