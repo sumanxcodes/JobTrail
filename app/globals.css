@@ -701,3 +701,98 @@ a {
   color: var(--status-withdrawn-text);
   border: 1px solid var(--md-sys-color-outline-variant);
 }
+
+/* ==========================================================================
+   Material Design 3 (M3) Data Table & Analytics Visuals
+   ========================================================================== */
+
+.m3-data-table-container {
+  background-color: var(--md-sys-color-surface-container-lowest);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+.m3-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.m3-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  min-width: 680px;
+}
+
+.m3-table-th {
+  padding: 0.875rem 1.25rem;
+  font-family: var(--font-headline);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--md-sys-color-on-surface-variant);
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  background-color: var(--md-sys-color-surface-container-low);
+  user-select: none;
+}
+
+.m3-table-td {
+  padding: 1rem 1.25rem;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  color: var(--md-sys-color-on-surface);
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  vertical-align: middle;
+  transition: background-color 0.15s ease;
+}
+
+.m3-table-row {
+  transition: background-color 0.15s ease;
+}
+
+.m3-table-row:hover td {
+  background-color: var(--md-sys-color-surface-container-low);
+}
+
+.m3-table-row:last-child td {
+  border-bottom: none;
+}
+
+/* KPI Metric Card */
+.kpi-card {
+  background-color: var(--md-sys-color-surface-container-lowest);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 20px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease;
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--md-sys-color-primary);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+/* Funnel Bar */
+.m3-funnel-bar {
+  height: 10px;
+  border-radius: 5px;
+  background-color: var(--md-sys-color-surface-container-high);
+  overflow: hidden;
+}
+
+.m3-funnel-fill {
+  height: 100%;
+  border-radius: 5px;
+  background-color: var(--md-sys-color-primary);
+  transition: width 0.6s cubic-bezier(0.2, 0, 0, 1);
+}

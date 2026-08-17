@@ -4,20 +4,13 @@ import React, { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { Application, ApplicationStatus, APPLICATION_STATUSES } from '@/lib/types/database';
-import { ApplicationCard } from '@/components/applications/ApplicationCard';
-import { TextField } from '@/components/ui/TextField';
-import { Select } from '@/components/ui/Select';
-import { FilledButton, OutlinedButton, TextButton } from '@/components/ui/Button';
-import { Checkbox } from '@/components/ui/Checkbox';
+import { StatusBadge } from '@/components/applications/StatusBadge';
+import { FilledButton, OutlinedButton } from '@/components/ui/Button';
 import { CircularProgress } from '@/components/ui/CircularProgress';
 
-export default function DashboardPage() {
+export default function DashboardInsightsPage() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeStatusTab, setActiveStatusTab] = useState<ApplicationStatus | 'all'>('all');
-  const [sortBy, setSortBy] = useState<'updated_at_desc' | 'created_at_desc' | 'created_at_asc'>('updated_at_desc');
-  const [showClosed, setShowClosed] = useState(true);
 
   const supabase = createClient();
 
@@ -30,7 +23,7 @@ export default function DashboardPage() {
         .order('updated_at', { ascending: false });
 
       if (error) {
-        console.error('Error fetching applications:', error);
+        console.error('Error fetching applications for insights:', error);
       } else {
         setApplications(data || []);
       }
@@ -40,64 +33,49 @@ export default function DashboardPage() {
     fetchApplications();
   }, [supabase]);
 
-  const filteredApplications = useMemo(() => {
-    return applications
-      .filter((app) => {
-        // Search query filter (company, title, location)
-        if (searchQuery.trim()) {
-          const q = searchQuery.toLowerCase();
-          const matches =
-            app.company.toLowerCase().includes(q) ||
-            app.title.toLowerCase().includes(q) ||
-            (app.location && app.location.toLowerCase().includes(q));
-          if (!matches) return false;
-        }
+  // Analytics Computations
+  const stats = useMemo(() => {
+    const total = applications.length;
+    const drafts = applications.filter((a) => a.status === 'draft').length;
+    const applied = applications.filter((a) => a.status === 'applied').length;
+    const interviewing = applications.filter((a) => a.status === 'interviewing').length;
+    const offers = applications.filter((a) => a.status === 'offer').length;
+    const rejected = applications.filter((a) => a.status === 'rejected').length;
+    const withdrawn = applications.filter((a) => a.status === 'withdrawn').length;
 
-        // Active Status Tab Filter
-        if (activeStatusTab !== 'all') {
-          if (app.status !== activeStatusTab) return false;
-        }
+    const activePipeline = drafts + applied + interviewing;
 
-        // Closed toggle filter (if false, hide rejected & withdrawn unless specifically tabbed)
-        if (!showClosed && activeStatusTab === 'all') {
-          if (app.status === 'rejected' || app.status === 'withdrawn') {
-            return false;
-          }
-        }
+    // Interview Rate: (Interviewing + Offers) / (Applied + Interviewing + Offers + Rejected)
+    const processedApps = applied + interviewing + offers + rejected;
+    const interviewRate = processedApps > 0 ? Math.round(((interviewing + offers) / processedApps) * 100) : 0;
+    const offerRate = processedApps > 0 ? Math.round((offers / processedApps) * 100) : 0;
 
-        return true;
-      })
-      .sort((a, b) => {
-        if (sortBy === 'updated_at_desc') {
-          return new Date(b.updated_at || b.created_at).getTime() - new Date(a.updated_at || a.created_at).getTime();
-        }
-        if (sortBy === 'created_at_desc') {
-          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-        }
-        if (sortBy === 'created_at_asc') {
-          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-        }
-        return 0;
-      });
-  }, [applications, searchQuery, activeStatusTab, sortBy, showClosed]);
+    return {
+      total,
+      drafts,
+      applied,
+      interviewing,
+      offers,
+      rejected,
+      withdrawn,
+      activePipeline,
+      interviewRate,
+      offerRate,
+    };
+  }, [applications]);
 
-  // Calculate status counts for badges
-  const statusCounts = useMemo(() => {
-    const counts: Record<string, number> = { all: applications.length };
-    APPLICATION_STATUSES.forEach((s) => {
-      counts[s.value] = applications.filter((a) => a.status === s.value).length;
-    });
-    return counts;
+  const recentApplications = useMemo(() => {
+    return applications.slice(0, 4);
   }, [applications]);
 
   return (
-    <div className="container" style={{ padding: '1.5rem 1.5rem 3rem 1.5rem' }}>
-      {/* Header & Main Actions */}
+    <div className="container" style={{ padding: '2rem 1.5rem 3.5rem 1.5rem', maxWidth: '1200px' }}>
+      {/* Header & Quick Navigation */}
       <div
         style={{
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: 'flex-end',
+          alignItems: 'flex-start',
           marginBottom: '2rem',
           flexWrap: 'wrap',
           gap: '1.25rem',
@@ -106,213 +84,509 @@ export default function DashboardPage() {
         <div>
           <h1
             style={{
-              fontSize: '2.25rem',
-              fontWeight: 700,
+              fontSize: '2rem',
+              fontFamily: 'var(--font-headline)',
+              fontWeight: 800,
               color: 'var(--md-sys-color-on-surface)',
               letterSpacing: '-0.02em',
               marginBottom: '0.25rem',
             }}
           >
-            My Applications
+            Insights & Analytics
           </h1>
-          <p style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '1rem' }}>
-            Track and manage your active job pursuits.
+          <p
+            style={{
+              color: 'var(--md-sys-color-on-surface-variant)',
+              fontSize: '0.9375rem',
+              fontFamily: 'var(--font-body)',
+            }}
+          >
+            Real-time pipeline health, conversion metrics, and job pursuit momentum.
           </p>
         </div>
 
-        <Link href="/applications/new">
-          <FilledButton icon="add">Add Application</FilledButton>
-        </Link>
-      </div>
-
-      {/* Filter and Search Bar Card */}
-      <div
-        className="m3-card"
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '1.25rem',
-          marginBottom: '2rem',
-        }}
-      >
-        {/* Top Row: Search & Sort & Show Closed */}
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '1rem',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <div style={{ flex: '1 1 320px', maxWidth: '480px' }}>
-            <TextField
-              placeholder="Search by company, title, or location..."
-              value={searchQuery}
-              onValueChange={setSearchQuery}
-              leadingIcon="search"
-            />
-          </div>
-
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '1.25rem',
-              flexWrap: 'wrap',
-            }}
-          >
-            <div style={{ minWidth: '180px' }}>
-              <Select
-                label="Sort by"
-                value={sortBy}
-                onValueChange={(val) => setSortBy(val as any)}
-                options={[
-                  { value: 'updated_at_desc', label: 'Updated Date' },
-                  { value: 'created_at_desc', label: 'Newest Created' },
-                  { value: 'created_at_asc', label: 'Oldest Created' },
-                ]}
-              />
-            </div>
-
-            <label
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                cursor: 'pointer',
-                fontSize: '0.875rem',
-                color: 'var(--md-sys-color-on-surface-variant)',
-                fontWeight: 500,
-                userSelect: 'none',
-              }}
-            >
-              <Checkbox
-                checked={showClosed}
-                onCheckedChange={setShowClosed}
-              />
-              <span>Show closed (Rejected/Withdrawn)</span>
-            </label>
-          </div>
-        </div>
-
-        {/* Bottom Row: Segmented Control Status Tabs */}
-        <div style={{ overflowX: 'auto', paddingBottom: '2px' }}>
-          <div className="segmented-control">
-            <button
-              className={`segmented-control-btn ${activeStatusTab === 'all' ? 'active' : ''}`}
-              onClick={() => setActiveStatusTab('all')}
-            >
-              All ({statusCounts.all || 0})
-            </button>
-            {APPLICATION_STATUSES.map((status) => (
-              <button
-                key={status.value}
-                className={`segmented-control-btn ${activeStatusTab === status.value ? 'active' : ''}`}
-                onClick={() => setActiveStatusTab(status.value)}
-              >
-                {status.label} ({statusCounts[status.value] || 0})
-              </button>
-            ))}
-          </div>
+        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+          <Link href="/applications" style={{ textDecoration: 'none' }}>
+            <OutlinedButton icon="table_rows">View Applications Table</OutlinedButton>
+          </Link>
+          <Link href="/applications/new" style={{ textDecoration: 'none' }}>
+            <FilledButton icon="add">Add Application</FilledButton>
+          </Link>
         </div>
       </div>
 
-      {/* Applications Grid or Empty State */}
       {loading ? (
         <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            padding: '5rem 0',
-          }}
-        >
-          <CircularProgress />
-        </div>
-      ) : filteredApplications.length === 0 ? (
-        <div
-          className="m3-card"
           style={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            textAlign: 'center',
-            padding: '4rem 2rem',
-            gap: '1.25rem',
+            padding: '4rem 1rem',
+            gap: '1rem',
           }}
         >
-          <div
-            style={{
-              width: '64px',
-              height: '64px',
-              borderRadius: '50%',
-              backgroundColor: 'var(--md-sys-color-primary-container)',
-              color: 'var(--md-sys-color-on-primary-container)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <span className="material-symbols-outlined" style={{ fontSize: '32px' }}>
-              work_outline
-            </span>
-          </div>
-
-          <div>
-            <h2
-              style={{
-                fontSize: '1.35rem',
-                fontWeight: 600,
-                color: 'var(--md-sys-color-on-surface)',
-                marginBottom: '0.5rem',
-              }}
-            >
-              {applications.length === 0
-                ? 'No applications tracked yet'
-                : 'No applications match your filter'}
-            </h2>
-            <p
-              style={{
-                color: 'var(--md-sys-color-on-surface-variant)',
-                maxWidth: '420px',
-                fontSize: '0.9375rem',
-              }}
-            >
-              {applications.length === 0
-                ? 'Paste a link or job description to let AI parse the details automatically, or fill out the form manually.'
-                : 'Try adjusting your status tab, clearing search, or toggling "Show closed".'}
-            </p>
-          </div>
-
-          {applications.length === 0 ? (
-            <Link href="/applications/new">
-              <FilledButton icon="add">Add First Application</FilledButton>
-            </Link>
-          ) : (
-            <OutlinedButton
-              onClick={() => {
-                setSearchQuery('');
-                setActiveStatusTab('all');
-                setShowClosed(true);
-              }}
-            >
-              Reset Filters
-            </OutlinedButton>
-          )}
+          <CircularProgress indeterminate />
+          <p style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '0.9375rem' }}>
+            Calculating insights...
+          </p>
         </div>
       ) : (
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-            gap: '1.25rem',
-          }}
-        >
-          {filteredApplications.map((app) => (
-            <ApplicationCard key={app.id} application={app} />
-          ))}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+          {/* Top 4 KPI Metric Cards */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+              gap: '1.25rem',
+            }}
+          >
+            {/* Total Applications Card */}
+            <div className="kpi-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span
+                  style={{
+                    fontSize: '0.8125rem',
+                    fontFamily: 'var(--font-headline)',
+                    fontWeight: 700,
+                    letterSpacing: '0.04em',
+                    textTransform: 'uppercase',
+                    color: 'var(--md-sys-color-on-surface-variant)',
+                  }}
+                >
+                  Total Applications
+                </span>
+                <span
+                  className="material-symbols-outlined"
+                  style={{ fontSize: '20px', color: 'var(--md-sys-color-primary)' }}
+                >
+                  work
+                </span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginTop: '0.25rem' }}>
+                <span
+                  style={{
+                    fontSize: '2.25rem',
+                    fontFamily: 'var(--font-headline)',
+                    fontWeight: 800,
+                    color: 'var(--md-sys-color-on-surface)',
+                  }}
+                >
+                  {stats.total}
+                </span>
+                <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-outline)' }}>
+                  all-time
+                </span>
+              </div>
+              <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
+                {stats.activePipeline} currently active in pipeline
+              </span>
+            </div>
+
+            {/* Active Pipeline Card */}
+            <div className="kpi-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span
+                  style={{
+                    fontSize: '0.8125rem',
+                    fontFamily: 'var(--font-headline)',
+                    fontWeight: 700,
+                    letterSpacing: '0.04em',
+                    textTransform: 'uppercase',
+                    color: 'var(--md-sys-color-on-surface-variant)',
+                  }}
+                >
+                  Active Pipeline
+                </span>
+                <span
+                  className="material-symbols-outlined"
+                  style={{ fontSize: '20px', color: 'var(--md-sys-color-tertiary)' }}
+                >
+                  pending_actions
+                </span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginTop: '0.25rem' }}>
+                <span
+                  style={{
+                    fontSize: '2.25rem',
+                    fontFamily: 'var(--font-headline)',
+                    fontWeight: 800,
+                    color: 'var(--md-sys-color-on-surface)',
+                  }}
+                >
+                  {stats.activePipeline}
+                </span>
+                <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-outline)' }}>
+                  in progress
+                </span>
+              </div>
+              <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
+                {stats.interviewing} in active interview stages
+              </span>
+            </div>
+
+            {/* Interview Conversion Rate Card */}
+            <div className="kpi-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span
+                  style={{
+                    fontSize: '0.8125rem',
+                    fontFamily: 'var(--font-headline)',
+                    fontWeight: 700,
+                    letterSpacing: '0.04em',
+                    textTransform: 'uppercase',
+                    color: 'var(--md-sys-color-on-surface-variant)',
+                  }}
+                >
+                  Interview Rate
+                </span>
+                <span
+                  className="material-symbols-outlined"
+                  style={{ fontSize: '20px', color: 'var(--md-sys-color-secondary)' }}
+                >
+                  trending_up
+                </span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginTop: '0.25rem' }}>
+                <span
+                  style={{
+                    fontSize: '2.25rem',
+                    fontFamily: 'var(--font-headline)',
+                    fontWeight: 800,
+                    color: 'var(--md-sys-color-on-surface)',
+                  }}
+                >
+                  {stats.interviewRate}%
+                </span>
+                <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-outline)' }}>
+                  conversion
+                </span>
+              </div>
+              <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
+                Applied to interview success ratio
+              </span>
+            </div>
+
+            {/* Offers Received Card */}
+            <div className="kpi-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span
+                  style={{
+                    fontSize: '0.8125rem',
+                    fontFamily: 'var(--font-headline)',
+                    fontWeight: 700,
+                    letterSpacing: '0.04em',
+                    textTransform: 'uppercase',
+                    color: 'var(--md-sys-color-on-surface-variant)',
+                  }}
+                >
+                  Offers Received
+                </span>
+                <span
+                  className="material-symbols-outlined"
+                  style={{
+                    fontSize: '20px',
+                    color: 'var(--md-sys-color-primary)',
+                    fontVariationSettings: "'FILL' 1",
+                  }}
+                >
+                  verified
+                </span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginTop: '0.25rem' }}>
+                <span
+                  style={{
+                    fontSize: '2.25rem',
+                    fontFamily: 'var(--font-headline)',
+                    fontWeight: 800,
+                    color: 'var(--md-sys-color-primary)',
+                  }}
+                >
+                  {stats.offers}
+                </span>
+                <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-outline)' }}>
+                  offers
+                </span>
+              </div>
+              <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
+                {stats.offerRate}% final conversion rate
+              </span>
+            </div>
+          </div>
+
+          {/* Visual Analytics Grid: Conversion Funnel & Status Breakdown */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))',
+              gap: '1.5rem',
+            }}
+          >
+            {/* Conversion Funnel Card */}
+            <div className="m3-card" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <div>
+                <h3
+                  style={{
+                    fontSize: '1.125rem',
+                    fontFamily: 'var(--font-headline)',
+                    fontWeight: 700,
+                    color: 'var(--md-sys-color-on-surface)',
+                    marginBottom: '0.25rem',
+                  }}
+                >
+                  Application Pipeline Funnel
+                </h3>
+                <p style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
+                  Progression from draft preparation to job offer.
+                </p>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '0.5rem' }}>
+                {/* Step 1: Draft */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem' }}>
+                    <span style={{ fontWeight: 600, color: 'var(--md-sys-color-on-surface)' }}>1. Drafts</span>
+                    <span style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>{stats.drafts} apps</span>
+                  </div>
+                  <div className="m3-funnel-bar">
+                    <div
+                      className="m3-funnel-fill"
+                      style={{
+                        width: `${stats.total > 0 ? (stats.drafts / stats.total) * 100 : 0}%`,
+                        backgroundColor: 'var(--md-sys-color-outline)',
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Step 2: Applied */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem' }}>
+                    <span style={{ fontWeight: 600, color: 'var(--md-sys-color-on-surface)' }}>2. Applied & Submitted</span>
+                    <span style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>{stats.applied} apps</span>
+                  </div>
+                  <div className="m3-funnel-bar">
+                    <div
+                      className="m3-funnel-fill"
+                      style={{
+                        width: `${stats.total > 0 ? (stats.applied / stats.total) * 100 : 0}%`,
+                        backgroundColor: 'var(--md-sys-color-primary)',
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Step 3: Interviewing */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem' }}>
+                    <span style={{ fontWeight: 600, color: 'var(--md-sys-color-on-surface)' }}>3. Interviews & Rounds</span>
+                    <span style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>{stats.interviewing} apps</span>
+                  </div>
+                  <div className="m3-funnel-bar">
+                    <div
+                      className="m3-funnel-fill"
+                      style={{
+                        width: `${stats.total > 0 ? (stats.interviewing / stats.total) * 100 : 0}%`,
+                        backgroundColor: 'var(--md-sys-color-secondary)',
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Step 4: Offer */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem' }}>
+                    <span style={{ fontWeight: 600, color: 'var(--md-sys-color-primary)' }}>4. Job Offers</span>
+                    <span style={{ color: 'var(--md-sys-color-primary)', fontWeight: 700 }}>{stats.offers} apps</span>
+                  </div>
+                  <div className="m3-funnel-bar">
+                    <div
+                      className="m3-funnel-fill"
+                      style={{
+                        width: `${stats.total > 0 ? (stats.offers / stats.total) * 100 : 0}%`,
+                        backgroundColor: 'var(--md-sys-color-primary)',
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Status Distribution Card */}
+            <div className="m3-card" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <div>
+                <h3
+                  style={{
+                    fontSize: '1.125rem',
+                    fontFamily: 'var(--font-headline)',
+                    fontWeight: 700,
+                    color: 'var(--md-sys-color-on-surface)',
+                    marginBottom: '0.25rem',
+                  }}
+                >
+                  Status Distribution
+                </h3>
+                <p style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
+                  Breakdown across all active and closed pursuit stages.
+                </p>
+              </div>
+
+              {/* Segmented Progress Distribution Bar */}
+              <div
+                style={{
+                  height: '16px',
+                  borderRadius: '8px',
+                  backgroundColor: 'var(--md-sys-color-surface-container-high)',
+                  display: 'flex',
+                  overflow: 'hidden',
+                  marginTop: '0.5rem',
+                }}
+              >
+                {stats.total > 0 && (
+                  <>
+                    <div style={{ width: `${(stats.drafts / stats.total) * 100}%`, backgroundColor: 'var(--status-draft-text)' }} title={`Drafts: ${stats.drafts}`} />
+                    <div style={{ width: `${(stats.applied / stats.total) * 100}%`, backgroundColor: 'var(--status-applied-text)' }} title={`Applied: ${stats.applied}`} />
+                    <div style={{ width: `${(stats.interviewing / stats.total) * 100}%`, backgroundColor: 'var(--status-interviewing-text)' }} title={`Interviewing: ${stats.interviewing}`} />
+                    <div style={{ width: `${(stats.offers / stats.total) * 100}%`, backgroundColor: 'var(--status-offer-text)' }} title={`Offers: ${stats.offers}`} />
+                    <div style={{ width: `${(stats.rejected / stats.total) * 100}%`, backgroundColor: 'var(--status-rejected-text)' }} title={`Rejected: ${stats.rejected}`} />
+                    <div style={{ width: `${(stats.withdrawn / stats.total) * 100}%`, backgroundColor: 'var(--status-withdrawn-text)' }} title={`Withdrawn: ${stats.withdrawn}`} />
+                  </>
+                )}
+              </div>
+
+              {/* Status Legend Grid */}
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: '0.75rem',
+                  marginTop: '0.5rem',
+                }}
+              >
+                {APPLICATION_STATUSES.map((status) => {
+                  const count =
+                    status.value === 'draft'
+                      ? stats.drafts
+                      : status.value === 'applied'
+                      ? stats.applied
+                      : status.value === 'interviewing'
+                      ? stats.interviewing
+                      : status.value === 'offer'
+                      ? stats.offers
+                      : status.value === 'rejected'
+                      ? stats.rejected
+                      : stats.withdrawn;
+
+                  const percent = stats.total > 0 ? Math.round((count / stats.total) * 100) : 0;
+
+                  return (
+                    <div
+                      key={status.value}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '0.5rem 0.75rem',
+                        borderRadius: '12px',
+                        backgroundColor: 'var(--md-sys-color-surface-container-low)',
+                      }}
+                    >
+                      <span style={{ fontSize: '0.8125rem', fontFamily: 'var(--font-headline)', fontWeight: 600, color: 'var(--md-sys-color-on-surface)' }}>
+                        {status.label}
+                      </span>
+                      <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
+                        {count} ({percent}%)
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Recent Applications Quick Hub */}
+          <div className="m3-card" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                gap: '0.5rem',
+              }}
+            >
+              <div>
+                <h3
+                  style={{
+                    fontSize: '1.125rem',
+                    fontFamily: 'var(--font-headline)',
+                    fontWeight: 700,
+                    color: 'var(--md-sys-color-on-surface)',
+                  }}
+                >
+                  Recent Applications
+                </h3>
+                <p style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
+                  Latest pursuits updated in your pipeline.
+                </p>
+              </div>
+
+              <Link
+                href="/applications"
+                style={{
+                  fontSize: '0.8125rem',
+                  fontFamily: 'var(--font-headline)',
+                  fontWeight: 700,
+                  color: 'var(--md-sys-color-primary)',
+                  textDecoration: 'none',
+                }}
+              >
+                View all applications →
+              </Link>
+            </div>
+
+            {recentApplications.length === 0 ? (
+              <p style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '0.875rem', padding: '1rem 0' }}>
+                No applications added yet. Click "+ Add Application" above to get started!
+              </p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                {recentApplications.map((app) => (
+                  <Link
+                    key={app.id}
+                    href={`/applications/${app.id}`}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: '0.875rem 1rem',
+                      borderRadius: '14px',
+                      backgroundColor: 'var(--md-sys-color-surface-container-low)',
+                      border: '1px solid var(--md-sys-color-outline-variant)',
+                      textDecoration: 'none',
+                      transition: 'all 0.15s ease',
+                    }}
+                  >
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
+                      <span style={{ fontFamily: 'var(--font-headline)', fontWeight: 700, color: 'var(--md-sys-color-on-surface)', fontSize: '0.9375rem' }}>
+                        {app.company}
+                      </span>
+                      <span style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '0.8125rem' }}>
+                        {app.title} {app.location ? `• ${app.location}` : ''}
+                      </span>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                      <StatusBadge status={app.status} />
+                      <span className="material-symbols-outlined" style={{ fontSize: '18px', color: 'var(--md-sys-color-outline)' }}>
+                        arrow_forward
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>

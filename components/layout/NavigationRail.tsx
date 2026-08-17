@@ -30,8 +30,10 @@ export function NavigationRail() {
     router.refresh();
   };
 
-  const isDashboardActive = pathname === '/dashboard';
-  const isNewActive = pathname === '/applications/new';
+  const isInsightsActive = pathname === '/dashboard';
+  const isApplicationsActive =
+    pathname === '/applications' ||
+    (pathname.startsWith('/applications/') && pathname !== '/applications/new');
 
   return (
     <aside className="m3-nav-rail" aria-label="Main Navigation">
@@ -70,24 +72,44 @@ export function NavigationRail() {
 
         {/* Middle Navigation Destinations */}
         <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%', marginTop: '0.5rem' }}>
-          {/* Dashboard Item */}
+          {/* Insights Dashboard Item */}
           <Link
             href="/dashboard"
-            className={`m3-nav-item ${isDashboardActive ? 'active' : ''}`}
-            title="Applications Dashboard"
+            className={`m3-nav-item ${isInsightsActive ? 'active' : ''}`}
+            title="Insights & Analytics"
           >
             <div className="m3-active-pill">
               <span
                 className="material-symbols-outlined"
                 style={{
                   fontSize: '22px',
-                  fontVariationSettings: isDashboardActive ? "'FILL' 1" : "'FILL' 0",
+                  fontVariationSettings: isInsightsActive ? "'FILL' 1" : "'FILL' 0",
+                }}
+              >
+                insights
+              </span>
+            </div>
+            <span className="m3-nav-label">Insights</span>
+          </Link>
+
+          {/* Applications Table Item */}
+          <Link
+            href="/applications"
+            className={`m3-nav-item ${isApplicationsActive ? 'active' : ''}`}
+            title="Applications Data Table"
+          >
+            <div className="m3-active-pill">
+              <span
+                className="material-symbols-outlined"
+                style={{
+                  fontSize: '22px',
+                  fontVariationSettings: isApplicationsActive ? "'FILL' 1" : "'FILL' 0",
                 }}
               >
                 work
               </span>
             </div>
-            <span className="m3-nav-label">Dashboard</span>
+            <span className="m3-nav-label">Applications</span>
           </Link>
         </nav>
       </div>

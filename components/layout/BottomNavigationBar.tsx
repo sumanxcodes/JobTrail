@@ -17,15 +17,18 @@ export function BottomNavigationBar() {
     router.refresh();
   };
 
-  const isDashboardActive = pathname === '/dashboard';
+  const isInsightsActive = pathname === '/dashboard';
+  const isApplicationsActive =
+    pathname === '/applications' ||
+    (pathname.startsWith('/applications/') && pathname !== '/applications/new');
   const isNewActive = pathname === '/applications/new';
 
   return (
     <nav className="m3-bottom-nav" aria-label="Mobile Navigation Bar">
-      {/* Dashboard Item */}
+      {/* Insights Item */}
       <Link
         href="/dashboard"
-        className={`m3-nav-item ${isDashboardActive ? 'active' : ''}`}
+        className={`m3-nav-item ${isInsightsActive ? 'active' : ''}`}
         style={{ flex: 1 }}
       >
         <div className="m3-active-pill">
@@ -33,16 +36,36 @@ export function BottomNavigationBar() {
             className="material-symbols-outlined"
             style={{
               fontSize: '22px',
-              fontVariationSettings: isDashboardActive ? "'FILL' 1" : "'FILL' 0",
+              fontVariationSettings: isInsightsActive ? "'FILL' 1" : "'FILL' 0",
+            }}
+          >
+            insights
+          </span>
+        </div>
+        <span className="m3-nav-label">Insights</span>
+      </Link>
+
+      {/* Applications Table Item */}
+      <Link
+        href="/applications"
+        className={`m3-nav-item ${isApplicationsActive ? 'active' : ''}`}
+        style={{ flex: 1 }}
+      >
+        <div className="m3-active-pill">
+          <span
+            className="material-symbols-outlined"
+            style={{
+              fontSize: '22px',
+              fontVariationSettings: isApplicationsActive ? "'FILL' 1" : "'FILL' 0",
             }}
           >
             work
           </span>
         </div>
-        <span className="m3-nav-label">Dashboard</span>
+        <span className="m3-nav-label">Applications</span>
       </Link>
 
-      {/* Quick Add Application Action */}
+      {/* Quick Add Action */}
       <Link
         href="/applications/new"
         className={`m3-nav-item ${isNewActive ? 'active' : ''}`}
