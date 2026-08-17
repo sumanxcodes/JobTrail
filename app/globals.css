@@ -666,6 +666,135 @@ md-text-button [slot="icon"] {
   transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s cubic-bezier(0.2, 0, 0, 1);
 }
 
+/* Canonical M3 Buttons */
+.m3-btn-filled {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 24px;
+  border-radius: 9999px;
+  background-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+  font-family: var(--font-headline);
+  font-size: 0.875rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  box-shadow: none;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  outline: none;
+  flex-shrink: 0;
+}
+
+.m3-btn-filled.has-icon {
+  padding-left: 16px;
+  padding-right: 24px;
+}
+
+.m3-btn-filled:hover:not(:disabled) {
+  filter: brightness(1.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.3);
+  transform: translateY(-1px);
+}
+
+.m3-btn-filled:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.m3-btn-filled:disabled {
+  background-color: var(--md-sys-color-surface-container-highest);
+  color: var(--md-sys-color-outline);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.m3-btn-outlined {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 24px;
+  border-radius: 9999px;
+  background-color: transparent;
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--font-headline);
+  font-size: 0.875rem;
+  font-weight: 600;
+  border: 1px solid var(--md-sys-color-outline-variant);
+  cursor: pointer;
+  box-shadow: none;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  outline: none;
+  flex-shrink: 0;
+}
+
+.m3-btn-outlined.has-icon {
+  padding-left: 16px;
+  padding-right: 24px;
+}
+
+.m3-btn-outlined:hover:not(:disabled) {
+  background-color: var(--md-sys-color-surface-container);
+  border-color: var(--md-sys-color-outline);
+}
+
+.m3-btn-outlined:disabled {
+  border-color: var(--md-sys-color-outline-variant);
+  color: var(--md-sys-color-outline);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.m3-btn-text {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 9999px;
+  background-color: transparent;
+  color: var(--md-sys-color-primary);
+  font-family: var(--font-headline);
+  font-size: 0.875rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  outline: none;
+  flex-shrink: 0;
+}
+
+.m3-btn-text:hover:not(:disabled) {
+  background-color: var(--md-sys-color-surface-container);
+}
+
+.m3-btn-text:disabled {
+  color: var(--md-sys-color-outline);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.m3-btn-icon {
+  font-size: 18px !important;
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
 /* M3 Pill Button Styles (0dp Resting Elevation) */
 .btn-pill-primary {
   display: inline-flex;
