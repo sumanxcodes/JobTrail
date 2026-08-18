@@ -56,34 +56,14 @@ export function NavigationRail() {
       <aside className="m3-nav-rail" aria-label="Main Navigation">
         {/* Top Group: Quick Add FAB & Navigation Destinations */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', gap: '1.25rem' }}>
-          {/* Canonical M3 Floating Action Button (FAB) for Quick Job Add */}
+          {/* Canonical M3 Standard FAB (56x56dp, 16dp corner radius) */}
           <button
             onClick={() => setIsNewSheetOpen(true)}
             className="m3-fab-btn"
             title="Add New Application"
             aria-label="Add New Application"
             style={{
-              width: '48px',
-              height: '48px',
-              borderRadius: '16px',
-              backgroundColor: 'var(--md-sys-color-primary-container)',
-              color: 'var(--md-sys-color-on-primary-container)',
-              border: 'none',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-              transition: 'all 0.2s cubic-bezier(0.2, 0, 0, 1)',
               marginBottom: '0.75rem',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.boxShadow = '0 3px 8px rgba(0, 0, 0, 0.18)';
-              e.currentTarget.style.transform = 'scale(1.04)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
-              e.currentTarget.style.transform = 'scale(1)';
             }}
           >
             <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>
