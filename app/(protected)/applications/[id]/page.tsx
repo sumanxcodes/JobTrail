@@ -484,65 +484,12 @@ export default function ApplicationDetailPage() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           {!isEditing ? (
             <>
-              <button
-                onClick={() => setIsEditing(true)}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.4rem',
-                  padding: '0.5rem 1.1rem',
-                  borderRadius: '9999px',
-                  border: '1px solid var(--md-sys-color-outline-variant)',
-                  backgroundColor: 'transparent',
-                  color: 'var(--md-sys-color-on-surface)',
-                  fontFamily: 'var(--font-headline)',
-                  fontSize: '0.875rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  transition: 'all 0.15s ease',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                }}
-              >
-                <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
-                  edit
-                </span>
-                <span>Edit</span>
-              </button>
-
-              <button
-                onClick={() => setDeleteDialogOpen(true)}
-                aria-label="Delete application"
-                style={{
-                  width: '38px',
-                  height: '38px',
-                  borderRadius: '50%',
-                  border: '1px solid var(--md-sys-color-outline-variant)',
-                  backgroundColor: 'transparent',
-                  color: 'var(--md-sys-color-error)',
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transition: 'all 0.15s ease',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'var(--md-sys-color-error-container)';
-                  e.currentTarget.style.borderColor = 'var(--md-sys-color-error)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                  e.currentTarget.style.borderColor = 'var(--md-sys-color-outline-variant)';
-                }}
-              >
-                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
-                  delete
-                </span>
-              </button>
+              <OutlinedButton icon="edit" onClick={() => setIsEditing(true)}>
+                Edit
+              </OutlinedButton>
+              <OutlinedButton icon="delete" onClick={() => setDeleteDialogOpen(true)}>
+                Delete
+              </OutlinedButton>
             </>
           ) : (
             <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -942,51 +889,19 @@ export default function ApplicationDetailPage() {
                     </span>
                     <span>Application Notes</span>
                   </h3>
-
-                  <button
-                    onClick={handleSaveNotes}
-                    disabled={savingNotes}
-                    style={{
-                      border: 'none',
-                      backgroundColor: 'transparent',
-                      color: 'var(--md-sys-color-primary)',
-                      fontFamily: 'var(--font-headline)',
-                      fontSize: '0.8125rem',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '0.35rem',
-                    }}
-                  >
-                    <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
-                      {notesSavedSuccess ? 'check' : 'save'}
-                    </span>
-                    <span>{notesSavedSuccess ? 'Saved!' : savingNotes ? 'Saving...' : 'Save Notes'}</span>
-                  </button>
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '0.5rem' }}>
+                    <OutlinedButton onClick={handleSaveNotes} disabled={savingNotes}>
+                      {savingNotes ? 'Saving...' : notesSavedSuccess ? '✓ Notes Saved' : 'Save Notes'}
+                    </OutlinedButton>
+                  </div>
                 </div>
 
-                <textarea
+                <TextArea
+                  label="Application Notes & Preparation"
                   value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
+                  onValueChange={setNotes}
+                  rows={5}
                   placeholder="Add interview dates, contacts, referral notes, or question prep here..."
-                  rows={6}
-                  style={{
-                    width: '100%',
-                    padding: '1rem 1.25rem',
-                    borderRadius: '14px',
-                    border: '1px solid var(--md-sys-color-outline-variant)',
-                    backgroundColor: 'var(--md-sys-color-surface-container-lowest)',
-                    color: 'var(--md-sys-color-on-surface)',
-                    fontFamily: 'var(--font-body)',
-                    fontSize: '0.9375rem',
-                    lineHeight: 1.6,
-                    resize: 'vertical',
-                    outline: 'none',
-                    transition: 'border-color 0.2s ease',
-                  }}
-                  onFocus={(e) => (e.target.style.borderColor = 'var(--md-sys-color-primary)')}
-                  onBlur={(e) => (e.target.style.borderColor = 'var(--md-sys-color-outline-variant)')}
                 />
               </div>
 
