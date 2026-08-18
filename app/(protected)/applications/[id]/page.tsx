@@ -18,7 +18,18 @@ function getInitials(name: string): string {
   return (parts[0][0] + parts[1][0]).toUpperCase();
 }
 
-type TabType = 'overview' | 'raw_jd' | 'history';
+function formatTimelineDate(dateStr: string): string {
+  try {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString(undefined, {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  } catch (_e) {
+    return dateStr;
+  }
+}
 
 export default function ApplicationDetailPage() {
   const params = useParams();
@@ -29,7 +40,6 @@ export default function ApplicationDetailPage() {
   const [application, setApplication] = useState<Application | null>(null);
   const [history, setHistory] = useState<StatusHistory[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<TabType>('overview');
 
   // Edit form state
   const [isEditing, setIsEditing] = useState(false);
@@ -41,13 +51,22 @@ export default function ApplicationDetailPage() {
   const [jobUrl, setJobUrl] = useState('');
   const [notes, setNotes] = useState('');
 
-  const [saving, setSaving] = useState(false);
+  // Inline notes save state
+  const [savingNotes, setSavingNotes] = useState(false);
+  const [notesSavedSuccess, setNotesSavedSuccess] = useState(false);
+
+  // Status Change Dialog State (Fixes accidental timeline updates!)
+  const [pendingStatus, setPendingStatus] = useState<ApplicationStatus | null>(null);
+  const [statusDialogOpen, setStatusDialogOpen] = useState(false);
   const [updatingStatus, setUpdatingStatus] = useState(false);
+
+  const [saving, setSaving] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [copiedJd, setCopiedJd] = useState(false);
+  const [jdExpanded, setJdExpanded] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -94,20 +113,26 @@ export default function ApplicationDetailPage() {
     loadData();
   }, [applicationId, supabase]);
 
-  const handleStatusChange = async (nextStatus: ApplicationStatus) => {
-    if (!application || application.status === nextStatus) return;
+  // Triggered when user clicks a status button in "Update Status"
+  const handleInitiateStatusChange = (newStatus: ApplicationStatus) => {
+    if (!application || application.status === newStatus) return;
+    setPendingStatus(newStatus);
+    setStatusDialogOpen(true);
+  };
+
+  // Confirmed status change execution
+  const handleConfirmStatusChange = async () => {
+    if (!application || !pendingStatus) return;
 
     setUpdatingStatus(true);
     const prevStatus = application.status;
-
-    // Optimistic UI update
-    setApplication((prev) => (prev ? { ...prev, status: nextStatus } : null));
+    const targetStatus = pendingStatus;
 
     try {
       // 1. Update application status
       const { error: appError } = await supabase
         .from('applications')
-        .update({ status: nextStatus, updated_at: new Date().toISOString() })
+        .update({ status: targetStatus, updated_at: new Date().toISOString() })
         .eq('id', applicationId);
 
       if (appError) throw appError;
@@ -117,7 +142,7 @@ export default function ApplicationDetailPage() {
         .from('status_history')
         .insert({
           application_id: applicationId,
-          status: nextStatus,
+          status: targetStatus,
           changed_at: new Date().toISOString(),
         })
         .select()
@@ -125,12 +150,14 @@ export default function ApplicationDetailPage() {
 
       if (histError) throw histError;
 
+      setApplication((prev) => (prev ? { ...prev, status: targetStatus, updated_at: new Date().toISOString() } : null));
       setHistory((prev) => [histRow, ...prev]);
-      setSuccessMsg(`Status updated to ${nextStatus.toUpperCase()}`);
+      setStatusDialogOpen(false);
+      setPendingStatus(null);
+      setSuccessMsg(`Status updated to ${targetStatus.toUpperCase()}`);
       setTimeout(() => setSuccessMsg(null), 3000);
     } catch (err) {
       console.error('Failed to update status:', err);
-      // Revert on failure
       setApplication((prev) => (prev ? { ...prev, status: prevStatus } : null));
       alert('Failed to update status. Please try again.');
     } finally {
@@ -138,6 +165,46 @@ export default function ApplicationDetailPage() {
     }
   };
 
+  // Delete an accidental timeline history event
+  const handleDeleteHistoryEntry = async (historyId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!window.confirm('Remove this status change from timeline history?')) return;
+
+    try {
+      const { error } = await supabase.from('status_history').delete().eq('id', historyId);
+      if (error) throw error;
+      setHistory((prev) => prev.filter((h) => h.id !== historyId));
+    } catch (err) {
+      console.error('Failed to delete history entry:', err);
+      alert('Could not remove history event.');
+    }
+  };
+
+  // Inline Quick Save Notes
+  const handleSaveNotes = async () => {
+    if (!application) return;
+    setSavingNotes(true);
+
+    try {
+      const { error } = await supabase
+        .from('applications')
+        .update({ notes: notes.trim() || null, updated_at: new Date().toISOString() })
+        .eq('id', applicationId);
+
+      if (error) throw error;
+
+      setApplication((prev) => (prev ? { ...prev, notes: notes.trim() || null } : null));
+      setNotesSavedSuccess(true);
+      setTimeout(() => setNotesSavedSuccess(false), 2500);
+    } catch (err) {
+      console.error('Failed to save notes:', err);
+      alert('Failed to save notes.');
+    } finally {
+      setSavingNotes(false);
+    }
+  };
+
+  // Full Edit Modal Save
   const handleSaveEdit = async () => {
     if (!company.trim() || !title.trim()) {
       setErrorMsg('Company name and Job title are required.');
@@ -205,7 +272,8 @@ export default function ApplicationDetailPage() {
     }
   };
 
-  const handleCopyJd = () => {
+  const handleCopyJd = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (!application?.raw_jd) return;
     navigator.clipboard.writeText(application.raw_jd);
     setCopiedJd(true);
@@ -259,10 +327,6 @@ export default function ApplicationDetailPage() {
 
   const initials = getInitials(application.company);
 
-  // Pipeline step order
-  const pipelineStages: ApplicationStatus[] = ['draft', 'applied', 'interviewing', 'offer'];
-  const currentStageIdx = pipelineStages.indexOf(application.status);
-
   return (
     <div style={{ padding: '2rem 2rem 4rem 2rem', maxWidth: '1240px', margin: '0 auto' }}>
       {/* Top Breadcrumb Nav */}
@@ -272,7 +336,7 @@ export default function ApplicationDetailPage() {
         </Link>
       </div>
 
-      {/* Notifications */}
+      {/* Feedback Alerts */}
       {successMsg && (
         <div
           style={{
@@ -316,13 +380,13 @@ export default function ApplicationDetailPage() {
         </div>
       )}
 
-      {/* ================= OPTION 2: GOOGLE M3 WORKSPACE HEADER HERO ================= */}
+      {/* ================= 1. TOP HEADER HERO CARD ================= */}
       <div
         className="m3-card"
         style={{
           padding: '1.75rem 2rem',
           marginBottom: '1.5rem',
-          borderRadius: '24px',
+          borderRadius: '20px',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
@@ -336,9 +400,9 @@ export default function ApplicationDetailPage() {
           <div
             className="company-avatar"
             style={{
-              width: '60px',
-              height: '60px',
-              borderRadius: '18px',
+              width: '58px',
+              height: '58px',
+              borderRadius: '16px',
               fontSize: '1.35rem',
               flexShrink: 0,
             }}
@@ -399,99 +463,82 @@ export default function ApplicationDetailPage() {
                       fontSize: '0.8125rem',
                     }}
                   >
-                    <span>Original Posting</span>
+                    <span>View Posting</span>
                     <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>
                       open_in_new
                     </span>
                   </a>
                 </>
               )}
+
+              <span style={{ opacity: 0.4 }}>•</span>
+              <StatusBadge status={application.status} size="small" />
             </div>
           </div>
         </div>
 
-        {/* Header Right: M3 Interactive Status Chip + Action Buttons */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-          {/* M3 Status Dropdown Pill */}
-          <div style={{ position: 'relative' }}>
-            <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                padding: '0.4rem 0.875rem',
-                borderRadius: '9999px',
-                border: '1px solid var(--md-sys-color-outline-variant)',
-                backgroundColor: 'var(--md-sys-color-surface-container-high)',
-                cursor: 'pointer',
-              }}
-            >
-              <StatusBadge status={application.status} size="medium" />
-              <span
-                className="material-symbols-outlined"
-                style={{ fontSize: '18px', color: 'var(--md-sys-color-on-surface-variant)' }}
-              >
-                expand_more
-              </span>
-            </div>
-
-            <select
-              value={application.status}
-              onChange={(e) => handleStatusChange(e.target.value as ApplicationStatus)}
-              disabled={updatingStatus}
-              aria-label="Change status"
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                opacity: 0,
-                cursor: 'pointer',
-                appearance: 'none',
-              }}
-            >
-              {APPLICATION_STATUSES.map((s) => (
-                <option key={s.value} value={s.value}>
-                  {s.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
+        {/* Header Right: Edit & Delete Buttons */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           {!isEditing ? (
             <>
-              <OutlinedButton icon="edit" onClick={() => setIsEditing(true)}>
-                Edit
-              </OutlinedButton>
               <button
-                onClick={() => setDeleteDialogOpen(true)}
-                aria-label="Delete application"
+                onClick={() => setIsEditing(true)}
                 style={{
-                  width: '38px',
-                  height: '38px',
-                  borderRadius: '50%',
-                  border: '1px solid var(--md-sys-color-outline-variant)',
-                  backgroundColor: 'transparent',
-                  color: 'var(--md-sys-color-error)',
-                  cursor: 'pointer',
                   display: 'inline-flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
+                  gap: '0.4rem',
+                  padding: '0.5rem 1.1rem',
+                  borderRadius: '9999px',
+                  border: '1px solid var(--md-sys-color-outline-variant)',
+                  backgroundColor: 'var(--md-sys-color-surface-container-low)',
+                  color: 'var(--md-sys-color-on-surface)',
+                  fontFamily: 'var(--font-headline)',
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container-low)';
+                }}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
+                  edit
+                </span>
+                <span>Edit</span>
+              </button>
+
+              <button
+                onClick={() => setDeleteDialogOpen(true)}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  padding: '0.5rem 1rem',
+                  borderRadius: '9999px',
+                  border: 'none',
+                  backgroundColor: 'transparent',
+                  color: 'var(--md-sys-color-error)',
+                  fontFamily: 'var(--font-headline)',
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
                   transition: 'all 0.15s ease',
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = 'var(--md-sys-color-error-container)';
-                  e.currentTarget.style.borderColor = 'var(--md-sys-color-error)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.backgroundColor = 'transparent';
-                  e.currentTarget.style.borderColor = 'var(--md-sys-color-outline-variant)';
                 }}
               >
                 <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
                   delete
                 </span>
+                <span>Delete</span>
               </button>
             </>
           ) : (
@@ -511,14 +558,14 @@ export default function ApplicationDetailPage() {
                 Cancel
               </OutlinedButton>
               <FilledButton icon="save" onClick={handleSaveEdit} disabled={saving}>
-                {saving ? 'Saving...' : 'Save'}
+                {saving ? 'Saving...' : 'Save Changes'}
               </FilledButton>
             </div>
           )}
         </div>
       </div>
 
-      {/* ================= OPTION 2: 2-COLUMN TABBED WORKSPACE ================= */}
+      {/* ================= 2. MAIN 2-COLUMN GRID ================= */}
       <div
         style={{
           display: 'grid',
@@ -527,683 +574,806 @@ export default function ApplicationDetailPage() {
           alignItems: 'start',
         }}
       >
-        {/* ================= LEFT COLUMN: TABBED PANELS ================= */}
-        <div
-          className="m3-card"
-          style={{
-            padding: 0,
-            overflow: 'hidden',
-            backgroundColor: 'var(--md-sys-color-surface-container-low)',
-            borderRadius: '24px',
-            border: '1px solid var(--md-sys-color-outline-variant)',
-          }}
-        >
-          {/* M3 Segmented Primary Tabs */}
-          {!isEditing && (
+        {/* ================= LEFT COLUMN: INFO CARDS + NOTES + RAW JD ================= */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          {isEditing ? (
+            /* Full Edit Form */
             <div
+              className="m3-card"
               style={{
+                padding: '2rem',
+                backgroundColor: 'var(--md-sys-color-surface-container-low)',
+                borderRadius: '20px',
+                border: '1px solid var(--md-sys-color-outline-variant)',
                 display: 'flex',
-                borderBottom: '1px solid var(--md-sys-color-outline-variant)',
-                backgroundColor: 'var(--md-sys-color-surface-container)',
-                padding: '0.25rem 0.5rem 0 0.5rem',
-                gap: '0.25rem',
-                overflowX: 'auto',
+                flexDirection: 'column',
+                gap: '1.25rem',
               }}
             >
-              <button
-                onClick={() => setActiveTab('overview')}
+              <h3
                 style={{
-                  padding: '0.875rem 1.25rem',
-                  border: 'none',
-                  borderBottom:
-                    activeTab === 'overview'
-                      ? '3px solid var(--md-sys-color-primary)'
-                      : '3px solid transparent',
-                  backgroundColor: 'transparent',
-                  color:
-                    activeTab === 'overview'
-                      ? 'var(--md-sys-color-primary)'
-                      : 'var(--md-sys-color-on-surface-variant)',
+                  fontSize: '1.125rem',
                   fontFamily: 'var(--font-headline)',
-                  fontSize: '0.875rem',
-                  fontWeight: activeTab === 'overview' ? 700 : 600,
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  whiteSpace: 'nowrap',
-                  transition: 'all 0.15s ease',
+                  fontWeight: 700,
+                  color: 'var(--md-sys-color-on-surface)',
                 }}
               >
-                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
-                  description
-                </span>
-                <span>Overview & Notes</span>
-              </button>
+                Edit Role Information
+              </h3>
 
-              <button
-                onClick={() => setActiveTab('raw_jd')}
+              <div
                 style={{
-                  padding: '0.875rem 1.25rem',
-                  border: 'none',
-                  borderBottom:
-                    activeTab === 'raw_jd'
-                      ? '3px solid var(--md-sys-color-primary)'
-                      : '3px solid transparent',
-                  backgroundColor: 'transparent',
-                  color:
-                    activeTab === 'raw_jd'
-                      ? 'var(--md-sys-color-primary)'
-                      : 'var(--md-sys-color-on-surface-variant)',
-                  fontFamily: 'var(--font-headline)',
-                  fontSize: '0.875rem',
-                  fontWeight: activeTab === 'raw_jd' ? 700 : 600,
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  whiteSpace: 'nowrap',
-                  transition: 'all 0.15s ease',
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+                  gap: '1rem',
                 }}
               >
-                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
-                  article
-                </span>
-                <span>Original Job Posting</span>
-              </button>
-
-              <button
-                onClick={() => setActiveTab('history')}
-                style={{
-                  padding: '0.875rem 1.25rem',
-                  border: 'none',
-                  borderBottom:
-                    activeTab === 'history'
-                      ? '3px solid var(--md-sys-color-primary)'
-                      : '3px solid transparent',
-                  backgroundColor: 'transparent',
-                  color:
-                    activeTab === 'history'
-                      ? 'var(--md-sys-color-primary)'
-                      : 'var(--md-sys-color-on-surface-variant)',
-                  fontFamily: 'var(--font-headline)',
-                  fontSize: '0.875rem',
-                  fontWeight: activeTab === 'history' ? 700 : 600,
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  whiteSpace: 'nowrap',
-                  transition: 'all 0.15s ease',
-                }}
-              >
-                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
-                  history
-                </span>
-                <span>Activity Log ({history.length})</span>
-              </button>
-            </div>
-          )}
-
-          {/* Tab Content Body */}
-          <div style={{ padding: '2rem' }}>
-            {isEditing ? (
-              /* Edit Form */
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                <h3
-                  style={{
-                    fontSize: '1.125rem',
-                    fontFamily: 'var(--font-headline)',
-                    fontWeight: 700,
-                    color: 'var(--md-sys-color-on-surface)',
-                  }}
-                >
-                  Edit Job Information
-                </h3>
-
-                <div
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-                    gap: '1rem',
-                  }}
-                >
-                  <TextField
-                    label="Company Name"
-                    value={company}
-                    onValueChange={setCompany}
-                    required
-                    leadingIcon="domain"
-                  />
-                  <TextField
-                    label="Job Title"
-                    value={title}
-                    onValueChange={setTitle}
-                    required
-                    leadingIcon="badge"
-                  />
-                  <TextField
-                    label="Location"
-                    value={location}
-                    onValueChange={setLocation}
-                    leadingIcon="location_on"
-                  />
-                  <TextField
-                    label="Salary Range"
-                    value={salaryRange}
-                    onValueChange={setSalaryRange}
-                    leadingIcon="payments"
-                  />
-                  <TextField
-                    label="Seniority Level"
-                    value={seniority}
-                    onValueChange={setSeniority}
-                    leadingIcon="trending_up"
-                  />
-                  <TextField
-                    label="Job Posting URL"
-                    type="url"
-                    value={jobUrl}
-                    onValueChange={setJobUrl}
-                    leadingIcon="link"
-                  />
-                </div>
-
-                <TextArea
-                  label="Notes & Key Requirements"
-                  value={notes}
-                  onValueChange={setNotes}
-                  rows={6}
+                <TextField
+                  label="Company Name"
+                  value={company}
+                  onValueChange={setCompany}
+                  required
+                  leadingIcon="domain"
+                />
+                <TextField
+                  label="Job Title"
+                  value={title}
+                  onValueChange={setTitle}
+                  required
+                  leadingIcon="badge"
+                />
+                <TextField
+                  label="Location"
+                  value={location}
+                  onValueChange={setLocation}
+                  leadingIcon="location_on"
+                />
+                <TextField
+                  label="Salary Range"
+                  value={salaryRange}
+                  onValueChange={setSalaryRange}
+                  leadingIcon="payments"
+                />
+                <TextField
+                  label="Seniority Level"
+                  value={seniority}
+                  onValueChange={setSeniority}
+                  leadingIcon="trending_up"
+                />
+                <TextField
+                  label="Job Posting URL"
+                  type="url"
+                  value={jobUrl}
+                  onValueChange={setJobUrl}
+                  leadingIcon="link"
                 />
               </div>
-            ) : activeTab === 'overview' ? (
-              /* TAB 1: OVERVIEW & NOTES */
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-                <div>
-                  <h3
+
+              <TextArea
+                label="Notes & Key Requirements"
+                value={notes}
+                onValueChange={setNotes}
+                rows={6}
+              />
+            </div>
+          ) : (
+            <>
+              {/* Row 1 of Info Cards: Location (33%), Target Salary (33%), Seniority (33%) */}
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+                  gap: '1rem',
+                }}
+              >
+                {/* Location Card */}
+                <div
+                  className="m3-card"
+                  style={{
+                    padding: '1.125rem 1.25rem',
+                    borderRadius: '16px',
+                    backgroundColor: 'var(--md-sys-color-surface-container-low)',
+                    border: '1px solid var(--md-sys-color-outline-variant)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.35rem',
+                  }}
+                >
+                  <span
                     style={{
-                      fontSize: '0.75rem',
+                      fontSize: '0.6875rem',
                       fontFamily: 'var(--font-headline)',
                       fontWeight: 700,
                       textTransform: 'uppercase',
-                      letterSpacing: '0.06em',
+                      letterSpacing: '0.05em',
                       color: 'var(--md-sys-color-on-surface-variant)',
-                      marginBottom: '0.75rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.35rem',
                     }}
                   >
-                    Notes & Key Requirements
-                  </h3>
-
-                  {application.notes ? (
-                    <div
-                      style={{
-                        padding: '1.25rem 1.5rem',
-                        borderRadius: '16px',
-                        border: '1px solid var(--md-sys-color-outline-variant)',
-                        backgroundColor: 'var(--md-sys-color-surface-container)',
-                        whiteSpace: 'pre-wrap',
-                        fontSize: '0.9375rem',
-                        lineHeight: 1.65,
-                        color: 'var(--md-sys-color-on-surface)',
-                      }}
-                    >
-                      {application.notes}
-                    </div>
-                  ) : (
-                    <div
-                      style={{
-                        padding: '2rem',
-                        borderRadius: '16px',
-                        border: '1px dashed var(--md-sys-color-outline-variant)',
-                        textAlign: 'center',
-                      }}
-                    >
-                      <p style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '0.875rem' }}>
-                        No notes added yet. Click <strong>Edit</strong> in the top header to add notes, salary expectations, or interview details.
-                      </p>
-                    </div>
-                  )}
+                    <span className="material-symbols-outlined" style={{ fontSize: '15px' }}>
+                      location_on
+                    </span>
+                    Location
+                  </span>
+                  <span
+                    style={{
+                      fontSize: '0.9375rem',
+                      fontWeight: 700,
+                      color: 'var(--md-sys-color-on-surface)',
+                      lineHeight: 1.35,
+                    }}
+                  >
+                    {application.location || 'Not Specified'}
+                  </span>
                 </div>
 
-                {/* Quick Attributes Summary Chips */}
-                <div>
-                  <h3
+                {/* Target Salary Card */}
+                <div
+                  className="m3-card"
+                  style={{
+                    padding: '1.125rem 1.25rem',
+                    borderRadius: '16px',
+                    backgroundColor: 'var(--md-sys-color-surface-container-low)',
+                    border: '1px solid var(--md-sys-color-outline-variant)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.35rem',
+                  }}
+                >
+                  <span
                     style={{
-                      fontSize: '0.75rem',
+                      fontSize: '0.6875rem',
                       fontFamily: 'var(--font-headline)',
                       fontWeight: 700,
                       textTransform: 'uppercase',
-                      letterSpacing: '0.06em',
+                      letterSpacing: '0.05em',
                       color: 'var(--md-sys-color-on-surface-variant)',
-                      marginBottom: '0.75rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.35rem',
                     }}
                   >
-                    Role Highlights
-                  </h3>
+                    <span className="material-symbols-outlined" style={{ fontSize: '15px' }}>
+                      payments
+                    </span>
+                    Target Salary
+                  </span>
+                  <span
+                    style={{
+                      fontSize: '0.9375rem',
+                      fontWeight: 700,
+                      color: 'var(--md-sys-color-on-surface)',
+                      lineHeight: 1.35,
+                    }}
+                  >
+                    {application.salary_range || 'Not Specified'}
+                  </span>
+                </div>
 
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.625rem' }}>
-                    {application.location && (
-                      <div
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '0.4rem',
-                          padding: '0.4rem 0.85rem',
-                          borderRadius: '9999px',
-                          backgroundColor: 'var(--md-sys-color-surface-container)',
-                          border: '1px solid var(--md-sys-color-outline-variant)',
-                          fontSize: '0.8125rem',
-                          fontWeight: 600,
-                          color: 'var(--md-sys-color-on-surface)',
-                        }}
-                      >
-                        <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
-                          location_on
-                        </span>
-                        <span>{application.location}</span>
-                      </div>
-                    )}
+                {/* Seniority Card */}
+                <div
+                  className="m3-card"
+                  style={{
+                    padding: '1.125rem 1.25rem',
+                    borderRadius: '16px',
+                    backgroundColor: 'var(--md-sys-color-surface-container-low)',
+                    border: '1px solid var(--md-sys-color-outline-variant)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.35rem',
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: '0.6875rem',
+                      fontFamily: 'var(--font-headline)',
+                      fontWeight: 700,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em',
+                      color: 'var(--md-sys-color-on-surface-variant)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.35rem',
+                    }}
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: '15px' }}>
+                      trending_up
+                    </span>
+                    Seniority
+                  </span>
+                  <span
+                    style={{
+                      fontSize: '0.9375rem',
+                      fontWeight: 700,
+                      color: 'var(--md-sys-color-on-surface)',
+                      lineHeight: 1.35,
+                    }}
+                  >
+                    {application.seniority || 'Not Specified'}
+                  </span>
+                </div>
+              </div>
 
-                    {application.salary_range && (
-                      <div
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '0.4rem',
-                          padding: '0.4rem 0.85rem',
-                          borderRadius: '9999px',
-                          backgroundColor: 'var(--md-sys-color-surface-container)',
-                          border: '1px solid var(--md-sys-color-outline-variant)',
-                          fontSize: '0.8125rem',
-                          fontWeight: 600,
-                          color: 'var(--md-sys-color-on-surface)',
-                        }}
-                      >
-                        <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
-                          payments
-                        </span>
-                        <span>{application.salary_range}</span>
-                      </div>
-                    )}
+              {/* Row 2 of Info Cards: Source (33%) & Created/Updated Dates (66%) */}
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 2fr',
+                  gap: '1rem',
+                }}
+              >
+                {/* Source Card */}
+                <div
+                  className="m3-card"
+                  style={{
+                    padding: '1.125rem 1.25rem',
+                    borderRadius: '16px',
+                    backgroundColor: 'var(--md-sys-color-surface-container-low)',
+                    border: '1px solid var(--md-sys-color-outline-variant)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.35rem',
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: '0.6875rem',
+                      fontFamily: 'var(--font-headline)',
+                      fontWeight: 700,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em',
+                      color: 'var(--md-sys-color-on-surface-variant)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.35rem',
+                    }}
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: '15px' }}>
+                      share
+                    </span>
+                    Source
+                  </span>
+                  <span
+                    style={{
+                      fontSize: '0.9375rem',
+                      fontWeight: 700,
+                      textTransform: 'capitalize',
+                      color: 'var(--md-sys-color-on-surface)',
+                    }}
+                  >
+                    {application.source_type || 'Manual'}
+                  </span>
+                </div>
 
-                    {application.seniority && (
-                      <div
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '0.4rem',
-                          padding: '0.4rem 0.85rem',
-                          borderRadius: '9999px',
-                          backgroundColor: 'var(--md-sys-color-surface-container)',
-                          border: '1px solid var(--md-sys-color-outline-variant)',
-                          fontSize: '0.8125rem',
-                          fontWeight: 600,
-                          color: 'var(--md-sys-color-on-surface)',
-                        }}
-                      >
-                        <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
-                          trending_up
-                        </span>
-                        <span>{application.seniority}</span>
-                      </div>
-                    )}
-
-                    <div
+                {/* Dates Dual-Pane Card */}
+                <div
+                  className="m3-card"
+                  style={{
+                    padding: '1.125rem 1.5rem',
+                    borderRadius: '16px',
+                    backgroundColor: 'var(--md-sys-color-surface-container-low)',
+                    border: '1px solid var(--md-sys-color-outline-variant)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-around',
+                  }}
+                >
+                  {/* Created On */}
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.2rem' }}>
+                    <span
                       style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '0.4rem',
-                        padding: '0.4rem 0.85rem',
-                        borderRadius: '9999px',
-                        backgroundColor: 'var(--md-sys-color-surface-container)',
-                        border: '1px solid var(--md-sys-color-outline-variant)',
-                        fontSize: '0.8125rem',
-                        fontWeight: 600,
-                        textTransform: 'capitalize',
-                        color: 'var(--md-sys-color-on-surface)',
+                        fontSize: '0.6875rem',
+                        fontFamily: 'var(--font-headline)',
+                        fontWeight: 700,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em',
+                        color: 'var(--md-sys-color-on-surface-variant)',
                       }}
                     >
-                      <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
-                        share
-                      </span>
-                      <span>Source: {application.source_type || 'Manual'}</span>
-                    </div>
+                      Created On
+                    </span>
+                    <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--md-sys-color-on-surface)' }}>
+                      {formatTimelineDate(application.created_at)}
+                    </span>
+                  </div>
+
+                  {/* Vertical Divider */}
+                  <div
+                    style={{
+                      width: '1px',
+                      height: '32px',
+                      backgroundColor: 'var(--md-sys-color-outline-variant)',
+                    }}
+                  />
+
+                  {/* Last Updated */}
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.2rem' }}>
+                    <span
+                      style={{
+                        fontSize: '0.6875rem',
+                        fontFamily: 'var(--font-headline)',
+                        fontWeight: 700,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em',
+                        color: 'var(--md-sys-color-on-surface-variant)',
+                      }}
+                    >
+                      Last Updated
+                    </span>
+                    <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--md-sys-color-on-surface)' }}>
+                      {formatTimelineDate(application.updated_at)}
+                    </span>
                   </div>
                 </div>
               </div>
-            ) : activeTab === 'raw_jd' ? (
-              /* TAB 2: ORIGINAL JOB POSTING */
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+
+              {/* Application Notes Card with Direct Save */}
+              <div
+                className="m3-card"
+                style={{
+                  padding: '1.5rem',
+                  borderRadius: '20px',
+                  backgroundColor: 'var(--md-sys-color-surface-container-low)',
+                  border: '1px solid var(--md-sys-color-outline-variant)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '1rem',
+                }}
+              >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <h3
                     style={{
-                      fontSize: '0.75rem',
+                      fontSize: '1rem',
                       fontFamily: 'var(--font-headline)',
                       fontWeight: 700,
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.06em',
-                      color: 'var(--md-sys-color-on-surface-variant)',
+                      color: 'var(--md-sys-color-on-surface)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
                     }}
                   >
-                    Full Job Description Text
+                    <span className="material-symbols-outlined" style={{ fontSize: '20px', color: 'var(--md-sys-color-primary)' }}>
+                      notes
+                    </span>
+                    <span>Application Notes</span>
                   </h3>
 
                   <button
-                    onClick={handleCopyJd}
+                    onClick={handleSaveNotes}
+                    disabled={savingNotes}
                     style={{
-                      padding: '0.35rem 0.75rem',
-                      borderRadius: '8px',
-                      border: '1px solid var(--md-sys-color-outline-variant)',
-                      backgroundColor: 'var(--md-sys-color-surface-container)',
-                      color: copiedJd ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-on-surface)',
-                      fontSize: '0.75rem',
+                      border: 'none',
+                      backgroundColor: 'transparent',
+                      color: notesSavedSuccess
+                        ? 'var(--md-sys-color-primary)'
+                        : 'var(--md-sys-color-primary)',
                       fontFamily: 'var(--font-headline)',
-                      fontWeight: 600,
+                      fontSize: '0.8125rem',
+                      fontWeight: 700,
                       cursor: 'pointer',
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: '0.35rem',
                     }}
                   >
-                    <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>
-                      {copiedJd ? 'check' : 'content_copy'}
+                    <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
+                      {notesSavedSuccess ? 'check' : 'save'}
                     </span>
-                    <span>{copiedJd ? 'Copied!' : 'Copy Full Text'}</span>
+                    <span>{notesSavedSuccess ? 'Saved!' : savingNotes ? 'Saving...' : 'Save Notes'}</span>
                   </button>
                 </div>
 
-                {application.raw_jd ? (
-                  <div
-                    style={{
-                      padding: '1.5rem',
-                      borderRadius: '16px',
-                      border: '1px solid var(--md-sys-color-outline-variant)',
-                      backgroundColor: 'var(--md-sys-color-surface-container-lowest)',
-                      maxHeight: '520px',
-                      overflowY: 'auto',
-                      whiteSpace: 'pre-wrap',
-                      fontSize: '0.875rem',
-                      lineHeight: 1.65,
-                      color: 'var(--md-sys-color-on-surface)',
-                      fontFamily: 'var(--font-body)',
-                    }}
-                  >
-                    {application.raw_jd}
-                  </div>
-                ) : (
-                  <div
-                    style={{
-                      padding: '3rem 2rem',
-                      borderRadius: '16px',
-                      border: '1px dashed var(--md-sys-color-outline-variant)',
-                      textAlign: 'center',
-                    }}
-                  >
-                    <p style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '0.875rem' }}>
-                      No raw job description preserved for this manual entry.
-                    </p>
-                  </div>
-                )}
-              </div>
-            ) : (
-              /* TAB 3: ACTIVITY LOG */
-              <div>
-                <h3
+                <textarea
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder="Add interview dates, contacts, referral notes, or question prep here..."
+                  rows={6}
                   style={{
-                    fontSize: '0.75rem',
-                    fontFamily: 'var(--font-headline)',
-                    fontWeight: 700,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.06em',
-                    color: 'var(--md-sys-color-on-surface-variant)',
-                    marginBottom: '1.25rem',
+                    width: '100%',
+                    padding: '1rem 1.25rem',
+                    borderRadius: '14px',
+                    border: '1px solid var(--md-sys-color-outline-variant)',
+                    backgroundColor: 'var(--md-sys-color-surface-container-lowest)',
+                    color: 'var(--md-sys-color-on-surface)',
+                    fontFamily: 'var(--font-body)',
+                    fontSize: '0.9375rem',
+                    lineHeight: 1.6,
+                    resize: 'vertical',
+                    outline: 'none',
+                    transition: 'border-color 0.2s ease',
+                  }}
+                  onFocus={(e) => (e.target.style.borderColor = 'var(--md-sys-color-primary)')}
+                  onBlur={(e) => (e.target.style.borderColor = 'var(--md-sys-color-outline-variant)')}
+                />
+              </div>
+
+              {/* Collapsible Raw Job Description Card */}
+              {application.raw_jd && (
+                <div
+                  className="m3-card"
+                  style={{
+                    padding: 0,
+                    overflow: 'hidden',
+                    borderRadius: '20px',
+                    backgroundColor: 'var(--md-sys-color-surface-container-low)',
+                    border: '1px solid var(--md-sys-color-outline-variant)',
                   }}
                 >
-                  Status History & Activity
-                </h3>
+                  <div
+                    onClick={() => setJdExpanded((prev) => !prev)}
+                    style={{
+                      padding: '1.25rem 1.5rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      cursor: 'pointer',
+                      transition: 'background-color 0.15s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+                      <span className="material-symbols-outlined" style={{ fontSize: '20px', color: 'var(--md-sys-color-primary)' }}>
+                        description
+                      </span>
+                      <span
+                        style={{
+                          fontFamily: 'var(--font-headline)',
+                          fontWeight: 700,
+                          fontSize: '0.9375rem',
+                          color: 'var(--md-sys-color-on-surface)',
+                        }}
+                      >
+                        Raw Job Description
+                      </span>
+                    </div>
 
-                {history.length === 0 ? (
-                  <p style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '0.875rem' }}>
-                    No status transitions recorded.
-                  </p>
-                ) : (
-                  <div className="m3-timeline">
-                    {history.map((entry, idx) => (
-                      <div key={entry.id || idx} className="m3-timeline-item">
-                        <div className="m3-timeline-line" />
-                        <div className="m3-timeline-dot">
-                          <span
-                            className="material-symbols-outlined"
-                            style={{ fontSize: '14px', color: 'var(--md-sys-color-primary)' }}
-                          >
-                            radio_button_checked
-                          </span>
-                        </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <button
+                        onClick={handleCopyJd}
+                        style={{
+                          padding: '0.3rem 0.65rem',
+                          borderRadius: '8px',
+                          border: '1px solid var(--md-sys-color-outline-variant)',
+                          backgroundColor: 'var(--md-sys-color-surface-container)',
+                          color: copiedJd ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-on-surface-variant)',
+                          fontSize: '0.75rem',
+                          fontFamily: 'var(--font-headline)',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '0.35rem',
+                        }}
+                      >
+                        <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>
+                          {copiedJd ? 'check' : 'content_copy'}
+                        </span>
+                        <span>{copiedJd ? 'Copied' : 'Copy'}</span>
+                      </button>
 
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', flex: 1 }}>
-                          <StatusBadge status={entry.status} size="medium" />
-                          <span
-                            style={{
-                              fontSize: '0.75rem',
-                              color: 'var(--md-sys-color-on-surface-variant)',
-                            }}
-                          >
-                            {new Date(entry.changed_at).toLocaleString(undefined, {
-                              year: 'numeric',
-                              month: 'short',
-                              day: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit',
-                            })}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
+                      <span
+                        className="material-symbols-outlined"
+                        style={{
+                          fontSize: '20px',
+                          color: 'var(--md-sys-color-on-surface-variant)',
+                          transform: jdExpanded ? 'rotate(180deg)' : 'none',
+                          transition: 'transform 0.2s ease',
+                        }}
+                      >
+                        expand_more
+                      </span>
+                    </div>
                   </div>
-                )}
-              </div>
-            )}
-          </div>
+
+                  {jdExpanded && (
+                    <div
+                      style={{
+                        padding: '1.25rem 1.5rem',
+                        borderTop: '1px solid var(--md-sys-color-outline-variant)',
+                        backgroundColor: 'var(--md-sys-color-surface-container-lowest)',
+                        maxHeight: '420px',
+                        overflowY: 'auto',
+                        whiteSpace: 'pre-wrap',
+                        fontSize: '0.8125rem',
+                        lineHeight: 1.6,
+                        color: 'var(--md-sys-color-on-surface-variant)',
+                      }}
+                    >
+                      {application.raw_jd}
+                    </div>
+                  )}
+                </div>
+              )}
+            </>
+          )}
         </div>
 
-        {/* ================= RIGHT COLUMN: M3 PROPERTIES & PIPELINE STEPPER ================= */}
+        {/* ================= RIGHT COLUMN: UPDATE STATUS + TIMELINE ================= */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          {/* Card 1: Pipeline Progress Stepper */}
+          {/* Card 1: Update Status Buttons Grid */}
           <div
             className="m3-card"
             style={{
               padding: '1.5rem',
+              borderRadius: '20px',
               backgroundColor: 'var(--md-sys-color-surface-container-low)',
-              borderRadius: '24px',
               border: '1px solid var(--md-sys-color-outline-variant)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1rem',
             }}
           >
-            <span
+            <h3
               style={{
-                fontSize: '0.6875rem',
+                fontSize: '0.9375rem',
                 fontFamily: 'var(--font-headline)',
                 fontWeight: 700,
-                textTransform: 'uppercase',
-                letterSpacing: '0.06em',
-                color: 'var(--md-sys-color-on-surface-variant)',
-                display: 'block',
-                marginBottom: '1rem',
+                color: 'var(--md-sys-color-on-surface)',
               }}
             >
-              Hiring Pipeline
-            </span>
+              Update Status
+            </h3>
 
-            {/* Stepper Pipeline Indicators */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              {pipelineStages.map((stage, idx) => {
-                const isPassed = currentStageIdx >= idx;
-                const isCurrent = application.status === stage;
-
+            {/* Row 1: Draft, Applied, Interviewing */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
+              {(['draft', 'applied', 'interviewing'] as ApplicationStatus[]).map((st) => {
+                const isActive = application.status === st;
                 return (
                   <button
-                    key={stage}
-                    onClick={() => handleStatusChange(stage)}
+                    key={st}
+                    onClick={() => handleInitiateStatusChange(st)}
                     style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      padding: '0.625rem 0.875rem',
+                      padding: '0.625rem 0.5rem',
                       borderRadius: '12px',
-                      border: isCurrent
+                      border: isActive
                         ? '1.5px solid var(--md-sys-color-primary)'
                         : '1px solid var(--md-sys-color-outline-variant)',
-                      backgroundColor: isCurrent
-                        ? 'var(--md-sys-color-secondary-container)'
-                        : 'transparent',
+                      backgroundColor: isActive
+                        ? 'var(--md-sys-color-primary)'
+                        : 'var(--md-sys-color-surface-container-lowest)',
+                      color: isActive
+                        ? 'var(--md-sys-color-on-primary)'
+                        : 'var(--md-sys-color-on-surface)',
+                      fontFamily: 'var(--font-headline)',
+                      fontSize: '0.8125rem',
+                      fontWeight: isActive ? 700 : 500,
                       cursor: 'pointer',
+                      textAlign: 'center',
+                      textTransform: 'capitalize',
                       transition: 'all 0.15s ease',
-                      textAlign: 'left',
+                      boxShadow: isActive ? '0 2px 6px rgba(0,0,0,0.1)' : 'none',
                     }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
-                      <span
-                        className="material-symbols-outlined"
-                        style={{
-                          fontSize: '18px',
-                          color: isPassed
-                            ? 'var(--md-sys-color-primary)'
-                            : 'var(--md-sys-color-on-surface-variant)',
-                        }}
-                      >
-                        {isPassed ? 'check_circle' : 'radio_button_unchecked'}
-                      </span>
-                      <span
-                        style={{
-                          fontSize: '0.875rem',
-                          fontFamily: 'var(--font-headline)',
-                          fontWeight: isCurrent ? 700 : 500,
-                          textTransform: 'capitalize',
-                          color: isCurrent
-                            ? 'var(--md-sys-color-on-secondary-container)'
-                            : 'var(--md-sys-color-on-surface)',
-                        }}
-                      >
-                        {stage}
-                      </span>
-                    </div>
+                    {st}
+                  </button>
+                );
+              })}
+            </div>
 
-                    {isCurrent && (
-                      <span
-                        style={{
-                          fontSize: '0.6875rem',
-                          fontWeight: 700,
-                          textTransform: 'uppercase',
-                          color: 'var(--md-sys-color-primary)',
-                        }}
-                      >
-                        Current
-                      </span>
-                    )}
+            {/* Row 2: Offer, Rejected, Withdrawn */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
+              {(['offer', 'rejected', 'withdrawn'] as ApplicationStatus[]).map((st) => {
+                const isActive = application.status === st;
+                return (
+                  <button
+                    key={st}
+                    onClick={() => handleInitiateStatusChange(st)}
+                    style={{
+                      padding: '0.625rem 0.5rem',
+                      borderRadius: '12px',
+                      border: isActive
+                        ? '1.5px solid var(--md-sys-color-primary)'
+                        : '1px solid var(--md-sys-color-outline-variant)',
+                      backgroundColor: isActive
+                        ? 'var(--md-sys-color-primary)'
+                        : 'var(--md-sys-color-surface-container-lowest)',
+                      color: isActive
+                        ? 'var(--md-sys-color-on-primary)'
+                        : 'var(--md-sys-color-on-surface)',
+                      fontFamily: 'var(--font-headline)',
+                      fontSize: '0.8125rem',
+                      fontWeight: isActive ? 700 : 500,
+                      cursor: 'pointer',
+                      textAlign: 'center',
+                      textTransform: 'capitalize',
+                      transition: 'all 0.15s ease',
+                      boxShadow: isActive ? '0 2px 6px rgba(0,0,0,0.1)' : 'none',
+                    }}
+                  >
+                    {st}
                   </button>
                 );
               })}
             </div>
           </div>
 
-          {/* Card 2: M3 Structured Properties Sheet */}
+          {/* Card 2: Application Timeline with Deletion */}
           <div
             className="m3-card"
             style={{
               padding: '1.5rem',
+              borderRadius: '20px',
               backgroundColor: 'var(--md-sys-color-surface-container-low)',
-              borderRadius: '24px',
               border: '1px solid var(--md-sys-color-outline-variant)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1.25rem',
             }}
           >
-            <span
+            <h3
               style={{
-                fontSize: '0.6875rem',
+                fontSize: '0.9375rem',
                 fontFamily: 'var(--font-headline)',
                 fontWeight: 700,
-                textTransform: 'uppercase',
-                letterSpacing: '0.06em',
-                color: 'var(--md-sys-color-on-surface-variant)',
-                display: 'block',
-                marginBottom: '1rem',
+                color: 'var(--md-sys-color-on-surface)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
               }}
             >
-              Job Attributes
-            </span>
+              <span className="material-symbols-outlined" style={{ fontSize: '20px', color: 'var(--md-sys-color-primary)' }}>
+                history
+              </span>
+              <span>Application Timeline</span>
+            </h3>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
-              {/* Location */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
-                  Location
-                </span>
-                <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--md-sys-color-on-surface)', textAlign: 'right' }}>
-                  {application.location || '—'}
-                </span>
-              </div>
+            {history.length === 0 ? (
+              <p style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '0.8125rem' }}>
+                No timeline events recorded yet.
+              </p>
+            ) : (
+              <div className="m3-timeline">
+                {history.map((entry, idx) => {
+                  const isLatest = idx === 0;
+                  return (
+                    <div key={entry.id || idx} className="m3-timeline-item" style={{ group: 'history-item' } as any}>
+                      <div className="m3-timeline-line" />
+                      <div
+                        className="m3-timeline-dot"
+                        style={{
+                          backgroundColor: isLatest
+                            ? 'var(--md-sys-color-primary)'
+                            : 'var(--md-sys-color-surface-container-high)',
+                          borderColor: 'var(--md-sys-color-surface-container-low)',
+                        }}
+                      >
+                        {isLatest ? (
+                          <div
+                            style={{
+                              width: '8px',
+                              height: '8px',
+                              borderRadius: '50%',
+                              backgroundColor: 'var(--md-sys-color-on-primary)',
+                            }}
+                          />
+                        ) : (
+                          <div
+                            style={{
+                              width: '6px',
+                              height: '6px',
+                              borderRadius: '50%',
+                              backgroundColor: 'var(--md-sys-color-outline)',
+                            }}
+                          />
+                        )}
+                      </div>
 
-              {/* Salary */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
-                  Salary Range
-                </span>
-                <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--md-sys-color-on-surface)' }}>
-                  {application.salary_range || '—'}
-                </span>
-              </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', flex: 1 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span
+                            style={{
+                              fontFamily: 'var(--font-headline)',
+                              fontWeight: isLatest ? 700 : 600,
+                              fontSize: '0.875rem',
+                              textTransform: 'capitalize',
+                              color: isLatest
+                                ? 'var(--md-sys-color-on-surface)'
+                                : 'var(--md-sys-color-on-surface-variant)',
+                            }}
+                          >
+                            {entry.status === 'draft' ? 'Draft Created' : entry.status}
+                          </span>
 
-              {/* Seniority */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
-                  Seniority Level
-                </span>
-                <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--md-sys-color-on-surface)' }}>
-                  {application.seniority || '—'}
-                </span>
-              </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                            <span
+                              style={{
+                                fontSize: '0.75rem',
+                                color: 'var(--md-sys-color-on-surface-variant)',
+                              }}
+                            >
+                              {formatTimelineDate(entry.changed_at)}
+                            </span>
 
-              {/* Source */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
-                  Source Type
-                </span>
-                <span style={{ fontSize: '0.8125rem', fontWeight: 600, textTransform: 'capitalize', color: 'var(--md-sys-color-on-surface)' }}>
-                  {application.source_type || 'Manual'}
-                </span>
-              </div>
+                            {/* Trash icon to delete accidental misclick events */}
+                            {history.length > 1 && (
+                              <button
+                                onClick={(e) => handleDeleteHistoryEntry(entry.id, e)}
+                                title="Remove accidental status change"
+                                aria-label="Delete status history event"
+                                style={{
+                                  background: 'none',
+                                  border: 'none',
+                                  color: 'var(--md-sys-color-on-surface-variant)',
+                                  cursor: 'pointer',
+                                  padding: '0.15rem',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  opacity: 0.6,
+                                  transition: 'opacity 0.15s ease, color 0.15s ease',
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.currentTarget.style.opacity = '1';
+                                  e.currentTarget.style.color = 'var(--md-sys-color-error)';
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.currentTarget.style.opacity = '0.6';
+                                  e.currentTarget.style.color = 'var(--md-sys-color-on-surface-variant)';
+                                }}
+                              >
+                                <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>
+                                  delete
+                                </span>
+                              </button>
+                            )}
+                          </div>
+                        </div>
 
-              {/* Date Created */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
-                  Date Added
-                </span>
-                <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface)' }}>
-                  {new Date(application.created_at).toLocaleDateString(undefined, {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                  })}
-                </span>
+                        <span
+                          style={{
+                            fontSize: '0.75rem',
+                            color: 'var(--md-sys-color-on-surface-variant)',
+                            lineHeight: 1.4,
+                          }}
+                        >
+                          {entry.status === 'draft'
+                            ? `Created initial application entry.`
+                            : `Moved stage to ${entry.status}.`}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-
-              {/* Last Updated */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
-                  Last Updated
-                </span>
-                <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface)' }}>
-                  {new Date(application.updated_at).toLocaleDateString(undefined, {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                  })}
-                </span>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Delete Confirmation Dialog */}
+      {/* ================= STATUS CHANGE CONFIRMATION DIALOG (Fixes accidental timeline updates) ================= */}
+      <Dialog
+        open={statusDialogOpen}
+        onClose={() => setStatusDialogOpen(false)}
+        headline="Update Application Status?"
+        actions={
+          <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+            <TextButton onClick={() => setStatusDialogOpen(false)}>Cancel</TextButton>
+            <FilledButton onClick={handleConfirmStatusChange} disabled={updatingStatus}>
+              {updatingStatus ? 'Updating...' : `Set to ${pendingStatus || ''}`}
+            </FilledButton>
+          </div>
+        }
+      >
+        <p style={{ color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.5, marginBottom: '0.75rem' }}>
+          Are you sure you want to transition this application from{' '}
+          <strong style={{ textTransform: 'capitalize' }}>{application.status}</strong> to{' '}
+          <strong style={{ textTransform: 'capitalize', color: 'var(--md-sys-color-primary)' }}>
+            {pendingStatus}
+          </strong>
+          ?
+        </p>
+        <p style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)', opacity: 0.8 }}>
+          This will log a verified milestone event to your application timeline history.
+        </p>
+      </Dialog>
+
+      {/* ================= DELETE APPLICATION DIALOG ================= */}
       <Dialog
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
@@ -1219,7 +1389,7 @@ export default function ApplicationDetailPage() {
       >
         <p style={{ color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.5 }}>
           Are you sure you want to delete <strong>{application.title}</strong> at{' '}
-          <strong>{application.company}</strong>? This action will permanently remove this record and its status history.
+          <strong>{application.company}</strong>? This will permanently delete all records and timeline history.
         </p>
       </Dialog>
     </div>
