@@ -441,12 +441,12 @@ a {
   border-radius: inherit;
   background-color: currentColor;
   opacity: 0;
-  transition: opacity 0.15s ease;
+  transition: opacity 0.15s cubic-bezier(0.2, 0, 0, 1);
   pointer-events: none;
 }
 
 .m3-nav-item:hover .m3-active-pill::after {
-  opacity: 0.08; /* M3 Hover State Layer */
+  opacity: 0.08; /* M3 Hover State Layer (Short 3: 150ms) */
 }
 
 .m3-nav-item:active .m3-active-pill {
@@ -455,6 +455,28 @@ a {
 
 .m3-nav-item:active .m3-active-pill::after {
   opacity: 0.16; /* M3 Pressed State Layer */
+}
+
+/* Official Material Design 3 Center Ripple Wave Motion (350ms Emphasized Decelerate) */
+.m3-center-ripple-wave {
+  transform: scale(0);
+  opacity: 0.25;
+  animation: m3CenterRipple 0.35s cubic-bezier(0.05, 0.7, 0.1, 1) forwards;
+  pointer-events: none;
+}
+
+@keyframes m3CenterRipple {
+  0% {
+    transform: scale(0);
+    opacity: 0.25;
+  }
+  40% {
+    opacity: 0.18;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
 }
 
 /* Active Destination Pill with Fluid Expansion Motion */

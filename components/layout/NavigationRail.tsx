@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase/client';
 import { Logo } from '@/components/ui/Logo';
 import { ThemeToggle } from './ThemeToggle';
 import { NewApplicationSheet } from '@/components/applications/NewApplicationSheet';
+import { useM3Ripple, RippleContainer } from '@/components/ui/Ripple';
 
 export function NavigationRail() {
   const pathname = usePathname();
@@ -15,6 +16,12 @@ export function NavigationRail() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [isNewSheetOpen, setIsNewSheetOpen] = useState(false);
+
+  // M3 Dynamic Ripple Hooks for interactive items
+  const dashboardRipple = useM3Ripple();
+  const applicationsRipple = useM3Ripple();
+  const fabRipple = useM3Ripple();
+  const accountRipple = useM3Ripple();
 
   useEffect(() => {
     async function loadUser() {
@@ -60,7 +67,10 @@ export function NavigationRail() {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', gap: '1.25rem' }}>
           {/* Canonical M3 Standard FAB (56x56dp, 16dp corner radius) */}
           <button
-            onClick={() => setIsNewSheetOpen(true)}
+            onClick={() => {
+              fabRipple.createRipple();
+              setIsNewSheetOpen(true);
+            }}
             className="m3-fab-btn"
             title="Add New Application"
             aria-label="Add New Application"
@@ -71,6 +81,10 @@ export function NavigationRail() {
             <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>
               add
             </span>
+            <RippleContainer
+              ripples={fabRipple.ripples}
+              onRippleEnd={fabRipple.removeRipple}
+            />
           </button>
 
           {/* Middle Navigation Destinations */}
@@ -87,9 +101,14 @@ export function NavigationRail() {
               href="/dashboard"
               className={`m3-nav-item ${isDashboardActive ? 'active' : ''}`}
               title="Dashboard Overview"
+              onClick={() => dashboardRipple.createRipple()}
             >
               <div className="m3-active-pill">
                 <Logo size={22} color="currentColor" />
+                <RippleContainer
+                  ripples={dashboardRipple.ripples}
+                  onRippleEnd={dashboardRipple.removeRipple}
+                />
               </div>
               <span className="m3-nav-label">Dashboard</span>
             </Link>
@@ -99,6 +118,7 @@ export function NavigationRail() {
               href="/applications"
               className={`m3-nav-item ${isApplicationsActive ? 'active' : ''}`}
               title="Applications Data Table"
+              onClick={() => applicationsRipple.createRipple()}
             >
               <div className="m3-active-pill">
                 <span
@@ -110,6 +130,10 @@ export function NavigationRail() {
                 >
                   business_center
                 </span>
+                <RippleContainer
+                  ripples={applicationsRipple.ripples}
+                  onRippleEnd={applicationsRipple.removeRipple}
+                />
               </div>
               <span className="m3-nav-label">Applications</span>
             </Link>
@@ -130,7 +154,10 @@ export function NavigationRail() {
           {/* User Account / Profile Button */}
           <div className="m3-user-menu-container" style={{ position: 'relative' }}>
             <button
-              onClick={() => setShowUserMenu(!showUserMenu)}
+              onClick={() => {
+                accountRipple.createRipple();
+                setShowUserMenu(!showUserMenu);
+              }}
               aria-label="User Account Menu"
               aria-haspopup="true"
               aria-expanded={showUserMenu}
@@ -152,6 +179,8 @@ export function NavigationRail() {
                 fontWeight: 700,
                 fontSize: '1rem',
                 textTransform: 'uppercase',
+                position: 'relative',
+                overflow: 'hidden',
                 transition: 'all 0.15s ease',
               }}
               onMouseEnter={(e) => {
@@ -174,6 +203,10 @@ export function NavigationRail() {
                   person
                 </span>
               )}
+              <RippleContainer
+                ripples={accountRipple.ripples}
+                onRippleEnd={accountRipple.removeRipple}
+              />
             </button>
 
             {/* Official Material Design 3 Menu Popover */}
@@ -184,11 +217,11 @@ export function NavigationRail() {
                 style={{
                   position: 'absolute',
                   bottom: '0px',
-                  left: '64px', /* 16px clearance from 48px avatar boundary */
+                  left: '64px',
                   width: '264px',
                   backgroundColor: 'var(--md-sys-color-surface-container-high)',
                   border: '1px solid var(--md-sys-color-outline-variant)',
-                  borderRadius: '16px', /* M3 Corner Large */
+                  borderRadius: '16px',
                   padding: '0.5rem 0',
                   boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15), 0 1px 4px rgba(0, 0, 0, 0.1)',
                   zIndex: 150,
@@ -198,7 +231,7 @@ export function NavigationRail() {
                   overflow: 'hidden',
                 }}
               >
-                {/* Header: User Account Identity Block (M3 Account Header) */}
+                {/* Header: User Account Identity Block */}
                 <div
                   style={{
                     padding: '0.75rem 1rem 0.625rem 1rem',
@@ -258,7 +291,7 @@ export function NavigationRail() {
                   </div>
                 </div>
 
-                {/* M3 Divider (1dp height, outline-variant, 8dp vertical rhythm) */}
+                {/* M3 Divider */}
                 <div
                   style={{
                     height: '1px',
@@ -267,7 +300,7 @@ export function NavigationRail() {
                   }}
                 />
 
-                {/* Menu Items Container with Inset Insets (M3 Menu Specs) */}
+                {/* Menu Items Container with Inset Insets */}
                 <div style={{ padding: '0 0.375rem' }}>
                   <button
                     role="menuitem"
@@ -279,7 +312,7 @@ export function NavigationRail() {
                       width: '100%',
                       height: '40px',
                       padding: '0 0.75rem',
-                      borderRadius: '10px', /* Inset rounded pill shape */
+                      borderRadius: '10px',
                       border: 'none',
                       backgroundColor: 'transparent',
                       color: 'var(--md-sys-color-error)',
