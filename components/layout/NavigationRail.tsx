@@ -166,31 +166,31 @@ export function NavigationRail() {
               )}
             </button>
 
-            {/* Account Popover Menu (M3 Surface Menu) */}
+            {/* Official M3 Menu Surface (Specs: 16dp radius, Surface Container, 48dp items, Level 2 elevation) */}
             {showUserMenu && (
               <div
+                role="menu"
+                aria-label="Account options"
                 style={{
                   position: 'absolute',
                   bottom: '0px',
-                  left: '56px',
-                  width: '240px',
-                  backgroundColor: 'var(--md-sys-color-surface-container-high)',
+                  left: '52px',
+                  width: '260px',
+                  backgroundColor: 'var(--md-sys-color-surface-container)',
                   border: '1px solid var(--md-sys-color-outline-variant)',
                   borderRadius: '16px',
-                  padding: '0.75rem',
-                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
+                  padding: '0.5rem 0',
+                  boxShadow: '0 4px 16px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.08)',
                   zIndex: 100,
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: '0.5rem',
                   animation: 'scaleUp 0.15s cubic-bezier(0.2, 0, 0, 1)',
                 }}
               >
+                {/* Header: User Account Summary */}
                 <div
                   style={{
-                    padding: '0.35rem 0.5rem',
-                    borderBottom: '1px solid var(--md-sys-color-outline-variant)',
-                    paddingBottom: '0.625rem',
+                    padding: '0.625rem 1rem 0.5rem 1rem',
                   }}
                 >
                   <p
@@ -221,14 +221,25 @@ export function NavigationRail() {
                   </p>
                 </div>
 
+                {/* M3 Divider (1dp height, outline-variant) */}
+                <div
+                  style={{
+                    height: '1px',
+                    backgroundColor: 'var(--md-sys-color-outline-variant)',
+                    margin: '0.25rem 0',
+                  }}
+                />
+
+                {/* M3 Menu Item (48dp height, 12-16dp padding, Label Large) */}
                 <button
+                  role="menuitem"
                   onClick={handleLogout}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '0.5rem',
-                    padding: '0.5rem 0.625rem',
-                    borderRadius: '10px',
+                    gap: '0.75rem',
+                    height: '44px',
+                    padding: '0 1rem',
                     border: 'none',
                     backgroundColor: 'transparent',
                     color: 'var(--md-sys-color-error)',
@@ -248,7 +259,7 @@ export function NavigationRail() {
                     (e.currentTarget.style.backgroundColor = 'transparent')
                   }
                 >
-                  <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
                     logout
                   </span>
                   <span>Log out</span>
