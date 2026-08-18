@@ -473,22 +473,22 @@ export function ApplicationDetailSheet({
           </div>
         </div>
 
-        {/* M3 Primary Tabs Bar */}
+        {/* M3 Primary Tabs Bar (Pure Typographic Tabs) */}
         <div
           style={{
             display: 'flex',
             backgroundColor: 'var(--md-sys-color-surface-container-low)',
             borderBottom: '1px solid var(--md-sys-color-outline-variant)',
             padding: '0 1.5rem',
-            gap: '0.75rem',
+            gap: '1.25rem',
             flexShrink: 0,
             overflowX: 'auto',
           }}
         >
           {[
-            { key: 'overview', label: 'Overview', icon: 'space_dashboard' },
-            { key: 'jd', label: 'Job Description', icon: 'description', count: application?.raw_jd ? '✓' : undefined },
-            { key: 'timeline', label: 'Timeline', icon: 'history', count: history.length > 0 ? history.length : undefined },
+            { key: 'overview', label: 'Overview' },
+            { key: 'jd', label: 'Job Description' },
+            { key: 'timeline', label: 'Timeline' },
           ].map((tab) => {
             const isActive = activeTab === tab.key;
             return (
@@ -498,8 +498,7 @@ export function ApplicationDetailSheet({
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: '0.45rem',
-                  padding: '0.75rem 0.5rem',
+                  padding: '0.875rem 0.25rem',
                   border: 'none',
                   borderBottom: isActive
                     ? '3px solid var(--md-sys-color-primary)'
@@ -517,28 +516,7 @@ export function ApplicationDetailSheet({
                   outline: 'none',
                 }}
               >
-                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
-                  {tab.icon}
-                </span>
                 <span>{tab.label}</span>
-                {tab.count !== undefined && (
-                  <span
-                    style={{
-                      fontSize: '0.6875rem',
-                      padding: '0.1rem 0.45rem',
-                      borderRadius: '9999px',
-                      backgroundColor: isActive
-                        ? 'var(--md-sys-color-primary-container)'
-                        : 'var(--md-sys-color-surface-container-highest)',
-                      color: isActive
-                        ? 'var(--md-sys-color-on-primary-container)'
-                        : 'var(--md-sys-color-on-surface-variant)',
-                      fontWeight: 700,
-                    }}
-                  >
-                    {tab.count}
-                  </span>
-                )}
               </button>
             );
           })}
@@ -692,15 +670,15 @@ export function ApplicationDetailSheet({
                       })}
                     </div>
 
-                    {/* Secondary Terminal Exit States */}
+                    {/* Secondary Terminal Exit States (Clean Text Pills) */}
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '0.25rem' }}>
                       <span style={{ fontSize: '0.75rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
                         Terminal outcomes:
                       </span>
                       <div style={{ display: 'flex', gap: '0.5rem' }}>
                         {[
-                          { value: 'rejected', label: 'Rejected', icon: 'cancel' },
-                          { value: 'withdrawn', label: 'Withdrawn', icon: 'remove_circle_outline' },
+                          { value: 'rejected', label: 'Rejected' },
+                          { value: 'withdrawn', label: 'Withdrawn' },
                         ].map((term) => {
                           const isCurrent = application.status === term.value;
                           return (
@@ -709,7 +687,7 @@ export function ApplicationDetailSheet({
                               onClick={() => handleInitiateStatusChange(term.value as ApplicationStatus)}
                               disabled={isCurrent}
                               style={{
-                                padding: '0.25rem 0.625rem',
+                                padding: '0.25rem 0.75rem',
                                 borderRadius: '9999px',
                                 border: isCurrent
                                   ? '1px solid transparent'
@@ -726,13 +704,9 @@ export function ApplicationDetailSheet({
                                 cursor: isCurrent ? 'default' : 'pointer',
                                 display: 'inline-flex',
                                 alignItems: 'center',
-                                gap: '0.3rem',
                                 transition: 'all 0.15s ease',
                               }}
                             >
-                              <span className="material-symbols-outlined" style={{ fontSize: '13px' }}>
-                                {term.icon}
-                              </span>
                               <span>{term.label}</span>
                             </button>
                           );
@@ -741,7 +715,7 @@ export function ApplicationDetailSheet({
                     </div>
                   </div>
 
-                  {/* Card 2: Core Job Specifications (Clean Key-Value Rows) */}
+                  {/* Card 2: Core Job Specifications (Clean Typographic Key-Value Pairs) */}
                   <div
                     style={{
                       padding: '1.25rem 1.5rem',
@@ -750,7 +724,7 @@ export function ApplicationDetailSheet({
                       border: '1px solid var(--md-sys-color-outline-variant)',
                       display: 'flex',
                       flexDirection: 'column',
-                      gap: '1rem',
+                      gap: '1.1rem',
                     }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -790,9 +764,6 @@ export function ApplicationDetailSheet({
                           e.currentTarget.style.backgroundColor = 'transparent';
                         }}
                       >
-                        <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
-                          {isEditing ? 'close' : 'edit'}
-                        </span>
                         <span>{isEditing ? 'Cancel' : 'Edit'}</span>
                       </button>
                     </div>
@@ -875,99 +846,67 @@ export function ApplicationDetailSheet({
                         </div>
                       </form>
                     ) : (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                         {/* Location Row */}
-                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
-                          <span
-                            className="material-symbols-outlined"
-                            style={{ fontSize: '18px', color: 'var(--md-sys-color-primary)', marginTop: '0.1rem', flexShrink: 0 }}
-                          >
-                            location_on
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
+                          <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                            Location
                           </span>
-                          <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-                            <span style={{ fontSize: '0.6875rem', fontWeight: 600, color: 'var(--md-sys-color-on-surface-variant)' }}>
-                              Location
-                            </span>
-                            <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--md-sys-color-on-surface)', lineHeight: 1.4 }}>
-                              {application.location || 'Not Specified'}
-                            </span>
-                          </div>
+                          <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--md-sys-color-on-surface)', lineHeight: 1.45 }}>
+                            {application.location || 'Not Specified'}
+                          </span>
                         </div>
 
                         {/* Salary Row */}
-                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
-                          <span
-                            className="material-symbols-outlined"
-                            style={{ fontSize: '18px', color: 'var(--md-sys-color-primary)', marginTop: '0.1rem', flexShrink: 0 }}
-                          >
-                            payments
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
+                          <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                            Compensation & Salary
                           </span>
-                          <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-                            <span style={{ fontSize: '0.6875rem', fontWeight: 600, color: 'var(--md-sys-color-on-surface-variant)' }}>
-                              Compensation & Salary
-                            </span>
-                            <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--md-sys-color-on-surface)', lineHeight: 1.4 }}>
-                              {application.salary_range || 'Not Specified'}
-                            </span>
-                          </div>
+                          <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--md-sys-color-on-surface)', lineHeight: 1.45 }}>
+                            {application.salary_range || 'Not Specified'}
+                          </span>
                         </div>
 
                         {/* Seniority & Source Row */}
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', paddingTop: '0.25rem', borderTop: '1px solid var(--md-sys-color-outline-variant)' }}>
-                          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.625rem' }}>
-                            <span
-                              className="material-symbols-outlined"
-                              style={{ fontSize: '18px', color: 'var(--md-sys-color-primary)', marginTop: '0.1rem', flexShrink: 0 }}
-                            >
-                              trending_up
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', paddingTop: '0.5rem', borderTop: '1px solid var(--md-sys-color-outline-variant)' }}>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
+                            <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                              Seniority
                             </span>
-                            <div style={{ display: 'flex', flexDirection: 'column' }}>
-                              <span style={{ fontSize: '0.6875rem', fontWeight: 600, color: 'var(--md-sys-color-on-surface-variant)' }}>
-                                Seniority
-                              </span>
-                              <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--md-sys-color-on-surface)' }}>
-                                {application.seniority || 'Not Specified'}
-                              </span>
-                            </div>
+                            <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--md-sys-color-on-surface)' }}>
+                              {application.seniority || 'Not Specified'}
+                            </span>
                           </div>
 
-                          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.625rem' }}>
-                            <span
-                              className="material-symbols-outlined"
-                              style={{ fontSize: '18px', color: 'var(--md-sys-color-primary)', marginTop: '0.1rem', flexShrink: 0 }}
-                            >
-                              link
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
+                            <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                              Posting
                             </span>
-                            <div style={{ display: 'flex', flexDirection: 'column' }}>
-                              <span style={{ fontSize: '0.6875rem', fontWeight: 600, color: 'var(--md-sys-color-on-surface-variant)' }}>
-                                Posting
-                              </span>
-                              {application.job_url ? (
-                                <a
-                                  href={application.job_url}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  style={{
-                                    fontSize: '0.875rem',
-                                    color: 'var(--md-sys-color-primary)',
-                                    textDecoration: 'none',
-                                    fontWeight: 700,
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    gap: '0.2rem',
-                                  }}
-                                >
-                                  <span>View Link</span>
-                                  <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>
-                                    open_in_new
-                                  </span>
-                                </a>
-                              ) : (
-                                <span style={{ fontSize: '0.875rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
-                                  None
+                            {application.job_url ? (
+                              <a
+                                href={application.job_url}
+                                target="_blank"
+                                rel="noreferrer"
+                                style={{
+                                  fontSize: '0.875rem',
+                                  color: 'var(--md-sys-color-primary)',
+                                  textDecoration: 'none',
+                                  fontWeight: 700,
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '0.25rem',
+                                }}
+                              >
+                                <span>View Link</span>
+                                <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>
+                                  open_in_new
                                 </span>
-                              )}
-                            </div>
+                              </a>
+                            ) : (
+                              <span style={{ fontSize: '0.875rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
+                                None
+                              </span>
+                            )}
                           </div>
                         </div>
                       </div>
