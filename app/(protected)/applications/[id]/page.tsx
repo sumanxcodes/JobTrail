@@ -1360,50 +1360,121 @@ export default function ApplicationDetailPage() {
         </div>
       </div>
 
-      {/* ================= STATUS CHANGE CONFIRMATION DIALOG (Fixes accidental timeline updates) ================= */}
+      {/* ================= STATUS CHANGE CONFIRMATION DIALOG ================= */}
       <Dialog
         open={statusDialogOpen}
         onClose={() => setStatusDialogOpen(false)}
         headline="Update Application Status?"
+        icon="swap_horiz"
         actions={
-          <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
-            <TextButton onClick={() => setStatusDialogOpen(false)}>Cancel</TextButton>
-            <FilledButton onClick={handleConfirmStatusChange} disabled={updatingStatus}>
+          <>
+            <button
+              onClick={() => setStatusDialogOpen(false)}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: 'var(--md-sys-color-primary)',
+                fontFamily: 'var(--font-headline)',
+                fontWeight: 700,
+                fontSize: '0.875rem',
+                cursor: 'pointer',
+                padding: '0.5rem 1rem',
+                borderRadius: '9999px',
+              }}
+            >
+              Cancel
+            </button>
+
+            <button
+              onClick={handleConfirmStatusChange}
+              disabled={updatingStatus}
+              style={{
+                backgroundColor: 'var(--md-sys-color-primary)',
+                color: 'var(--md-sys-color-on-primary)',
+                border: 'none',
+                fontFamily: 'var(--font-headline)',
+                fontWeight: 700,
+                fontSize: '0.875rem',
+                cursor: 'pointer',
+                padding: '0.5rem 1.25rem',
+                borderRadius: '9999px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                transition: 'all 0.15s ease',
+              }}
+            >
               {updatingStatus ? 'Updating...' : `Set to ${pendingStatus || ''}`}
-            </FilledButton>
-          </div>
+            </button>
+          </>
         }
       >
-        <p style={{ color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.5, marginBottom: '0.75rem' }}>
+        <p style={{ margin: 0, color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.5 }}>
           Are you sure you want to transition this application from{' '}
-          <strong style={{ textTransform: 'capitalize' }}>{application.status}</strong> to{' '}
+          <strong style={{ textTransform: 'capitalize', color: 'var(--md-sys-color-on-surface)' }}>
+            {application.status}
+          </strong>{' '}
+          to{' '}
           <strong style={{ textTransform: 'capitalize', color: 'var(--md-sys-color-primary)' }}>
             {pendingStatus}
           </strong>
-          ?
-        </p>
-        <p style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)', opacity: 0.8 }}>
-          This will log a verified milestone event to your application timeline history.
+          ? This will record a verified milestone in your timeline.
         </p>
       </Dialog>
 
-      {/* ================= DELETE APPLICATION DIALOG ================= */}
+      {/* ================= DESTRUCTIVE DELETE CONFIRMATION DIALOG (M3 Error Role) ================= */}
       <Dialog
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
         headline="Delete Application?"
+        icon="delete"
+        destructive={true}
         actions={
-          <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
-            <TextButton onClick={() => setDeleteDialogOpen(false)}>Cancel</TextButton>
-            <FilledButton onClick={handleDelete} disabled={deleting}>
+          <>
+            <button
+              onClick={() => setDeleteDialogOpen(false)}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: 'var(--md-sys-color-on-surface-variant)',
+                fontFamily: 'var(--font-headline)',
+                fontWeight: 700,
+                fontSize: '0.875rem',
+                cursor: 'pointer',
+                padding: '0.5rem 1rem',
+                borderRadius: '9999px',
+              }}
+            >
+              Cancel
+            </button>
+
+            <button
+              onClick={handleDelete}
+              disabled={deleting}
+              style={{
+                backgroundColor: 'var(--md-sys-color-error)',
+                color: 'var(--md-sys-color-on-error)',
+                border: 'none',
+                fontFamily: 'var(--font-headline)',
+                fontWeight: 700,
+                fontSize: '0.875rem',
+                cursor: 'pointer',
+                padding: '0.5rem 1.25rem',
+                borderRadius: '9999px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                transition: 'filter 0.15s ease',
+              }}
+            >
               {deleting ? 'Deleting...' : 'Delete Application'}
-            </FilledButton>
-          </div>
+            </button>
+          </>
         }
       >
-        <p style={{ color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.5 }}>
+        <p style={{ margin: 0, color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.5 }}>
           Are you sure you want to delete <strong>{application.title}</strong> at{' '}
-          <strong>{application.company}</strong>? This will permanently delete all records and timeline history.
+          <strong>{application.company}</strong>? This action is permanent and cannot be undone.
         </p>
       </Dialog>
     </div>
