@@ -7,7 +7,8 @@ import { createClient } from '@/lib/supabase/client';
 import { Application, ApplicationStatus, APPLICATION_STATUSES } from '@/lib/types/database';
 import { StatusBadge } from '@/components/applications/StatusBadge';
 import { TextField } from '@/components/ui/TextField';
-import { FilledButton, OutlinedButton } from '@/components/ui/Button';
+import { FilledButton, OutlinedButton, TextButton } from '@/components/ui/Button';
+import { Dialog } from '@/components/ui/Dialog';
 import { CircularProgress } from '@/components/ui/CircularProgress';
 import { NewApplicationSheet } from '@/components/applications/NewApplicationSheet';
 
@@ -25,6 +26,14 @@ export default function ApplicationsPage() {
   const [activeStatus, setActiveStatus] = useState<ApplicationStatus | 'all'>('all');
   const [sortBy, setSortBy] = useState<'updated_desc' | 'created_desc' | 'company_asc'>('updated_desc');
   const [isNewSheetOpen, setIsNewSheetOpen] = useState(false);
+
+  // M3 Delete Confirmation Dialog State
+  const [applicationToDelete, setApplicationToDelete] = useState<Application | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  // Feedback notifications
+  const [feedbackMsg, setFeedbackMsg] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -100,20 +109,32 @@ export default function ApplicationsPage() {
       });
   }, [applications, searchQuery, activeStatus, sortBy]);
 
-  const handleDelete = async (id: string, e: React.MouseEvent) => {
+  const handleInitiateDelete = (app: Application, e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    if (!window.confirm('Are you sure you want to delete this application?')) {
-      return;
-    }
+    setApplicationToDelete(app);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!applicationToDelete) return;
+    setDeleting(true);
 
     try {
-      const { error } = await supabase.from('applications').delete().eq('id', id);
+      const { error } = await supabase.from('applications').delete().eq('id', applicationToDelete.id);
       if (error) throw error;
-      setApplications((prev) => prev.filter((a) => a.id !== id));
-    } catch (err) {
+
+      setApplications((prev) => prev.filter((a) => a.id !== applicationToDelete.id));
+      setDeleteDialogOpen(false);
+      setApplicationToDelete(null);
+      setFeedbackMsg({ text: 'Application removed permanently.', type: 'success' });
+      setTimeout(() => setFeedbackMsg(null), 3000);
+    } catch (err: any) {
       console.error('Delete error:', err);
-      alert('Failed to delete application.');
+      setFeedbackMsg({ text: err.message || 'Failed to delete application.', type: 'error' });
+      setTimeout(() => setFeedbackMsg(null), 4000);
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -148,6 +169,7 @@ export default function ApplicationsPage() {
               color: 'var(--md-sys-color-on-surface-variant)',
               fontSize: '0.9375rem',
               fontFamily: 'var(--font-body)',
+              margin: 0,
             }}
           >
             Search, filter, and track all your active job pursuits.
@@ -158,6 +180,36 @@ export default function ApplicationsPage() {
           Add Job
         </FilledButton>
       </div>
+
+      {/* Feedback Toast Notification */}
+      {feedbackMsg && (
+        <div
+          style={{
+            padding: '0.875rem 1.25rem',
+            borderRadius: '14px',
+            backgroundColor:
+              feedbackMsg.type === 'success'
+                ? 'var(--status-offer-bg)'
+                : 'var(--md-sys-color-error-container)',
+            color:
+              feedbackMsg.type === 'success'
+                ? 'var(--status-offer-text)'
+                : 'var(--md-sys-color-on-error-container)',
+            fontSize: '0.875rem',
+            marginBottom: '1.5rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.625rem',
+            fontWeight: 600,
+            animation: 'fadeIn 0.2s ease',
+          }}
+        >
+          <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
+            {feedbackMsg.type === 'success' ? 'check_circle' : 'error'}
+          </span>
+          <span>{feedbackMsg.text}</span>
+        </div>
+      )}
 
       {/* Unified M3 Workspace Card (Toolbar + Data Table inside One Container) */}
       <div
@@ -211,7 +263,7 @@ export default function ApplicationsPage() {
                 padding: '0 1rem 0 0.875rem',
                 borderRadius: '9999px',
                 border: '1px solid var(--md-sys-color-outline-variant)',
-                backgroundColor: 'var(--md-sys-color-surface-container-low)',
+                backgroundColor: 'var(--md-sys-color-surface-container)',
                 color: 'var(--md-sys-color-on-surface)',
                 gap: '0.5rem',
                 cursor: 'pointer',
@@ -302,7 +354,10 @@ export default function ApplicationsPage() {
               style={{
                 padding: '0.35rem 0.85rem',
                 borderRadius: '9999px',
-                border: activeStatus === 'all' ? '1px solid transparent' : '1px solid var(--md-sys-color-outline-variant)',
+                border:
+                  activeStatus === 'all'
+                    ? '1px solid transparent'
+                    : '1px solid var(--md-sys-color-outline-variant)',
                 backgroundColor:
                   activeStatus === 'all'
                     ? 'var(--md-sys-color-secondary-container)'
@@ -328,7 +383,10 @@ export default function ApplicationsPage() {
                   fontSize: '0.75rem',
                   padding: '0.05rem 0.4rem',
                   borderRadius: '9999px',
-                  backgroundColor: activeStatus === 'all' ? 'rgba(0,0,0,0.08)' : 'var(--md-sys-color-surface-container-high)',
+                  backgroundColor:
+                    activeStatus === 'all'
+                      ? 'rgba(0,0,0,0.08)'
+                      : 'var(--md-sys-color-surface-container-high)',
                   color: 'inherit',
                   fontWeight: 700,
                 }}
@@ -347,7 +405,9 @@ export default function ApplicationsPage() {
                   style={{
                     padding: '0.35rem 0.85rem',
                     borderRadius: '9999px',
-                    border: isActive ? '1px solid transparent' : '1px solid var(--md-sys-color-outline-variant)',
+                    border: isActive
+                      ? '1px solid transparent'
+                      : '1px solid var(--md-sys-color-outline-variant)',
                     backgroundColor: isActive
                       ? 'var(--md-sys-color-secondary-container)'
                       : 'transparent',
@@ -371,7 +431,9 @@ export default function ApplicationsPage() {
                       fontSize: '0.75rem',
                       padding: '0.05rem 0.4rem',
                       borderRadius: '9999px',
-                      backgroundColor: isActive ? 'rgba(0,0,0,0.08)' : 'var(--md-sys-color-surface-container-high)',
+                      backgroundColor: isActive
+                        ? 'rgba(0,0,0,0.08)'
+                        : 'var(--md-sys-color-surface-container-high)',
                       color: 'inherit',
                       fontWeight: 700,
                     }}
@@ -451,6 +513,7 @@ export default function ApplicationsPage() {
                   maxWidth: '400px',
                   fontSize: '0.8125rem',
                   lineHeight: 1.5,
+                  margin: 0,
                 }}
               >
                 {searchQuery || activeStatus !== 'all'
@@ -702,7 +765,7 @@ export default function ApplicationsPage() {
                         </button>
 
                         <button
-                          onClick={(e) => handleDelete(app.id, e)}
+                          onClick={(e) => handleInitiateDelete(app, e)}
                           title="Delete application"
                           aria-label="Delete application"
                           style={{
@@ -746,8 +809,67 @@ export default function ApplicationsPage() {
         onClose={() => setIsNewSheetOpen(false)}
         onCreated={(newApp) => {
           setApplications((prev) => [newApp, ...prev]);
+          setFeedbackMsg({ text: `Application for ${newApp.company} added!`, type: 'success' });
+          setTimeout(() => setFeedbackMsg(null), 3500);
         }}
       />
+
+      {/* ================= M3 CONFIRMATION DIALOG FOR TABLE ROW DELETION ================= */}
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        headline="Delete Application?"
+        icon="delete"
+        destructive={true}
+        actions={
+          <>
+            <button
+              onClick={() => setDeleteDialogOpen(false)}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: 'var(--md-sys-color-on-surface-variant)',
+                fontFamily: 'var(--font-headline)',
+                fontWeight: 700,
+                fontSize: '0.875rem',
+                cursor: 'pointer',
+                padding: '0.5rem 1rem',
+                borderRadius: '9999px',
+              }}
+            >
+              Cancel
+            </button>
+
+            <button
+              onClick={handleConfirmDelete}
+              disabled={deleting}
+              style={{
+                backgroundColor: 'var(--md-sys-color-error)',
+                color: 'var(--md-sys-color-on-error)',
+                border: 'none',
+                fontFamily: 'var(--font-headline)',
+                fontWeight: 700,
+                fontSize: '0.875rem',
+                cursor: 'pointer',
+                padding: '0.5rem 1.25rem',
+                borderRadius: '9999px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                transition: 'filter 0.15s ease',
+              }}
+            >
+              {deleting ? 'Deleting...' : 'Delete Application'}
+            </button>
+          </>
+        }
+      >
+        <p style={{ margin: 0, color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.5 }}>
+          Are you sure you want to delete{' '}
+          <strong>{applicationToDelete?.title}</strong> at{' '}
+          <strong>{applicationToDelete?.company}</strong>? This action will permanently delete all records.
+        </p>
+      </Dialog>
     </div>
   );
 }
