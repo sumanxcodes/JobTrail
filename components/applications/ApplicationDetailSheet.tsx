@@ -597,14 +597,14 @@ export function ApplicationDetailSheet({
                       </span>
                     </div>
 
-                    {/* Primary Linear Stages Grid */}
+                    {/* Primary Linear Stages Grid (Tactile Recessed Tonal Track) */}
                     <div
                       style={{
                         display: 'grid',
                         gridTemplateColumns: 'repeat(4, 1fr)',
-                        gap: '0.35rem',
+                        gap: '0.25rem',
                         padding: '0.25rem',
-                        backgroundColor: 'var(--md-sys-color-surface-container-low)',
+                        backgroundColor: 'var(--md-sys-color-surface-container-high)',
                         borderRadius: '12px',
                         border: '1px solid var(--md-sys-color-outline-variant)',
                       }}
@@ -631,6 +631,7 @@ export function ApplicationDetailSheet({
                               color: isCurrent
                                 ? 'var(--md-sys-color-on-secondary-container)'
                                 : 'var(--md-sys-color-on-surface-variant)',
+                              boxShadow: isCurrent ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
                               fontFamily: 'var(--font-headline)',
                               fontWeight: isCurrent ? 700 : 500,
                               fontSize: '0.8125rem',
@@ -644,7 +645,7 @@ export function ApplicationDetailSheet({
                             }}
                             onMouseEnter={(e) => {
                               if (!isCurrent) {
-                                e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container-high)';
+                                e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container-highest)';
                                 e.currentTarget.style.color = 'var(--md-sys-color-on-surface)';
                               }
                             }}
@@ -918,7 +919,7 @@ export function ApplicationDetailSheet({
                       border: '1px solid var(--md-sys-color-outline-variant)',
                       display: 'flex',
                       flexDirection: 'column',
-                      gap: '0.75rem',
+                      gap: '0.6rem',
                     }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -952,30 +953,20 @@ export function ApplicationDetailSheet({
                     <textarea
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
-                      onBlur={(e) => {
-                        e.target.style.borderColor = 'var(--md-sys-color-outline-variant)';
-                        e.target.style.boxShadow = 'none';
-                        handleSaveNotes();
-                      }}
+                      onBlur={handleSaveNotes}
                       rows={5}
                       placeholder="Add recruiter contacts, interview dates, questions, or referral notes here..."
                       style={{
                         width: '100%',
-                        padding: '0.875rem 1rem',
-                        borderRadius: '12px',
-                        border: '1px solid var(--md-sys-color-outline-variant)',
-                        backgroundColor: 'var(--md-sys-color-surface-container-lowest)',
+                        padding: '0.25rem 0',
+                        border: 'none',
+                        backgroundColor: 'transparent',
                         color: 'var(--md-sys-color-on-surface)',
                         fontFamily: 'var(--font-body)',
                         fontSize: '0.875rem',
-                        lineHeight: 1.6,
-                        resize: 'vertical',
+                        lineHeight: 1.65,
+                        resize: 'none',
                         outline: 'none',
-                        transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
-                      }}
-                      onFocus={(e) => {
-                        e.target.style.borderColor = 'var(--md-sys-color-primary)';
-                        e.target.style.boxShadow = '0 0 0 1px var(--md-sys-color-primary)';
                       }}
                     />
                   </div>
