@@ -457,7 +457,7 @@ a {
   letter-spacing: -0.01em;
 }
 
-/* Canonical M3 Standard FAB (56x56dp, 16dp Corner Radius, Level 3 Elevation) */
+/* Canonical M3 Docked Navigation Rail FAB (56x56dp, 16dp Radius, Level 0-1 Elevation) */
 .m3-fab-btn {
   width: 56px;
   height: 56px;
@@ -469,20 +469,23 @@ a {
   justify-content: center;
   border: none;
   cursor: pointer;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 1px 2px 0 rgba(0, 0, 0, 0.24);
+  /* M3 Level 0 / 1 Low Elevation for Docked Rail Container */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 1px 3px 1px rgba(0, 0, 0, 0.05);
   transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
   text-decoration: none;
   position: relative;
 }
 
 .m3-fab-btn:hover {
-  box-shadow: 0 4px 8px 3px rgba(0, 0, 0, 0.15), 0 1px 3px 0 rgba(0, 0, 0, 0.3);
-  transform: translateY(-1px) scale(1.02);
+  /* M3 Level 2 Elevation + Tonal State Layer on Hover */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 3px 8px 2px rgba(0, 0, 0, 0.08);
+  filter: brightness(1.03);
 }
 
 .m3-fab-btn:active {
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 1px 2px 0 rgba(0, 0, 0, 0.24);
-  transform: translateY(0) scale(0.98);
+  /* M3 Level 0 / 1 Pressed State */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  transform: scale(0.97);
 }
 
 /* M3 Rail Bottom Circular Outlined Buttons (48×48px) */
