@@ -136,8 +136,8 @@ export function NavigationRail() {
               aria-expanded={showUserMenu}
               title={userEmail ? `Signed in as ${userEmail}` : 'User Profile'}
               style={{
-                width: '40px',
-                height: '40px',
+                width: '48px',
+                height: '48px',
                 borderRadius: '50%',
                 backgroundColor: 'var(--md-sys-color-secondary-container)',
                 color: 'var(--md-sys-color-on-secondary-container)',
@@ -150,7 +150,7 @@ export function NavigationRail() {
                 justifyContent: 'center',
                 fontFamily: 'var(--font-headline)',
                 fontWeight: 700,
-                fontSize: '0.875rem',
+                fontSize: '1rem',
                 textTransform: 'uppercase',
                 transition: 'all 0.15s ease',
               }}
@@ -170,7 +170,7 @@ export function NavigationRail() {
               {userEmail ? (
                 userInitial
               ) : (
-                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
+                <span className="material-symbols-outlined" style={{ fontSize: '22px' }}>
                   person
                 </span>
               )}
@@ -184,7 +184,7 @@ export function NavigationRail() {
                 style={{
                   position: 'absolute',
                   bottom: '0px',
-                  left: '60px', /* Clean 12px clearance from 48px avatar boundary */
+                  left: '64px', /* 16px clearance from 48px avatar boundary */
                   width: '264px',
                   backgroundColor: 'var(--md-sys-color-surface-container-high)',
                   border: '1px solid var(--md-sys-color-outline-variant)',
