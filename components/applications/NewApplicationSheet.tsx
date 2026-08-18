@@ -39,7 +39,7 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
 
   const supabase = createClient();
 
-  // Prevent background scrolling when drawer is open
+  // Prevent background scrolling when side sheet is open
   useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden';
@@ -116,7 +116,7 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
       }
 
       if (data?.status === 'rate_limited') {
-        setParseMessage('Daily limit reached. You can add details manually.');
+        setParseMessage('Daily extraction limit reached. You can add details manually.');
         setParseMessageType('error');
         setInputMode('manual');
         setRawJd(content);
@@ -127,10 +127,10 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
 
       if (data?.status === 'failed') {
         if (data.reason === 'fetch_failed') {
-          setParseMessage("Couldn't read URL — paste text directly instead.");
+          setParseMessage("Couldn't read URL — paste the job text directly instead.");
           setInputMode('paste');
         } else if (data.error_message) {
-          setParseMessage(`OpenRouter: ${data.error_message}`);
+          setParseMessage(`AI Engine: ${data.error_message}`);
           setInputMode('manual');
         } else {
           setParseMessage('AI extraction was unable to parse structured fields. Fill in details manually.');
@@ -234,55 +234,57 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
 
   return (
     <>
-      {/* Dimmed Scrim / Backdrop */}
+      {/* M3 Scrim Overlay */}
       <div
         onClick={handleClose}
         style={{
           position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.4)',
+          inset: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.45)',
           backdropFilter: 'blur(3px)',
           zIndex: 9998,
-          animation: 'fadeIn 0.25s ease forwards',
+          animation: 'fadeIn 0.2s cubic-bezier(0.2, 0, 0, 1) forwards',
         }}
       />
 
-      {/* M3 Side Sheet (640px) */}
-      <div
+      {/* M3 Standard Modal Side Sheet (480px, 28px Leading Radius, surface-container-low) */}
+      <aside
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="m3-sidesheet-title"
         style={{
           position: 'fixed',
           top: 0,
           right: 0,
-          width: 'min(640px, 100vw)',
+          bottom: 0,
+          width: 'min(480px, 100vw)',
           height: '100vh',
-          backgroundColor: 'var(--md-sys-color-surface-container-lowest)',
+          backgroundColor: 'var(--md-sys-color-surface-container-low)',
           borderLeft: '1px solid var(--md-sys-color-outline-variant)',
           borderTopLeftRadius: '28px',
           borderBottomLeftRadius: '28px',
-          boxShadow: '-8px 0 32px rgba(0, 0, 0, 0.12)',
+          boxShadow: '-8px 0 32px rgba(0, 0, 0, 0.15)',
           zIndex: 9999,
           display: 'flex',
           flexDirection: 'column',
-          animation: 'slideInRight 0.35s cubic-bezier(0.05, 0.7, 0.1, 1.0) forwards',
+          animation: 'slideInRight 0.3s cubic-bezier(0.05, 0.7, 0.1, 1.0) forwards',
           overflow: 'hidden',
         }}
       >
-        {/* Header */}
+        {/* Side Sheet Header */}
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: '1.25rem 1.75rem',
+            padding: '1.25rem 1.5rem',
             borderBottom: '1px solid var(--md-sys-color-outline-variant)',
             flexShrink: 0,
           }}
         >
           <div>
             <h2
+              id="m3-sidesheet-title"
               style={{
                 fontSize: '1.25rem',
                 fontFamily: 'var(--font-headline)',
@@ -292,18 +294,18 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
                 marginBottom: '0.15rem',
               }}
             >
-              {isReviewing ? 'Review Application' : 'Add Job'}
+              {isReviewing ? 'Review Application' : 'Add New Application'}
             </h2>
-            <p style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
+            <p style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)', margin: 0 }}>
               {isReviewing
-                ? 'Review and adjust AI-extracted fields before saving.'
+                ? 'Verify and adjust extracted fields before saving.'
                 : 'Extract details automatically with AI or enter manually.'}
             </p>
           </div>
 
           <button
             onClick={handleClose}
-            aria-label="Close"
+            aria-label="Close side sheet"
             style={{
               width: '36px',
               height: '36px',
@@ -315,13 +317,15 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              transition: 'background-color 0.15s ease',
+              transition: 'all 0.15s ease',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container)';
+              e.currentTarget.style.color = 'var(--md-sys-color-on-surface)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = 'transparent';
+              e.currentTarget.style.color = 'var(--md-sys-color-on-surface-variant)';
             }}
           >
             <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
@@ -330,72 +334,138 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
           </button>
         </div>
 
-        {/* Scrollable Form Body */}
+        {/* Scrollable Side Sheet Body */}
         <div
           style={{
             flex: 1,
             overflowY: 'auto',
-            padding: '1.75rem',
+            padding: '1.5rem',
             display: 'flex',
             flexDirection: 'column',
-            gap: '1.5rem',
+            gap: '1.25rem',
           }}
         >
-          {/* M3 Segmented Button Controller — ALWAYS Accessible */}
-          <div className="segmented-control" style={{ width: '100%' }}>
+          {/* M3 Segmented Button Controller */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gap: '0.35rem',
+              padding: '0.25rem',
+              borderRadius: '16px',
+              backgroundColor: 'var(--md-sys-color-surface-container)',
+              border: '1px solid var(--md-sys-color-outline-variant)',
+            }}
+          >
             <button
-              className={`segmented-control-btn ${inputMode === 'link' && !isReviewing ? 'active' : ''}`}
-              style={{ flex: 1 }}
               onClick={() => {
                 setInputMode('link');
                 setIsReviewing(false);
               }}
+              style={{
+                padding: '0.5rem 0.25rem',
+                borderRadius: '12px',
+                border: 'none',
+                backgroundColor:
+                  inputMode === 'link' && !isReviewing
+                    ? 'var(--md-sys-color-secondary-container)'
+                    : 'transparent',
+                color:
+                  inputMode === 'link' && !isReviewing
+                    ? 'var(--md-sys-color-on-secondary-container)'
+                    : 'var(--md-sys-color-on-surface-variant)',
+                fontFamily: 'var(--font-headline)',
+                fontSize: '0.8125rem',
+                fontWeight: inputMode === 'link' && !isReviewing ? 700 : 500,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.3rem',
+                transition: 'all 0.15s ease',
+              }}
             >
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
-                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
-                  link
-                </span>
-                Paste Link
+              <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
+                link
               </span>
+              <span>Paste Link</span>
             </button>
+
             <button
-              className={`segmented-control-btn ${inputMode === 'paste' && !isReviewing ? 'active' : ''}`}
-              style={{ flex: 1 }}
               onClick={() => {
                 setInputMode('paste');
                 setIsReviewing(false);
               }}
+              style={{
+                padding: '0.5rem 0.25rem',
+                borderRadius: '12px',
+                border: 'none',
+                backgroundColor:
+                  inputMode === 'paste' && !isReviewing
+                    ? 'var(--md-sys-color-secondary-container)'
+                    : 'transparent',
+                color:
+                  inputMode === 'paste' && !isReviewing
+                    ? 'var(--md-sys-color-on-secondary-container)'
+                    : 'var(--md-sys-color-on-surface-variant)',
+                fontFamily: 'var(--font-headline)',
+                fontSize: '0.8125rem',
+                fontWeight: inputMode === 'paste' && !isReviewing ? 700 : 500,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.3rem',
+                transition: 'all 0.15s ease',
+              }}
             >
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
-                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
-                  description
-                </span>
-                Paste Text
+              <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
+                description
               </span>
+              <span>Paste Text</span>
             </button>
+
             <button
-              className={`segmented-control-btn ${inputMode === 'manual' && !isReviewing ? 'active' : ''}`}
-              style={{ flex: 1 }}
               onClick={() => {
                 setInputMode('manual');
                 setIsReviewing(false);
               }}
+              style={{
+                padding: '0.5rem 0.25rem',
+                borderRadius: '12px',
+                border: 'none',
+                backgroundColor:
+                  inputMode === 'manual' && !isReviewing
+                    ? 'var(--md-sys-color-secondary-container)'
+                    : 'transparent',
+                color:
+                  inputMode === 'manual' && !isReviewing
+                    ? 'var(--md-sys-color-on-secondary-container)'
+                    : 'var(--md-sys-color-on-surface-variant)',
+                fontFamily: 'var(--font-headline)',
+                fontSize: '0.8125rem',
+                fontWeight: inputMode === 'manual' && !isReviewing ? 700 : 500,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.3rem',
+                transition: 'all 0.15s ease',
+              }}
             >
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
-                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
-                  edit
-                </span>
-                Manual Entry
+              <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
+                edit
               </span>
+              <span>Manual</span>
             </button>
           </div>
 
-          {/* Error / Parse Status Message */}
+          {/* Feedback Status / Error Banner */}
           {parseMessage && (
             <div
               style={{
-                padding: '0.875rem 1rem',
-                borderRadius: '12px',
+                padding: '0.75rem 1rem',
+                borderRadius: '14px',
                 backgroundColor:
                   parseMessageType === 'error'
                     ? 'var(--md-sys-color-error-container)'
@@ -408,6 +478,7 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.625rem',
+                fontWeight: 600,
               }}
             >
               <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
@@ -436,35 +507,29 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
                   gap: '0.4rem',
                   fontSize: '0.75rem',
                   color: 'var(--md-sys-color-on-surface-variant)',
-                  lineHeight: 1.2,
+                  lineHeight: 1.3,
                 }}
               >
                 <span
                   className="material-symbols-outlined"
-                  style={{
-                    fontSize: '16px',
-                    color: 'var(--md-sys-color-primary)',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
+                  style={{ fontSize: '16px', color: 'var(--md-sys-color-primary)' }}
                 >
                   info
                 </span>
                 <span>Supports public links (LinkedIn, Greenhouse, Lever, Ashby, Workable, etc.).</span>
               </div>
 
-              {/* AI Extraction Preview Card */}
+              {/* AI Pipeline Card */}
               <div
+                className="m3-card"
                 style={{
                   padding: '1.25rem',
                   borderRadius: '16px',
-                  backgroundColor: 'var(--md-sys-color-surface-container-low)',
+                  backgroundColor: 'var(--md-sys-color-surface-container)',
                   border: '1px solid var(--md-sys-color-outline-variant)',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '0.75rem',
-                  marginTop: '0.5rem',
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -482,11 +547,11 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
                       color: 'var(--md-sys-color-on-surface)',
                     }}
                   >
-                    AI Extraction Pipeline
+                    Automated AI Extraction
                   </span>
                 </div>
-                <p style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.5 }}>
-                  Claude AI will automatically extract and structure:
+                <p style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)', lineHeight: 1.5, margin: 0 }}>
+                  Extracts and structures all core fields in seconds:
                 </p>
                 <ul
                   style={{
@@ -499,16 +564,16 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
                     gap: '0.25rem',
                   }}
                 >
-                  <li>Company Name, Job Title & Seniority</li>
-                  <li>Location & Remote / Hybrid Policy</li>
+                  <li>Company Name, Role Title & Seniority</li>
+                  <li>Location & Hybrid/Remote Policy</li>
                   <li>Salary Range & Compensation</li>
-                  <li>Key Role Requirements & Skills</li>
+                  <li>Key Requirements & Qualifications</li>
                 </ul>
               </div>
             </div>
           )}
 
-          {/* Mode 2: Paste Raw Text */}
+          {/* Mode 2: Paste Text */}
           {inputMode === 'paste' && !isReviewing && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               <TextArea
@@ -526,22 +591,16 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
                   gap: '0.4rem',
                   fontSize: '0.75rem',
                   color: 'var(--md-sys-color-on-surface-variant)',
-                  lineHeight: 1.2,
+                  lineHeight: 1.3,
                 }}
               >
                 <span
                   className="material-symbols-outlined"
-                  style={{
-                    fontSize: '16px',
-                    color: 'var(--md-sys-color-primary)',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
+                  style={{ fontSize: '16px', color: 'var(--md-sys-color-primary)' }}
                 >
                   info
                 </span>
-                <span>Paste the entire job posting — AI will filter and format the core fields.</span>
+                <span>Paste the complete posting — AI will filter and format key information.</span>
               </div>
             </div>
           )}
@@ -557,6 +616,7 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
                     backgroundColor: 'var(--md-sys-color-error-container)',
                     color: 'var(--md-sys-color-on-error-container)',
                     fontSize: '0.8125rem',
+                    fontWeight: 600,
                   }}
                 >
                   {validationError}
@@ -571,7 +631,7 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
                     backgroundColor: 'var(--md-sys-color-primary-container)',
                     color: 'var(--md-sys-color-on-primary-container)',
                     fontSize: '0.8125rem',
-                    fontWeight: 600,
+                    fontWeight: 700,
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: '0.5rem',
@@ -580,35 +640,29 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
                   <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
                     auto_awesome
                   </span>
-                  Extracted via Anthropic Claude AI
+                  Extracted with AI
                 </div>
               )}
 
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-                  gap: '1rem',
-                }}
-              >
-                <TextField
-                  label="Company Name"
-                  value={company}
-                  onValueChange={setCompany}
-                  required
-                  leadingIcon="domain"
-                />
+              <TextField
+                label="Company Name"
+                value={company}
+                onValueChange={setCompany}
+                required
+                leadingIcon="domain"
+              />
 
-                <TextField
-                  label="Job Title"
-                  value={title}
-                  onValueChange={setTitle}
-                  required
-                  leadingIcon="badge"
-                />
+              <TextField
+                label="Job Title"
+                value={title}
+                onValueChange={setTitle}
+                required
+                leadingIcon="badge"
+              />
 
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <TextField
-                  label="Location / Remote"
+                  label="Location"
                   value={location}
                   onValueChange={setLocation}
                   leadingIcon="location_on"
@@ -620,7 +674,9 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
                   onValueChange={setSalaryRange}
                   leadingIcon="payments"
                 />
+              </div>
 
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <TextField
                   label="Seniority Level"
                   value={seniority}
@@ -639,7 +695,7 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
 
               <TextArea
                 label="Notes & Key Requirements"
-                rows={3}
+                rows={4}
                 value={notes}
                 onValueChange={setNotes}
               />
@@ -647,12 +703,12 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
           )}
         </div>
 
-        {/* Sticky Unified Action Bar */}
+        {/* Sticky Action Footer */}
         <div
           style={{
-            padding: '1rem 1.75rem',
+            padding: '1rem 1.5rem',
             borderTop: '1px solid var(--md-sys-color-outline-variant)',
-            backgroundColor: 'var(--md-sys-color-surface-container-lowest)',
+            backgroundColor: 'var(--md-sys-color-surface-container-low)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -691,11 +747,11 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
 
           {(inputMode === 'manual' || isReviewing) && (
             <FilledButton onClick={handleSave} disabled={saving} icon="check">
-              {saving ? 'Saving...' : 'Save Job'}
+              {saving ? 'Saving...' : 'Save Application'}
             </FilledButton>
           )}
         </div>
-      </div>
+      </aside>
     </>
   );
 }
