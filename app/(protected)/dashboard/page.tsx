@@ -9,6 +9,7 @@ import { StatusBadge } from '@/components/applications/StatusBadge';
 import { FilledButton, OutlinedButton } from '@/components/ui/Button';
 import { CircularProgress } from '@/components/ui/CircularProgress';
 import { NewApplicationSheet } from '@/components/applications/NewApplicationSheet';
+import { ApplicationDetailSheet } from '@/components/applications/ApplicationDetailSheet';
 
 function getInitials(name: string): string {
   if (!name) return 'JT';
@@ -21,6 +22,10 @@ export default function DashboardPage() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
   const [isNewSheetOpen, setIsNewSheetOpen] = useState(false);
+
+  // In-context Application Detail Sheet state
+  const [selectedAppId, setSelectedAppId] = useState<string | null>(null);
+  const [isDetailSheetOpen, setIsDetailSheetOpen] = useState(false);
 
   const router = useRouter();
   const supabase = createClient();
@@ -123,24 +128,12 @@ export default function DashboardPage() {
       </div>
 
       {loading ? (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '5rem 1rem',
-            gap: '1.25rem',
-          }}
-        >
-          <CircularProgress indeterminate />
-          <p style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '0.9375rem' }}>
-            Loading dashboard data...
-          </p>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px' }}>
+          <CircularProgress />
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-          {/* Top 4 KPI Metric Cards */}
+          {/* Top Row: 4 Essential KPI Stat Metric Cards */}
           <div
             style={{
               display: 'grid',
@@ -149,119 +142,252 @@ export default function DashboardPage() {
             }}
           >
             {/* Total Applications Card */}
-            <div className="kpi-card">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div
+              style={{
+                backgroundColor: 'var(--md-sys-color-surface-container-low)',
+                borderRadius: '24px',
+                padding: '1.5rem',
+                border: '1px solid var(--md-sys-color-outline-variant)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                position: 'relative',
+                overflow: 'hidden',
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <span
                   style={{
-                    fontSize: '0.75rem',
+                    fontSize: '0.8125rem',
                     fontFamily: 'var(--font-headline)',
                     fontWeight: 700,
-                    letterSpacing: '0.05em',
-                    textTransform: 'uppercase',
                     color: 'var(--md-sys-color-on-surface-variant)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
                   }}
                 >
-                  Total Applications
+                  Total Tracked
                 </span>
                 <div
-                  className="kpi-icon-badge"
                   style={{
-                    backgroundColor: 'var(--md-sys-color-primary-container)',
-                    color: 'var(--md-sys-color-on-primary-container)',
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '12px',
+                    backgroundColor: 'var(--md-sys-color-surface-container-high)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'var(--md-sys-color-primary)',
                   }}
                 >
                   <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
-                    layers
+                    inventory_2
                   </span>
                 </div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginTop: '0.5rem' }}>
+
+              <div style={{ marginTop: '1.25rem' }}>
                 <span
                   style={{
-                    fontSize: '2.25rem',
+                    fontSize: '2.5rem',
                     fontFamily: 'var(--font-headline)',
                     fontWeight: 800,
                     color: 'var(--md-sys-color-on-surface)',
+                    lineHeight: 1,
                   }}
                 >
                   {stats.total}
                 </span>
-                <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-outline)' }}>
-                  all-time
-                </span>
-              </div>
-              <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)', marginTop: '0.25rem' }}>
-                {stats.activePipeline} active in your pursuit pipeline
-              </span>
-            </div>
-
-            {/* Active Pipeline Card */}
-            <div className="kpi-card">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span
+                <p
                   style={{
-                    fontSize: '0.75rem',
-                    fontFamily: 'var(--font-headline)',
-                    fontWeight: 700,
-                    letterSpacing: '0.05em',
-                    textTransform: 'uppercase',
+                    fontSize: '0.8125rem',
                     color: 'var(--md-sys-color-on-surface-variant)',
+                    marginTop: '0.5rem',
+                    marginBottom: 0,
                   }}
                 >
-                  Active Pipeline
+                  {stats.activePipeline} active pursuits in progress
+                </p>
+              </div>
+            </div>
+
+            {/* In Review / Interviewing Card */}
+            <div
+              style={{
+                backgroundColor: 'var(--md-sys-color-surface-container-low)',
+                borderRadius: '24px',
+                padding: '1.5rem',
+                border: '1px solid var(--md-sys-color-outline-variant)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                position: 'relative',
+                overflow: 'hidden',
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <span
+                  style={{
+                    fontSize: '0.8125rem',
+                    fontFamily: 'var(--font-headline)',
+                    fontWeight: 700,
+                    color: 'var(--md-sys-color-on-surface-variant)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                  }}
+                >
+                  Interviewing
                 </span>
                 <div
-                  className="kpi-icon-badge"
                   style={{
-                    backgroundColor: 'var(--md-sys-color-tertiary-container)',
-                    color: 'var(--md-sys-color-on-tertiary-container)',
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '12px',
+                    backgroundColor: 'rgba(56, 101, 0, 0.12)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'var(--md-sys-color-primary)',
                   }}
                 >
                   <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
-                    timelapse
+                    record_voice_over
                   </span>
                 </div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginTop: '0.5rem' }}>
+
+              <div style={{ marginTop: '1.25rem' }}>
                 <span
                   style={{
-                    fontSize: '2.25rem',
+                    fontSize: '2.5rem',
                     fontFamily: 'var(--font-headline)',
                     fontWeight: 800,
-                    color: 'var(--md-sys-color-on-surface)',
+                    color: 'var(--md-sys-color-primary)',
+                    lineHeight: 1,
                   }}
                 >
-                  {stats.activePipeline}
+                  {stats.interviewing}
                 </span>
-                <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-outline)' }}>
-                  in progress
-                </span>
+                <p
+                  style={{
+                    fontSize: '0.8125rem',
+                    color: 'var(--md-sys-color-on-surface-variant)',
+                    marginTop: '0.5rem',
+                    marginBottom: 0,
+                  }}
+                >
+                  {stats.applied} submitted & waiting response
+                </p>
               </div>
-              <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)', marginTop: '0.25rem' }}>
-                {stats.interviewing} currently in interview rounds
-              </span>
             </div>
 
-            {/* Interview Conversion Rate Card */}
-            <div className="kpi-card">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            {/* Offers Received Card */}
+            <div
+              style={{
+                backgroundColor: 'var(--md-sys-color-surface-container-low)',
+                borderRadius: '24px',
+                padding: '1.5rem',
+                border: '1px solid var(--md-sys-color-outline-variant)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                position: 'relative',
+                overflow: 'hidden',
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <span
                   style={{
-                    fontSize: '0.75rem',
+                    fontSize: '0.8125rem',
                     fontFamily: 'var(--font-headline)',
                     fontWeight: 700,
-                    letterSpacing: '0.05em',
-                    textTransform: 'uppercase',
                     color: 'var(--md-sys-color-on-surface-variant)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                  }}
+                >
+                  Offers
+                </span>
+                <div
+                  style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '12px',
+                    backgroundColor: 'rgba(56, 101, 0, 0.18)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#2e7d32',
+                  }}
+                >
+                  <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
+                    emoji_events
+                  </span>
+                </div>
+              </div>
+
+              <div style={{ marginTop: '1.25rem' }}>
+                <span
+                  style={{
+                    fontSize: '2.5rem',
+                    fontFamily: 'var(--font-headline)',
+                    fontWeight: 800,
+                    color: '#2e7d32',
+                    lineHeight: 1,
+                  }}
+                >
+                  {stats.offers}
+                </span>
+                <p
+                  style={{
+                    fontSize: '0.8125rem',
+                    color: 'var(--md-sys-color-on-surface-variant)',
+                    marginTop: '0.5rem',
+                    marginBottom: 0,
+                  }}
+                >
+                  {stats.offerRate}% conversion from applied
+                </p>
+              </div>
+            </div>
+
+            {/* Conversion / Response Rate Card */}
+            <div
+              style={{
+                backgroundColor: 'var(--md-sys-color-surface-container-low)',
+                borderRadius: '24px',
+                padding: '1.5rem',
+                border: '1px solid var(--md-sys-color-outline-variant)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                position: 'relative',
+                overflow: 'hidden',
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <span
+                  style={{
+                    fontSize: '0.8125rem',
+                    fontFamily: 'var(--font-headline)',
+                    fontWeight: 700,
+                    color: 'var(--md-sys-color-on-surface-variant)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
                   }}
                 >
                   Interview Rate
                 </span>
                 <div
-                  className="kpi-icon-badge"
                   style={{
-                    backgroundColor: 'var(--md-sys-color-secondary-container)',
-                    color: 'var(--md-sys-color-on-secondary-container)',
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '12px',
+                    backgroundColor: 'var(--md-sys-color-surface-container-high)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'var(--md-sys-color-primary)',
                   }}
                 >
                   <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
@@ -269,306 +395,235 @@ export default function DashboardPage() {
                   </span>
                 </div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginTop: '0.5rem' }}>
+
+              <div style={{ marginTop: '1.25rem' }}>
                 <span
                   style={{
-                    fontSize: '2.25rem',
+                    fontSize: '2.5rem',
                     fontFamily: 'var(--font-headline)',
                     fontWeight: 800,
                     color: 'var(--md-sys-color-on-surface)',
+                    lineHeight: 1,
                   }}
                 >
                   {stats.interviewRate}%
                 </span>
-                <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-outline)' }}>
-                  conversion
-                </span>
-              </div>
-              <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)', marginTop: '0.25rem' }}>
-                Applied to interview progression ratio
-              </span>
-            </div>
-
-            {/* Offers Received Card */}
-            <div className="kpi-card">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span
+                <p
                   style={{
-                    fontSize: '0.75rem',
-                    fontFamily: 'var(--font-headline)',
-                    fontWeight: 700,
-                    letterSpacing: '0.05em',
-                    textTransform: 'uppercase',
+                    fontSize: '0.8125rem',
                     color: 'var(--md-sys-color-on-surface-variant)',
+                    marginTop: '0.5rem',
+                    marginBottom: 0,
                   }}
                 >
-                  Offers Received
-                </span>
-                <div
-                  className="kpi-icon-badge"
-                  style={{
-                    backgroundColor: 'var(--md-sys-color-primary-container)',
-                    color: 'var(--md-sys-color-on-primary-container)',
-                  }}
-                >
-                  <span
-                    className="material-symbols-outlined"
-                    style={{ fontSize: '20px', fontVariationSettings: "'FILL' 1" }}
-                  >
-                    workspace_premium
-                  </span>
-                </div>
+                  Applied $\rightarrow$ Interview progression
+                </p>
               </div>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginTop: '0.5rem' }}>
-                <span
-                  style={{
-                    fontSize: '2.25rem',
-                    fontFamily: 'var(--font-headline)',
-                    fontWeight: 800,
-                    color: stats.offers > 0 ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-on-surface)',
-                  }}
-                >
-                  {stats.offers}
-                </span>
-                <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-outline)' }}>
-                  offers
-                </span>
-              </div>
-              <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)', marginTop: '0.25rem' }}>
-                {stats.offerRate}% final offer conversion rate
-              </span>
             </div>
           </div>
 
-          {/* Visual Analytics Grid: Conversion Funnel & Status Breakdown */}
+          {/* Middle Row: Funnel Pipeline Distribution */}
           <div
             style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))',
-              gap: '1.5rem',
+              backgroundColor: 'var(--md-sys-color-surface-container-low)',
+              borderRadius: '28px',
+              padding: '1.75rem',
+              border: '1px solid var(--md-sys-color-outline-variant)',
             }}
           >
-            {/* Conversion Funnel Card */}
-            <div className="m3-card" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-              <div>
-                <h3
-                  style={{
-                    fontSize: '1.125rem',
-                    fontFamily: 'var(--font-headline)',
-                    fontWeight: 700,
-                    color: 'var(--md-sys-color-on-surface)',
-                    marginBottom: '0.25rem',
-                  }}
-                >
-                  Application Pipeline Funnel
-                </h3>
-                <p style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)', margin: 0 }}>
-                  Progression from draft preparation to job offer.
-                </p>
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '0.5rem' }}>
-                {/* Step 1: Draft */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem' }}>
-                    <span style={{ fontWeight: 600, color: 'var(--md-sys-color-on-surface)' }}>1. Drafts</span>
-                    <span style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>{stats.drafts} apps</span>
-                  </div>
-                  <div className="m3-funnel-bar">
-                    <div
-                      className="m3-funnel-fill"
-                      style={{
-                        width: `${stats.total > 0 ? (stats.drafts / stats.total) * 100 : 0}%`,
-                        backgroundColor: 'var(--md-sys-color-outline)',
-                      }}
-                    />
-                  </div>
-                </div>
-
-                {/* Step 2: Applied */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem' }}>
-                    <span style={{ fontWeight: 600, color: 'var(--md-sys-color-on-surface)' }}>2. Applied & Submitted</span>
-                    <span style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>{stats.applied} apps</span>
-                  </div>
-                  <div className="m3-funnel-bar">
-                    <div
-                      className="m3-funnel-fill"
-                      style={{
-                        width: `${stats.total > 0 ? (stats.applied / stats.total) * 100 : 0}%`,
-                        backgroundColor: 'var(--md-sys-color-primary)',
-                      }}
-                    />
-                  </div>
-                </div>
-
-                {/* Step 3: Interviewing */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem' }}>
-                    <span style={{ fontWeight: 600, color: 'var(--md-sys-color-on-surface)' }}>3. Interviews & Rounds</span>
-                    <span style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>{stats.interviewing} apps</span>
-                  </div>
-                  <div className="m3-funnel-bar">
-                    <div
-                      className="m3-funnel-fill"
-                      style={{
-                        width: `${stats.total > 0 ? (stats.interviewing / stats.total) * 100 : 0}%`,
-                        backgroundColor: 'var(--md-sys-color-secondary)',
-                      }}
-                    />
-                  </div>
-                </div>
-
-                {/* Step 4: Offer */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem' }}>
-                    <span style={{ fontWeight: 600, color: stats.offers > 0 ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-on-surface)' }}>4. Job Offers</span>
-                    <span style={{ color: stats.offers > 0 ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-on-surface-variant)', fontWeight: stats.offers > 0 ? 700 : 500 }}>{stats.offers} apps</span>
-                  </div>
-                  <div className="m3-funnel-bar">
-                    <div
-                      className="m3-funnel-fill"
-                      style={{
-                        width: `${stats.total > 0 ? (stats.offers / stats.total) * 100 : 0}%`,
-                        backgroundColor: 'var(--md-sys-color-primary)',
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
+            <div style={{ marginBottom: '1.25rem' }}>
+              <h2
+                style={{
+                  fontSize: '1.125rem',
+                  fontFamily: 'var(--font-headline)',
+                  fontWeight: 700,
+                  color: 'var(--md-sys-color-on-surface)',
+                  margin: 0,
+                }}
+              >
+                Application Pipeline Funnel
+              </h2>
+              <p
+                style={{
+                  fontSize: '0.8125rem',
+                  color: 'var(--md-sys-color-on-surface-variant)',
+                  margin: '0.25rem 0 0 0',
+                }}
+              >
+                Current distribution of your job pursuits across stages.
+              </p>
             </div>
 
-            {/* Status Distribution Card */}
-            <div className="m3-card" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-              <div>
-                <h3
+            {/* Horizontal Segmented Progress Bar */}
+            <div
+              style={{
+                height: '14px',
+                borderRadius: '7px',
+                backgroundColor: 'var(--md-sys-color-surface-container-highest)',
+                display: 'flex',
+                overflow: 'hidden',
+                marginBottom: '1.5rem',
+                gap: '2px',
+              }}
+            >
+              {stats.total === 0 ? (
+                <div style={{ width: '100%', backgroundColor: 'var(--md-sys-color-surface-container-high)' }} />
+              ) : (
+                <>
+                  <div
+                    style={{
+                      width: `${(stats.drafts / stats.total) * 100}%`,
+                      backgroundColor: 'var(--status-draft-bg)',
+                    }}
+                    title={`Draft: ${stats.drafts}`}
+                  />
+                  <div
+                    style={{
+                      width: `${(stats.applied / stats.total) * 100}%`,
+                      backgroundColor: 'var(--status-applied-bg)',
+                    }}
+                    title={`Applied: ${stats.applied}`}
+                  />
+                  <div
+                    style={{
+                      width: `${(stats.interviewing / stats.total) * 100}%`,
+                      backgroundColor: 'var(--status-interviewing-bg)',
+                    }}
+                    title={`Interviewing: ${stats.interviewing}`}
+                  />
+                  <div
+                    style={{
+                      width: `${(stats.offers / stats.total) * 100}%`,
+                      backgroundColor: 'var(--status-offer-bg)',
+                    }}
+                    title={`Offer: ${stats.offers}`}
+                  />
+                  <div
+                    style={{
+                      width: `${(stats.rejected / stats.total) * 100}%`,
+                      backgroundColor: 'var(--status-rejected-bg)',
+                    }}
+                    title={`Rejected: ${stats.rejected}`}
+                  />
+                  <div
+                    style={{
+                      width: `${(stats.withdrawn / stats.total) * 100}%`,
+                      backgroundColor: 'var(--status-withdrawn-bg)',
+                    }}
+                    title={`Withdrawn: ${stats.withdrawn}`}
+                  />
+                </>
+              )}
+            </div>
+
+            {/* Legend & Breakdown Chips */}
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+                gap: '0.875rem',
+              }}
+            >
+              {[
+                { label: 'Draft', count: stats.drafts, bg: 'var(--status-draft-bg)', text: 'var(--status-draft-text)' },
+                { label: 'Applied', count: stats.applied, bg: 'var(--status-applied-bg)', text: 'var(--status-applied-text)' },
+                { label: 'Interviewing', count: stats.interviewing, bg: 'var(--status-interviewing-bg)', text: 'var(--status-interviewing-text)' },
+                { label: 'Offer', count: stats.offers, bg: 'var(--status-offer-bg)', text: 'var(--status-offer-text)' },
+                { label: 'Rejected', count: stats.rejected, bg: 'var(--status-rejected-bg)', text: 'var(--status-rejected-text)' },
+                { label: 'Withdrawn', count: stats.withdrawn, bg: 'var(--status-withdrawn-bg)', text: 'var(--status-withdrawn-text)' },
+              ].map((item) => (
+                <div
+                  key={item.label}
                   style={{
-                    fontSize: '1.125rem',
-                    fontFamily: 'var(--font-headline)',
-                    fontWeight: 700,
-                    color: 'var(--md-sys-color-on-surface)',
-                    marginBottom: '0.25rem',
+                    padding: '0.75rem 1rem',
+                    borderRadius: '16px',
+                    backgroundColor: 'var(--md-sys-color-surface-container)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
                   }}
                 >
-                  Status Distribution
-                </h3>
-                <p style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)', margin: 0 }}>
-                  Breakdown across all active and closed pursuit stages.
-                </p>
-              </div>
-
-              {/* Segmented Progress Distribution Bar */}
-              <div
-                style={{
-                  height: '14px',
-                  borderRadius: '7px',
-                  backgroundColor: 'var(--md-sys-color-surface-container-high)',
-                  display: 'flex',
-                  overflow: 'hidden',
-                  marginTop: '0.5rem',
-                }}
-              >
-                {stats.total > 0 && (
-                  <>
-                    <div style={{ width: `${(stats.drafts / stats.total) * 100}%`, backgroundColor: 'var(--status-draft-text)' }} title={`Drafts: ${stats.drafts}`} />
-                    <div style={{ width: `${(stats.applied / stats.total) * 100}%`, backgroundColor: 'var(--status-applied-text)' }} title={`Applied: ${stats.applied}`} />
-                    <div style={{ width: `${(stats.interviewing / stats.total) * 100}%`, backgroundColor: 'var(--status-interviewing-text)' }} title={`Interviewing: ${stats.interviewing}`} />
-                    <div style={{ width: `${(stats.offers / stats.total) * 100}%`, backgroundColor: 'var(--status-offer-text)' }} title={`Offers: ${stats.offers}`} />
-                    <div style={{ width: `${(stats.rejected / stats.total) * 100}%`, backgroundColor: 'var(--status-rejected-text)' }} title={`Rejected: ${stats.rejected}`} />
-                    <div style={{ width: `${(stats.withdrawn / stats.total) * 100}%`, backgroundColor: 'var(--status-withdrawn-text)' }} title={`Withdrawn: ${stats.withdrawn}`} />
-                  </>
-                )}
-              </div>
-
-              {/* Status Legend Grid */}
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  gap: '0.75rem',
-                  marginTop: '0.5rem',
-                }}
-              >
-                {APPLICATION_STATUSES.map((status) => {
-                  const count =
-                    status.value === 'draft'
-                      ? stats.drafts
-                      : status.value === 'applied'
-                      ? stats.applied
-                      : status.value === 'interviewing'
-                      ? stats.interviewing
-                      : status.value === 'offer'
-                      ? stats.offers
-                      : status.value === 'rejected'
-                      ? stats.rejected
-                      : stats.withdrawn;
-
-                  const percent = stats.total > 0 ? Math.round((count / stats.total) * 100) : 0;
-
-                  return (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <div
-                      key={status.value}
                       style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        padding: '0.625rem 0.875rem',
-                        borderRadius: '12px',
-                        backgroundColor: 'var(--md-sys-color-surface-container-low)',
-                        border: '1px solid var(--md-sys-color-outline-variant)',
+                        width: '10px',
+                        height: '10px',
+                        borderRadius: '50%',
+                        backgroundColor: item.bg,
                       }}
-                    >
-                      <span style={{ fontSize: '0.8125rem', fontFamily: 'var(--font-headline)', fontWeight: 600, color: 'var(--md-sys-color-on-surface)' }}>
-                        {status.label}
-                      </span>
-                      <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)', fontWeight: 500 }}>
-                        {count} ({percent}%)
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
+                    />
+                    <span style={{ fontSize: '0.8125rem', fontFamily: 'var(--font-headline)', fontWeight: 600 }}>
+                      {item.label}
+                    </span>
+                  </div>
+                  <span style={{ fontSize: '0.875rem', fontWeight: 800, fontFamily: 'var(--font-headline)' }}>
+                    {item.count}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Recent Applications Quick Hub */}
-          <div className="m3-card" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          {/* Bottom Section: Recent Applications Quick Inspection List */}
+          <div
+            style={{
+              backgroundColor: 'var(--md-sys-color-surface-container-low)',
+              borderRadius: '28px',
+              padding: '1.75rem',
+              border: '1px solid var(--md-sys-color-outline-variant)',
+            }}
+          >
             <div
               style={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
+                marginBottom: '1.25rem',
                 flexWrap: 'wrap',
-                gap: '0.5rem',
+                gap: '0.75rem',
               }}
             >
               <div>
-                <h3
+                <h2
                   style={{
                     fontSize: '1.125rem',
                     fontFamily: 'var(--font-headline)',
                     fontWeight: 700,
                     color: 'var(--md-sys-color-on-surface)',
+                    margin: 0,
                   }}
                 >
                   Recent Applications
-                </h3>
-                <p style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)', margin: 0 }}>
-                  Latest pursuits updated in your pipeline.
+                </h2>
+                <p
+                  style={{
+                    fontSize: '0.8125rem',
+                    color: 'var(--md-sys-color-on-surface-variant)',
+                    margin: '0.25rem 0 0 0',
+                  }}
+                >
+                  Click any role to inspect or update in the side sheet.
                 </p>
               </div>
 
               <Link
                 href="/applications"
+                prefetch={true}
                 style={{
-                  fontSize: '0.8125rem',
+                  fontSize: '0.875rem',
                   fontFamily: 'var(--font-headline)',
                   fontWeight: 700,
                   color: 'var(--md-sys-color-primary)',
                   textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.25rem',
                 }}
               >
-                View all applications →
+                <span>View Full Table ({stats.total})</span>
+                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
+                  arrow_forward
+                </span>
               </Link>
             </div>
 
@@ -615,9 +670,12 @@ export default function DashboardPage() {
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
                 {recentApplications.map((app) => (
-                  <Link
+                  <div
                     key={app.id}
-                    href={`/applications/${app.id}`}
+                    onClick={() => {
+                      setSelectedAppId(app.id);
+                      setIsDetailSheetOpen(true);
+                    }}
                     style={{
                       display: 'flex',
                       alignItems: 'center',
@@ -626,7 +684,7 @@ export default function DashboardPage() {
                       borderRadius: '16px',
                       backgroundColor: 'var(--md-sys-color-surface-container-low)',
                       border: '1px solid var(--md-sys-color-outline-variant)',
-                      textDecoration: 'none',
+                      cursor: 'pointer',
                       transition: 'all 0.15s cubic-bezier(0.2, 0, 0, 1)',
                       gap: '1rem',
                     }}
@@ -669,10 +727,10 @@ export default function DashboardPage() {
                         className="material-symbols-outlined"
                         style={{ fontSize: '18px', color: 'var(--md-sys-color-outline)' }}
                       >
-                        visibility
+                        side_navigation
                       </span>
                     </div>
-                  </Link>
+                  </div>
                 ))}
               </div>
             )}
@@ -687,7 +745,26 @@ export default function DashboardPage() {
         onCreated={(newApp) => {
           setIsNewSheetOpen(false);
           fetchApplications();
-          router.push(`/applications/${newApp.id}`);
+          setSelectedAppId(newApp.id);
+          setIsDetailSheetOpen(true);
+        }}
+      />
+
+      {/* In-Context Application Detail Side Sheet */}
+      <ApplicationDetailSheet
+        applicationId={selectedAppId}
+        open={isDetailSheetOpen}
+        onClose={() => {
+          setIsDetailSheetOpen(false);
+          setSelectedAppId(null);
+        }}
+        onUpdated={(updatedApp) => {
+          setApplications((prev) =>
+            prev.map((a) => (a.id === updatedApp.id ? { ...a, ...updatedApp } : a))
+          );
+        }}
+        onDeleted={(deletedId) => {
+          setApplications((prev) => prev.filter((a) => a.id !== deletedId));
         }}
       />
     </div>

@@ -11,6 +11,7 @@ import { FilledButton, OutlinedButton, TextButton } from '@/components/ui/Button
 import { Dialog } from '@/components/ui/Dialog';
 import { CircularProgress } from '@/components/ui/CircularProgress';
 import { NewApplicationSheet } from '@/components/applications/NewApplicationSheet';
+import { ApplicationDetailSheet } from '@/components/applications/ApplicationDetailSheet';
 
 function getInitials(name: string): string {
   if (!name) return 'JT';
@@ -27,6 +28,10 @@ function ApplicationsContent() {
   const [sortBy, setSortBy] = useState<'updated_desc' | 'created_desc' | 'company_asc'>('updated_desc');
   const [isNewSheetOpen, setIsNewSheetOpen] = useState(false);
 
+  // Application Detail Sheet state with URL sync
+  const [selectedAppId, setSelectedAppId] = useState<string | null>(null);
+  const [isDetailSheetOpen, setIsDetailSheetOpen] = useState(false);
+
   // M3 Delete Confirmation Dialog State
   const [applicationToDelete, setApplicationToDelete] = useState<Application | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -39,12 +44,29 @@ function ApplicationsContent() {
   const searchParams = useSearchParams();
   const supabase = createClient();
 
-  // Auto-open drawer if ?new=1 query param is present
+  // Auto-open detail sheet if ?id=... or ?selected=... or new drawer if ?new=1
   useEffect(() => {
+    const id = searchParams.get('id') || searchParams.get('selected');
+    if (id) {
+      setSelectedAppId(id);
+      setIsDetailSheetOpen(true);
+    }
     if (searchParams.get('new') === '1' || searchParams.get('new') === 'true') {
       setIsNewSheetOpen(true);
     }
   }, [searchParams]);
+
+  const handleOpenDetail = (id: string) => {
+    setSelectedAppId(id);
+    setIsDetailSheetOpen(true);
+    window.history.pushState(null, '', `/applications?id=${id}`);
+  };
+
+  const handleCloseDetail = () => {
+    setIsDetailSheetOpen(false);
+    setSelectedAppId(null);
+    window.history.pushState(null, '', '/applications');
+  };
 
   useEffect(() => {
     async function fetchApplications() {
@@ -630,7 +652,7 @@ function ApplicationsContent() {
                 {filteredApplications.map((app) => (
                   <tr
                     key={app.id}
-                    onClick={() => router.push(`/applications/${app.id}`)}
+                    onClick={() => handleOpenDetail(app.id)}
                     style={{
                       borderBottom: '1px solid var(--md-sys-color-outline-variant)',
                       cursor: 'pointer',
@@ -811,6 +833,23 @@ function ApplicationsContent() {
           setApplications((prev) => [newApp, ...prev]);
           setFeedbackMsg({ text: `Application for ${newApp.company} added!`, type: 'success' });
           setTimeout(() => setFeedbackMsg(null), 3500);
+        }}
+      />
+
+      {/* M3 Side Sheet Drawer for In-Context Application Inspection & Editing */}
+      <ApplicationDetailSheet
+        applicationId={selectedAppId}
+        open={isDetailSheetOpen}
+        onClose={handleCloseDetail}
+        onUpdated={(updatedApp) => {
+          setApplications((prev) =>
+            prev.map((a) => (a.id === updatedApp.id ? { ...a, ...updatedApp } : a))
+          );
+        }}
+        onDeleted={(deletedId) => {
+          setApplications((prev) => prev.filter((a) => a.id !== deletedId));
+          setFeedbackMsg({ text: 'Application removed permanently.', type: 'success' });
+          setTimeout(() => setFeedbackMsg(null), 3000);
         }}
       />
 
