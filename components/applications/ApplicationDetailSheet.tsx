@@ -313,7 +313,7 @@ export function ApplicationDetailSheet({
         }}
       />
 
-      {/* M3 Standard Modal Side Sheet (540px, 28px Leading Radius, surface-container-low) */}
+      {/* M3 Standard Modal Side Sheet (500px, 28px Leading Edge Radius) */}
       <aside
         role="dialog"
         aria-modal="true"
@@ -323,7 +323,7 @@ export function ApplicationDetailSheet({
           top: 0,
           right: 0,
           bottom: 0,
-          width: 'min(540px, 100vw)',
+          width: 'min(500px, 100vw)',
           height: '100vh',
           backgroundColor: 'var(--md-sys-color-surface-container-low)',
           borderLeft: '1px solid var(--md-sys-color-outline-variant)',
@@ -339,7 +339,7 @@ export function ApplicationDetailSheet({
           overflow: 'hidden',
         }}
       >
-        {/* Side Sheet Header */}
+        {/* M3 Side Sheet Header */}
         <div
           style={{
             padding: '1.25rem 1.5rem',
@@ -348,20 +348,21 @@ export function ApplicationDetailSheet({
             alignItems: 'center',
             justifyContent: 'space-between',
             gap: '1rem',
-            backgroundColor: 'var(--md-sys-color-surface-container)',
+            backgroundColor: 'var(--md-sys-color-surface-container-low)',
+            flexShrink: 0,
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', overflow: 'hidden' }}>
             <div
               style={{
-                width: '44px',
-                height: '44px',
+                width: '42px',
+                height: '42px',
                 borderRadius: '12px',
                 backgroundColor: 'var(--md-sys-color-primary-container)',
                 color: 'var(--md-sys-color-on-primary-container)',
                 fontFamily: 'var(--font-headline)',
                 fontWeight: 800,
-                fontSize: '1rem',
+                fontSize: '0.9375rem',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -371,11 +372,11 @@ export function ApplicationDetailSheet({
               {application ? getInitials(application.company) : 'JT'}
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', gap: '0.15rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <span
                   style={{
-                    fontSize: '0.8125rem',
+                    fontSize: '0.75rem',
                     fontFamily: 'var(--font-headline)',
                     fontWeight: 700,
                     color: 'var(--md-sys-color-on-surface-variant)',
@@ -385,7 +386,7 @@ export function ApplicationDetailSheet({
                 >
                   {application?.company || 'Loading...'}
                 </span>
-                {application && <StatusBadge status={application.status} />}
+                {application && <StatusBadge status={application.status} size="small" />}
               </div>
               <h2
                 id="m3-detail-title"
@@ -406,8 +407,8 @@ export function ApplicationDetailSheet({
             </div>
           </div>
 
-          {/* Header Action Controls */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', flexShrink: 0 }}>
+          {/* M3 Header Icon Buttons */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', flexShrink: 0 }}>
             {application && (
               <Link
                 href={`/applications/${application.id}`}
@@ -421,12 +422,16 @@ export function ApplicationDetailSheet({
                   justifyContent: 'center',
                   color: 'var(--md-sys-color-on-surface-variant)',
                   textDecoration: 'none',
-                  transition: 'background-color 0.15s ease',
+                  transition: 'all 0.15s ease',
                 }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container-high)')
-                }
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container-high)';
+                  e.currentTarget.style.color = 'var(--md-sys-color-on-surface)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                  e.currentTarget.style.color = 'var(--md-sys-color-on-surface-variant)';
+                }}
               >
                 <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
                   open_in_new
@@ -448,32 +453,37 @@ export function ApplicationDetailSheet({
                 display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                transition: 'background-color 0.15s ease',
+                transition: 'all 0.15s ease',
               }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container-high)')
-              }
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container-high)';
+                e.currentTarget.style.color = 'var(--md-sys-color-on-surface)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.color = 'var(--md-sys-color-on-surface-variant)';
+              }}
             >
-              <span className="material-symbols-outlined" style={{ fontSize: '22px' }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
                 close
               </span>
             </button>
           </div>
         </div>
 
-        {/* M3 Segmented Navigation Tabs */}
+        {/* M3 Primary Tabs Bar */}
         <div
           style={{
             display: 'flex',
-            backgroundColor: 'var(--md-sys-color-surface-container)',
+            backgroundColor: 'var(--md-sys-color-surface-container-low)',
             borderBottom: '1px solid var(--md-sys-color-outline-variant)',
             padding: '0 1.25rem',
             gap: '0.5rem',
+            flexShrink: 0,
           }}
         >
           {[
-            { key: 'overview', label: 'Overview', icon: 'dashboard' },
+            { key: 'overview', label: 'Overview', icon: 'space_dashboard' },
             { key: 'jd', label: 'Job Description', icon: 'description', count: application?.raw_jd ? '✓' : undefined },
             { key: 'timeline', label: 'Timeline', icon: 'history', count: history.length > 0 ? history.length : undefined },
           ].map((tab) => {
@@ -485,7 +495,7 @@ export function ApplicationDetailSheet({
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: '0.4rem',
+                  gap: '0.45rem',
                   padding: '0.75rem 0.875rem',
                   border: 'none',
                   borderBottom: isActive
@@ -496,10 +506,11 @@ export function ApplicationDetailSheet({
                     ? 'var(--md-sys-color-primary)'
                     : 'var(--md-sys-color-on-surface-variant)',
                   fontFamily: 'var(--font-headline)',
-                  fontWeight: isActive ? 700 : 600,
+                  fontWeight: isActive ? 700 : 500,
                   fontSize: '0.875rem',
                   cursor: 'pointer',
                   transition: 'all 0.15s ease',
+                  outline: 'none',
                 }}
               >
                 <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
@@ -510,7 +521,7 @@ export function ApplicationDetailSheet({
                   <span
                     style={{
                       fontSize: '0.6875rem',
-                      padding: '0.1rem 0.4rem',
+                      padding: '0.1rem 0.45rem',
                       borderRadius: '9999px',
                       backgroundColor: isActive
                         ? 'var(--md-sys-color-primary-container)'
@@ -564,9 +575,9 @@ export function ApplicationDetailSheet({
         )}
 
         {/* Scrollable Content Body */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        <div style={{ flex: 1, overflowY: 'auto', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           {loading ? (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '220px' }}>
               <CircularProgress />
             </div>
           ) : !application ? (
@@ -577,25 +588,28 @@ export function ApplicationDetailSheet({
             <>
               {/* TAB 1: OVERVIEW */}
               {activeTab === 'overview' && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                  {/* Status Stage Selector */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                  {/* Card 1: Pipeline Stage (M3 Filter Chips) */}
                   <div
                     style={{
-                      padding: '1.25rem',
-                      backgroundColor: 'var(--md-sys-color-surface-container-high)',
-                      borderRadius: '16px',
+                      padding: '1.25rem 1.35rem',
+                      backgroundColor: 'var(--md-sys-color-surface-container)',
+                      borderRadius: '20px',
                       border: '1px solid var(--md-sys-color-outline-variant)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.875rem',
                     }}
                   >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.875rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span
                         style={{
-                          fontSize: '0.75rem',
+                          fontSize: '0.6875rem',
                           fontFamily: 'var(--font-headline)',
                           fontWeight: 700,
-                          color: 'var(--md-sys-color-on-surface-variant)',
+                          color: 'var(--md-sys-color-primary)',
                           textTransform: 'uppercase',
-                          letterSpacing: '0.05em',
+                          letterSpacing: '0.08em',
                         }}
                       >
                         Pipeline Stage
@@ -614,37 +628,40 @@ export function ApplicationDetailSheet({
                             onClick={() => handleInitiateStatusChange(s.value)}
                             disabled={isCurrent}
                             style={{
-                              padding: '0.4rem 0.875rem',
-                              borderRadius: '10px',
+                              height: '32px',
+                              padding: '0 12px',
+                              borderRadius: '8px',
                               border: isCurrent
-                                ? '2px solid var(--md-sys-color-primary)'
+                                ? '1px solid transparent'
                                 : '1px solid var(--md-sys-color-outline-variant)',
                               backgroundColor: isCurrent
-                                ? 'var(--md-sys-color-primary-container)'
-                                : 'var(--md-sys-color-surface-container)',
+                                ? 'var(--md-sys-color-secondary-container)'
+                                : 'transparent',
                               color: isCurrent
-                                ? 'var(--md-sys-color-on-primary-container)'
-                                : 'var(--md-sys-color-on-surface)',
+                                ? 'var(--md-sys-color-on-secondary-container)'
+                                : 'var(--md-sys-color-on-surface-variant)',
                               fontFamily: 'var(--font-headline)',
-                              fontWeight: isCurrent ? 700 : 600,
+                              fontWeight: isCurrent ? 700 : 500,
                               fontSize: '0.8125rem',
                               cursor: isCurrent ? 'default' : 'pointer',
                               display: 'inline-flex',
                               alignItems: 'center',
-                              gap: '0.4rem',
+                              gap: '0.35rem',
                               transition: 'all 0.15s ease',
-                              opacity: isCurrent ? 1 : 0.9,
+                              outline: 'none',
                             }}
                             onMouseEnter={(e) => {
                               if (!isCurrent) {
+                                e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container-high)';
+                                e.currentTarget.style.color = 'var(--md-sys-color-on-surface)';
                                 e.currentTarget.style.borderColor = 'var(--md-sys-color-outline)';
-                                e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container-highest)';
                               }
                             }}
                             onMouseLeave={(e) => {
                               if (!isCurrent) {
+                                e.currentTarget.style.backgroundColor = 'transparent';
+                                e.currentTarget.style.color = 'var(--md-sys-color-on-surface-variant)';
                                 e.currentTarget.style.borderColor = 'var(--md-sys-color-outline-variant)';
-                                e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container)';
                               }
                             }}
                           >
@@ -660,24 +677,27 @@ export function ApplicationDetailSheet({
                     </div>
                   </div>
 
-                  {/* Core Attributes Card */}
+                  {/* Card 2: Core Job Attributes (M3 Outlined Card) */}
                   <div
                     style={{
-                      padding: '1.25rem',
-                      backgroundColor: 'var(--md-sys-color-surface-container-high)',
-                      borderRadius: '16px',
+                      padding: '1.25rem 1.35rem',
+                      backgroundColor: 'var(--md-sys-color-surface-container)',
+                      borderRadius: '20px',
                       border: '1px solid var(--md-sys-color-outline-variant)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '1rem',
                     }}
                   >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span
                         style={{
-                          fontSize: '0.75rem',
+                          fontSize: '0.6875rem',
                           fontFamily: 'var(--font-headline)',
                           fontWeight: 700,
-                          color: 'var(--md-sys-color-on-surface-variant)',
+                          color: 'var(--md-sys-color-primary)',
                           textTransform: 'uppercase',
-                          letterSpacing: '0.05em',
+                          letterSpacing: '0.08em',
                         }}
                       >
                         Job Attributes
@@ -695,6 +715,15 @@ export function ApplicationDetailSheet({
                           display: 'inline-flex',
                           alignItems: 'center',
                           gap: '0.25rem',
+                          padding: '0.25rem 0.5rem',
+                          borderRadius: '8px',
+                          transition: 'background-color 0.15s ease',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container-high)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = 'transparent';
                         }}
                       >
                         <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
@@ -705,7 +734,7 @@ export function ApplicationDetailSheet({
                     </div>
 
                     {isEditing ? (
-                      <form onSubmit={handleSaveMetadata} style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
+                      <form onSubmit={handleSaveMetadata} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                         <TextField
                           label="Company"
                           value={company}
@@ -722,20 +751,20 @@ export function ApplicationDetailSheet({
                           label="Location"
                           value={location}
                           onValueChange={setLocation}
-                          placeholder="e.g. Remote, San Francisco, CA"
+                          placeholder="e.g. Remote, Melbourne, VIC"
                         />
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                           <TextField
                             label="Salary Range"
                             value={salaryRange}
                             onValueChange={setSalaryRange}
-                            placeholder="e.g. $140k - $170k"
+                            placeholder="e.g. $120k - $140k"
                           />
                           <TextField
                             label="Seniority"
                             value={seniority}
                             onValueChange={setSeniority}
-                            placeholder="e.g. Senior / Staff"
+                            placeholder="e.g. Mid, Senior"
                           />
                         </div>
                         <TextField
@@ -745,43 +774,43 @@ export function ApplicationDetailSheet({
                           onValueChange={setJobUrl}
                           placeholder="https://..."
                         />
-                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginTop: '0.5rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginTop: '0.25rem' }}>
                           <FilledButton type="submit" disabled={savingEdit}>
                             {savingEdit ? 'Saving...' : 'Save Changes'}
                           </FilledButton>
                         </div>
                       </form>
                     ) : (
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem 1rem' }}>
                         <div>
-                          <span style={{ fontSize: '0.75rem', color: 'var(--md-sys-color-on-surface-variant)', display: 'block' }}>
+                          <span style={{ fontSize: '0.6875rem', fontWeight: 600, color: 'var(--md-sys-color-on-surface-variant)', display: 'block', marginBottom: '0.2rem' }}>
                             Location
                           </span>
-                          <span style={{ fontSize: '0.9375rem', fontWeight: 600, color: 'var(--md-sys-color-on-surface)' }}>
+                          <span style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--md-sys-color-on-surface)', lineHeight: 1.4 }}>
                             {application.location || '—'}
                           </span>
                         </div>
 
                         <div>
-                          <span style={{ fontSize: '0.75rem', color: 'var(--md-sys-color-on-surface-variant)', display: 'block' }}>
+                          <span style={{ fontSize: '0.6875rem', fontWeight: 600, color: 'var(--md-sys-color-on-surface-variant)', display: 'block', marginBottom: '0.2rem' }}>
                             Salary
                           </span>
-                          <span style={{ fontSize: '0.9375rem', fontWeight: 600, color: 'var(--md-sys-color-on-surface)' }}>
+                          <span style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--md-sys-color-on-surface)', lineHeight: 1.4 }}>
                             {application.salary_range || '—'}
                           </span>
                         </div>
 
                         <div>
-                          <span style={{ fontSize: '0.75rem', color: 'var(--md-sys-color-on-surface-variant)', display: 'block' }}>
+                          <span style={{ fontSize: '0.6875rem', fontWeight: 600, color: 'var(--md-sys-color-on-surface-variant)', display: 'block', marginBottom: '0.2rem' }}>
                             Seniority
                           </span>
-                          <span style={{ fontSize: '0.9375rem', fontWeight: 600, color: 'var(--md-sys-color-on-surface)' }}>
+                          <span style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--md-sys-color-on-surface)', lineHeight: 1.4 }}>
                             {application.seniority || '—'}
                           </span>
                         </div>
 
                         <div>
-                          <span style={{ fontSize: '0.75rem', color: 'var(--md-sys-color-on-surface-variant)', display: 'block' }}>
+                          <span style={{ fontSize: '0.6875rem', fontWeight: 600, color: 'var(--md-sys-color-on-surface-variant)', display: 'block', marginBottom: '0.2rem' }}>
                             Job Posting
                           </span>
                           {application.job_url ? (
@@ -796,16 +825,16 @@ export function ApplicationDetailSheet({
                                 fontWeight: 600,
                                 display: 'inline-flex',
                                 alignItems: 'center',
-                                gap: '0.2rem',
+                                gap: '0.25rem',
                               }}
                             >
                               <span>View Listing</span>
-                              <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>
+                              <span className="material-symbols-outlined" style={{ fontSize: '15px' }}>
                                 open_in_new
                               </span>
                             </a>
                           ) : (
-                            <span style={{ fontSize: '0.9375rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
+                            <span style={{ fontSize: '0.875rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
                               —
                             </span>
                           )}
@@ -814,27 +843,27 @@ export function ApplicationDetailSheet({
                     )}
                   </div>
 
-                  {/* Notes & Interview Preparation Box */}
+                  {/* Card 3: Notes & Context (M3 Outlined Card) */}
                   <div
                     style={{
-                      padding: '1.25rem',
-                      backgroundColor: 'var(--md-sys-color-surface-container-high)',
-                      borderRadius: '16px',
+                      padding: '1.25rem 1.35rem',
+                      backgroundColor: 'var(--md-sys-color-surface-container)',
+                      borderRadius: '20px',
                       border: '1px solid var(--md-sys-color-outline-variant)',
                       display: 'flex',
                       flexDirection: 'column',
-                      gap: '0.75rem',
+                      gap: '0.875rem',
                     }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span
                         style={{
-                          fontSize: '0.75rem',
+                          fontSize: '0.6875rem',
                           fontFamily: 'var(--font-headline)',
                           fontWeight: 700,
-                          color: 'var(--md-sys-color-on-surface-variant)',
+                          color: 'var(--md-sys-color-primary)',
                           textTransform: 'uppercase',
-                          letterSpacing: '0.05em',
+                          letterSpacing: '0.08em',
                         }}
                       >
                         Notes & Context
@@ -851,7 +880,7 @@ export function ApplicationDetailSheet({
                       value={notes}
                       onValueChange={setNotes}
                       rows={4}
-                      placeholder="Add recruiter contacts, interview questions, follow-up dates, or referral names..."
+                      placeholder="Add recruiter contacts, interview dates, questions, or referral names..."
                     />
 
                     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -861,24 +890,25 @@ export function ApplicationDetailSheet({
                     </div>
                   </div>
 
-                  {/* Danger Zone: Delete Application */}
+                  {/* Card 4: Danger Zone (Delete Application) */}
                   <div
                     style={{
                       padding: '1rem 1.25rem',
-                      borderRadius: '14px',
+                      borderRadius: '16px',
                       border: '1px solid var(--md-sys-color-error-container)',
-                      backgroundColor: 'rgba(179, 38, 30, 0.04)',
+                      backgroundColor: 'rgba(186, 26, 26, 0.03)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
+                      gap: '1rem',
                     }}
                   >
                     <div>
-                      <span style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--md-sys-color-error)', display: 'block' }}>
+                      <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--md-sys-color-error)', display: 'block', marginBottom: '0.15rem' }}>
                         Delete this Application
                       </span>
                       <span style={{ fontSize: '0.75rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
-                        Permanently removes this job and all timeline history.
+                        Permanently removes this job and all history.
                       </span>
                     </div>
                     <button
@@ -888,12 +918,13 @@ export function ApplicationDetailSheet({
                         color: 'var(--md-sys-color-error)',
                         border: '1px solid var(--md-sys-color-error)',
                         padding: '0.4rem 0.875rem',
-                        borderRadius: '8px',
+                        borderRadius: '9999px',
                         fontFamily: 'var(--font-headline)',
                         fontWeight: 700,
                         fontSize: '0.75rem',
                         cursor: 'pointer',
                         transition: 'all 0.15s ease',
+                        flexShrink: 0,
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.backgroundColor = 'var(--md-sys-color-error-container)';
@@ -912,7 +943,7 @@ export function ApplicationDetailSheet({
               {activeTab === 'jd' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)', fontWeight: 600 }}>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--md-sys-color-on-surface-variant)', fontWeight: 600 }}>
                       Original Posting Text
                     </span>
                     {application.raw_jd && (
@@ -945,12 +976,12 @@ export function ApplicationDetailSheet({
                     <div
                       style={{
                         padding: '1.25rem',
-                        backgroundColor: 'var(--md-sys-color-surface-container-high)',
-                        borderRadius: '16px',
+                        backgroundColor: 'var(--md-sys-color-surface-container)',
+                        borderRadius: '20px',
                         border: '1px solid var(--md-sys-color-outline-variant)',
                         fontFamily: 'var(--font-body)',
                         fontSize: '0.875rem',
-                        lineHeight: 1.6,
+                        lineHeight: 1.65,
                         color: 'var(--md-sys-color-on-surface)',
                         whiteSpace: 'pre-wrap',
                         maxHeight: '65vh',
@@ -964,9 +995,10 @@ export function ApplicationDetailSheet({
                       style={{
                         textAlign: 'center',
                         padding: '3rem 1.5rem',
-                        backgroundColor: 'var(--md-sys-color-surface-container-high)',
-                        borderRadius: '16px',
+                        backgroundColor: 'var(--md-sys-color-surface-container)',
+                        borderRadius: '20px',
                         color: 'var(--md-sys-color-on-surface-variant)',
+                        border: '1px solid var(--md-sys-color-outline-variant)',
                       }}
                     >
                       <span className="material-symbols-outlined" style={{ fontSize: '36px', opacity: 0.5, marginBottom: '0.5rem' }}>
@@ -983,12 +1015,12 @@ export function ApplicationDetailSheet({
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   <span
                     style={{
-                      fontSize: '0.75rem',
+                      fontSize: '0.6875rem',
                       fontFamily: 'var(--font-headline)',
                       fontWeight: 700,
-                      color: 'var(--md-sys-color-on-surface-variant)',
+                      color: 'var(--md-sys-color-primary)',
                       textTransform: 'uppercase',
-                      letterSpacing: '0.05em',
+                      letterSpacing: '0.08em',
                     }}
                   >
                     Application Audit Trail ({history.length} events)
@@ -1008,8 +1040,8 @@ export function ApplicationDetailSheet({
                             gap: '0.875rem',
                             alignItems: 'flex-start',
                             padding: '0.875rem 1rem',
-                            backgroundColor: 'var(--md-sys-color-surface-container-high)',
-                            borderRadius: '12px',
+                            backgroundColor: 'var(--md-sys-color-surface-container)',
+                            borderRadius: '16px',
                             border: '1px solid var(--md-sys-color-outline-variant)',
                           }}
                         >
@@ -1033,10 +1065,10 @@ export function ApplicationDetailSheet({
 
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                              <span style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--md-sys-color-on-surface)' }}>
+                              <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--md-sys-color-on-surface)' }}>
                                 Stage updated to
                               </span>
-                              <StatusBadge status={event.status} />
+                              <StatusBadge status={event.status} size="small" />
                             </div>
                             <span style={{ fontSize: '0.75rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
                               {formatTimelineDate(event.changed_at)}

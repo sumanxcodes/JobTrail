@@ -247,7 +247,7 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
         }}
       />
 
-      {/* M3 Standard Modal Side Sheet (480px, 28px Leading Radius, surface-container-low) */}
+      {/* M3 Standard Modal Side Sheet (500px, 28px Leading Radius, surface-container-low) */}
       <aside
         role="dialog"
         aria-modal="true"
@@ -257,7 +257,7 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
           top: 0,
           right: 0,
           bottom: 0,
-          width: 'min(480px, 100vw)',
+          width: 'min(500px, 100vw)',
           height: '100vh',
           backgroundColor: 'var(--md-sys-color-surface-container-low)',
           borderLeft: '1px solid var(--md-sys-color-outline-variant)',
@@ -281,6 +281,7 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
             justifyContent: 'space-between',
             padding: '1.25rem 1.5rem',
             borderBottom: '1px solid var(--md-sys-color-outline-variant)',
+            backgroundColor: 'var(--md-sys-color-surface-container-low)',
             flexShrink: 0,
           }}
         >
@@ -288,17 +289,18 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
             <h2
               id="m3-sidesheet-title"
               style={{
-                fontSize: '1.25rem',
+                fontSize: '1.125rem',
                 fontFamily: 'var(--font-headline)',
-                fontWeight: 800,
+                fontWeight: 700,
                 color: 'var(--md-sys-color-on-surface)',
-                letterSpacing: '-0.02em',
+                letterSpacing: '-0.01em',
+                margin: 0,
                 marginBottom: '0.15rem',
               }}
             >
               {isReviewing ? 'Review Application' : 'Add New Application'}
             </h2>
-            <p style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)', margin: 0 }}>
+            <p style={{ fontSize: '0.75rem', color: 'var(--md-sys-color-on-surface-variant)', margin: 0 }}>
               {isReviewing
                 ? 'Verify and adjust extracted fields before saving.'
                 : 'Extract details automatically with AI or enter manually.'}
