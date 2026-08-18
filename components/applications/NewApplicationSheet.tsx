@@ -268,6 +268,8 @@ export function NewApplicationSheet({ open, onClose, onCreated }: NewApplication
           display: 'flex',
           flexDirection: 'column',
           animation: 'slideInRight 0.3s cubic-bezier(0.05, 0.7, 0.1, 1.0) forwards',
+          transform: 'translateZ(0)',
+          willChange: 'transform',
           overflow: 'hidden',
         }}
       >

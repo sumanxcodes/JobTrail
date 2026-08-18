@@ -19,7 +19,7 @@ function getInitials(name: string): string {
   return (parts[0][0] + parts[1][0]).toUpperCase();
 }
 
-export default function ApplicationsPage() {
+function ApplicationsContent() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -871,5 +871,19 @@ export default function ApplicationsPage() {
         </p>
       </Dialog>
     </div>
+  );
+}
+
+export default function ApplicationsPage() {
+  return (
+    <React.Suspense
+      fallback={
+        <div style={{ maxWidth: '1280px', padding: '2rem', margin: '0 auto', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+          <CircularProgress />
+        </div>
+      }
+    >
+      <ApplicationsContent />
+    </React.Suspense>
   );
 }

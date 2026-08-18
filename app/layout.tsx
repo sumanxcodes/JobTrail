@@ -1,6 +1,22 @@
 import type { Metadata } from 'next';
+import { Plus_Jakarta_Sans, Roboto_Flex } from 'next/font/google';
 import './globals.css';
 import { LayoutShell } from '@/components/layout/LayoutShell';
+
+// Next.js self-hosted font optimization (Zero external Google Font roundtrips at runtime)
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-headline',
+  weight: ['400', '500', '600', '700', '800'],
+});
+
+const robotoFlex = Roboto_Flex({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-body',
+  weight: ['400', '500', '600', '700'],
+});
 
 export const metadata: Metadata = {
   title: 'JobTrail — AI-Assisted Job Application Tracker',
@@ -19,17 +35,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${plusJakartaSans.variable} ${robotoFlex.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        {/* Text Fonts (display=swap for fast text legibility) */}
+        {/* Preload Material Symbols with display=block to eliminate FOUT */}
         <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Roboto+Flex:wght@400;500;600;700&display=swap"
+          rel="preload"
+          as="style"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block"
         />
-        {/* Material Symbols (display=block to eliminate icon name FOUT ligature flash) */}
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block"

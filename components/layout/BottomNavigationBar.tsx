@@ -32,6 +32,7 @@ export function BottomNavigationBar() {
         {/* Dashboard Item (Uses App Logo) */}
         <Link
           href="/dashboard"
+          prefetch={true}
           className={`m3-nav-item ${isInsightsActive ? 'active' : ''}`}
           style={{ flex: 1 }}
         >
@@ -45,6 +46,7 @@ export function BottomNavigationBar() {
         {/* Applications Table Item */}
         <Link
           href="/applications"
+          prefetch={true}
           className={`m3-nav-item ${isApplicationsActive ? 'active' : ''}`}
           style={{ flex: 1 }}
         >

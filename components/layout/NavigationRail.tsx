@@ -87,6 +87,7 @@ export function NavigationRail() {
             {/* Dashboard Destination (Uses App Logo Icon) */}
             <Link
               href="/dashboard"
+              prefetch={true}
               className={`m3-nav-item ${isDashboardActive ? 'active' : ''}`}
               title="Dashboard Overview"
             >
@@ -100,6 +101,7 @@ export function NavigationRail() {
             {/* Applications Table Destination */}
             <Link
               href="/applications"
+              prefetch={true}
               className={`m3-nav-item ${isApplicationsActive ? 'active' : ''}`}
               title="Applications Data Table"
             >
