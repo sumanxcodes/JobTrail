@@ -592,7 +592,7 @@ export function ApplicationDetailSheet({
                   {/* Card 1: Pipeline Stage (M3 Filter Chips) */}
                   <div
                     style={{
-                      padding: '1.25rem 1.35rem',
+                      padding: '1.25rem 1.5rem',
                       backgroundColor: 'var(--md-sys-color-surface-container)',
                       borderRadius: '20px',
                       border: '1px solid var(--md-sys-color-outline-variant)',
@@ -680,7 +680,7 @@ export function ApplicationDetailSheet({
                   {/* Card 2: Core Job Attributes (M3 Outlined Card) */}
                   <div
                     style={{
-                      padding: '1.25rem 1.35rem',
+                      padding: '1.25rem 1.5rem',
                       backgroundColor: 'var(--md-sys-color-surface-container)',
                       borderRadius: '20px',
                       border: '1px solid var(--md-sys-color-outline-variant)',
@@ -846,7 +846,7 @@ export function ApplicationDetailSheet({
                   {/* Card 3: Notes & Context (M3 Outlined Card) */}
                   <div
                     style={{
-                      padding: '1.25rem 1.35rem',
+                      padding: '1.25rem 1.5rem',
                       backgroundColor: 'var(--md-sys-color-surface-container)',
                       borderRadius: '20px',
                       border: '1px solid var(--md-sys-color-outline-variant)',

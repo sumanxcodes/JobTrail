@@ -62,32 +62,18 @@ export default function SignupPage() {
 
   return (
     <div
+      className="m3-card"
       style={{
-        minHeight: 'calc(100vh - 200px)',
+        width: '100%',
+        maxWidth: '440px',
         display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '1.5rem 1rem',
+        flexDirection: 'column',
+        gap: '1.5rem',
+        padding: '2.25rem 2rem',
+        borderRadius: '28px',
       }}
     >
-      <div
-        className="container"
-        style={{
-          maxWidth: '440px',
-          padding: 0,
-        }}
-      >
-        <div
-          className="m3-card"
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1.5rem',
-            padding: '2.25rem 2rem',
-            borderRadius: '28px',
-          }}
-        >
-          {/* Card Header & Brand Icon */}
+      {/* Card Header & Brand Icon */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
             <div
               style={{
@@ -275,8 +261,6 @@ export default function SignupPage() {
               </Link>
             </p>
           </div>
-        </div>
-      </div>
     </div>
   );
 }
