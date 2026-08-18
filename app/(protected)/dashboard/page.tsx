@@ -2,11 +2,13 @@
 
 import React, { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Application, ApplicationStatus, APPLICATION_STATUSES } from '@/lib/types/database';
 import { StatusBadge } from '@/components/applications/StatusBadge';
 import { FilledButton, OutlinedButton } from '@/components/ui/Button';
 import { CircularProgress } from '@/components/ui/CircularProgress';
+import { NewApplicationSheet } from '@/components/applications/NewApplicationSheet';
 
 function getInitials(name: string): string {
   if (!name) return 'JT';
@@ -18,25 +20,27 @@ function getInitials(name: string): string {
 export default function DashboardPage() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isNewSheetOpen, setIsNewSheetOpen] = useState(false);
 
+  const router = useRouter();
   const supabase = createClient();
 
-  useEffect(() => {
-    async function fetchApplications() {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('applications')
-        .select('*')
-        .order('updated_at', { ascending: false });
+  const fetchApplications = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('applications')
+      .select('*')
+      .order('updated_at', { ascending: false });
 
-      if (error) {
-        console.error('Error fetching applications for dashboard:', error);
-      } else {
-        setApplications(data || []);
-      }
-      setLoading(false);
+    if (error) {
+      console.error('Error fetching applications for dashboard:', error);
+    } else {
+      setApplications(data || []);
     }
+    setLoading(false);
+  };
 
+  useEffect(() => {
     fetchApplications();
   }, [supabase]);
 
@@ -82,7 +86,7 @@ export default function DashboardPage() {
         style={{
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: 'flex-start',
+          alignItems: 'center',
           marginBottom: '2rem',
           flexWrap: 'wrap',
           gap: '1.25rem',
@@ -95,8 +99,8 @@ export default function DashboardPage() {
               fontFamily: 'var(--font-headline)',
               fontWeight: 800,
               color: 'var(--md-sys-color-on-surface)',
-              letterSpacing: '-0.02em',
-              marginBottom: '0.25rem',
+              letterSpacing: '-0.025em',
+              marginBottom: '0.2rem',
             }}
           >
             Dashboard
@@ -106,11 +110,16 @@ export default function DashboardPage() {
               color: 'var(--md-sys-color-on-surface-variant)',
               fontSize: '0.9375rem',
               fontFamily: 'var(--font-body)',
+              margin: 0,
             }}
           >
             Real-time pipeline health, conversion metrics, and job pursuit momentum.
           </p>
         </div>
+
+        <FilledButton icon="add" onClick={() => setIsNewSheetOpen(true)}>
+          Add Job
+        </FilledButton>
       </div>
 
       {loading ? (
@@ -144,10 +153,10 @@ export default function DashboardPage() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span
                   style={{
-                    fontSize: '0.8125rem',
+                    fontSize: '0.75rem',
                     fontFamily: 'var(--font-headline)',
                     fontWeight: 700,
-                    letterSpacing: '0.04em',
+                    letterSpacing: '0.05em',
                     textTransform: 'uppercase',
                     color: 'var(--md-sys-color-on-surface-variant)',
                   }}
@@ -191,10 +200,10 @@ export default function DashboardPage() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span
                   style={{
-                    fontSize: '0.8125rem',
+                    fontSize: '0.75rem',
                     fontFamily: 'var(--font-headline)',
                     fontWeight: 700,
-                    letterSpacing: '0.04em',
+                    letterSpacing: '0.05em',
                     textTransform: 'uppercase',
                     color: 'var(--md-sys-color-on-surface-variant)',
                   }}
@@ -238,10 +247,10 @@ export default function DashboardPage() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span
                   style={{
-                    fontSize: '0.8125rem',
+                    fontSize: '0.75rem',
                     fontFamily: 'var(--font-headline)',
                     fontWeight: 700,
-                    letterSpacing: '0.04em',
+                    letterSpacing: '0.05em',
                     textTransform: 'uppercase',
                     color: 'var(--md-sys-color-on-surface-variant)',
                   }}
@@ -285,10 +294,10 @@ export default function DashboardPage() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span
                   style={{
-                    fontSize: '0.8125rem',
+                    fontSize: '0.75rem',
                     fontFamily: 'var(--font-headline)',
                     fontWeight: 700,
-                    letterSpacing: '0.04em',
+                    letterSpacing: '0.05em',
                     textTransform: 'uppercase',
                     color: 'var(--md-sys-color-on-surface-variant)',
                   }}
@@ -353,7 +362,7 @@ export default function DashboardPage() {
                 >
                   Application Pipeline Funnel
                 </h3>
-                <p style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
+                <p style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)', margin: 0 }}>
                   Progression from draft preparation to job offer.
                 </p>
               </div>
@@ -443,7 +452,7 @@ export default function DashboardPage() {
                 >
                   Status Distribution
                 </h3>
-                <p style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
+                <p style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)', margin: 0 }}>
                   Breakdown across all active and closed pursuit stages.
                 </p>
               </div>
@@ -544,7 +553,7 @@ export default function DashboardPage() {
                 >
                   Recent Applications
                 </h3>
-                <p style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
+                <p style={{ fontSize: '0.8125rem', color: 'var(--md-sys-color-on-surface-variant)', margin: 0 }}>
                   Latest pursuits updated in your pipeline.
                 </p>
               </div>
@@ -594,12 +603,14 @@ export default function DashboardPage() {
                 <p style={{ color: 'var(--md-sys-color-on-surface)', fontWeight: 600, fontSize: '0.9375rem' }}>
                   No applications tracked yet
                 </p>
-                <p style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '0.8125rem', maxWidth: '360px' }}>
+                <p style={{ color: 'var(--md-sys-color-on-surface-variant)', fontSize: '0.8125rem', maxWidth: '360px', margin: 0 }}>
                   Add your first job pursuit using AI parsing to begin seeing insights and pipeline momentum.
                 </p>
-                <Link href="/applications?new=1" style={{ marginTop: '0.5rem', textDecoration: 'none' }}>
-                  <FilledButton icon="add">Add Job</FilledButton>
-                </Link>
+                <div style={{ marginTop: '0.5rem' }}>
+                  <FilledButton icon="add" onClick={() => setIsNewSheetOpen(true)}>
+                    Add Job
+                  </FilledButton>
+                </div>
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
@@ -611,7 +622,7 @@ export default function DashboardPage() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
-                      padding: '0.75rem 1rem',
+                      padding: '0.875rem 1.25rem',
                       borderRadius: '16px',
                       backgroundColor: 'var(--md-sys-color-surface-container-low)',
                       border: '1px solid var(--md-sys-color-outline-variant)',
@@ -653,12 +664,12 @@ export default function DashboardPage() {
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                      <StatusBadge status={app.status} />
+                      <StatusBadge status={app.status} size="small" />
                       <span
                         className="material-symbols-outlined"
                         style={{ fontSize: '18px', color: 'var(--md-sys-color-outline)' }}
                       >
-                        arrow_forward
+                        visibility
                       </span>
                     </div>
                   </Link>
@@ -668,6 +679,17 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
+
+      {/* Direct Add Job Side Sheet Integration on Dashboard */}
+      <NewApplicationSheet
+        open={isNewSheetOpen}
+        onClose={() => setIsNewSheetOpen(false)}
+        onCreated={(newApp) => {
+          setIsNewSheetOpen(false);
+          fetchApplications();
+          router.push(`/applications/${newApp.id}`);
+        }}
+      />
     </div>
   );
 }
