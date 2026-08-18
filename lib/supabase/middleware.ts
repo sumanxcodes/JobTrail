@@ -73,13 +73,21 @@ export async function updateSession(request: NextRequest) {
   if (!user && isProtectedPath) {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
-    return NextResponse.redirect(url);
+    const redirectResponse = NextResponse.redirect(url);
+    response.cookies.getAll().forEach((c) => {
+      redirectResponse.cookies.set(c);
+    });
+    return redirectResponse;
   }
 
   if (user && (isAuthPath || isRoot)) {
     const url = request.nextUrl.clone();
     url.pathname = '/dashboard';
-    return NextResponse.redirect(url);
+    const redirectResponse = NextResponse.redirect(url);
+    response.cookies.getAll().forEach((c) => {
+      redirectResponse.cookies.set(c);
+    });
+    return redirectResponse;
   }
 
   return response;

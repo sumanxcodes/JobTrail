@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { Plus_Jakarta_Sans, Roboto_Flex } from 'next/font/google';
 import './globals.css';
-import { LayoutShell } from '@/components/layout/LayoutShell';
 
 // Next.js self-hosted font optimization (Zero external Google Font roundtrips at runtime)
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -69,9 +68,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body>
-        <LayoutShell>{children}</LayoutShell>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

@@ -50,8 +50,7 @@ export default function LoginPage() {
           password,
         });
         if (error) throw error;
-        router.push('/dashboard');
-        router.refresh();
+        window.location.href = '/dashboard';
       }
     } catch (err: any) {
       setErrorMsg(err.message || 'Failed to sign in. Please check your credentials.');
