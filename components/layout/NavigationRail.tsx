@@ -51,6 +51,8 @@ export function NavigationRail() {
     pathname === '/applications' ||
     (pathname.startsWith('/applications/') && pathname !== '/applications/new');
 
+  const userInitial = userEmail ? userEmail.charAt(0).toUpperCase() : 'U';
+
   return (
     <>
       <aside className="m3-nav-rail" aria-label="Main Navigation">
@@ -130,6 +132,8 @@ export function NavigationRail() {
             <button
               onClick={() => setShowUserMenu(!showUserMenu)}
               aria-label="User Account Menu"
+              aria-haspopup="true"
+              aria-expanded={showUserMenu}
               title={userEmail ? `Signed in as ${userEmail}` : 'User Profile'}
               style={{
                 width: '40px',
@@ -137,7 +141,9 @@ export function NavigationRail() {
                 borderRadius: '50%',
                 backgroundColor: 'var(--md-sys-color-secondary-container)',
                 color: 'var(--md-sys-color-on-secondary-container)',
-                border: '1.5px solid var(--md-sys-color-outline-variant)',
+                border: showUserMenu
+                  ? '2px solid var(--md-sys-color-primary)'
+                  : '1.5px solid var(--md-sys-color-outline-variant)',
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -149,16 +155,20 @@ export function NavigationRail() {
                 transition: 'all 0.15s ease',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'var(--md-sys-color-outline)';
-                e.currentTarget.style.transform = 'scale(1.05)';
+                if (!showUserMenu) {
+                  e.currentTarget.style.borderColor = 'var(--md-sys-color-outline)';
+                  e.currentTarget.style.transform = 'scale(1.05)';
+                }
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'var(--md-sys-color-outline-variant)';
-                e.currentTarget.style.transform = 'scale(1)';
+                if (!showUserMenu) {
+                  e.currentTarget.style.borderColor = 'var(--md-sys-color-outline-variant)';
+                  e.currentTarget.style.transform = 'scale(1)';
+                }
               }}
             >
               {userEmail ? (
-                userEmail.charAt(0)
+                userInitial
               ) : (
                 <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
                   person
@@ -166,7 +176,7 @@ export function NavigationRail() {
               )}
             </button>
 
-            {/* Official M3 Menu Surface (Specs: 16dp radius, Surface Container, 48dp items, Level 2 elevation) */}
+            {/* Official Material Design 3 Menu Popover */}
             {showUserMenu && (
               <div
                 role="menu"
@@ -174,96 +184,129 @@ export function NavigationRail() {
                 style={{
                   position: 'absolute',
                   bottom: '0px',
-                  left: '52px',
-                  width: '260px',
-                  backgroundColor: 'var(--md-sys-color-surface-container)',
+                  left: '60px', /* Clean 12px clearance from 48px avatar boundary */
+                  width: '264px',
+                  backgroundColor: 'var(--md-sys-color-surface-container-high)',
                   border: '1px solid var(--md-sys-color-outline-variant)',
-                  borderRadius: '16px',
+                  borderRadius: '16px', /* M3 Corner Large */
                   padding: '0.5rem 0',
-                  boxShadow: '0 4px 16px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.08)',
-                  zIndex: 100,
+                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15), 0 1px 4px rgba(0, 0, 0, 0.1)',
+                  zIndex: 150,
                   display: 'flex',
                   flexDirection: 'column',
                   animation: 'scaleUp 0.15s cubic-bezier(0.2, 0, 0, 1)',
+                  overflow: 'hidden',
                 }}
               >
-                {/* Header: User Account Summary */}
+                {/* Header: User Account Identity Block (M3 Account Header) */}
                 <div
                   style={{
-                    padding: '0.625rem 1rem 0.5rem 1rem',
+                    padding: '0.75rem 1rem 0.625rem 1rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem',
                   }}
                 >
-                  <p
+                  <div
                     style={{
-                      fontSize: '0.6875rem',
-                      color: 'var(--md-sys-color-on-surface-variant)',
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: '50%',
+                      backgroundColor: 'var(--md-sys-color-primary-container)',
+                      color: 'var(--md-sys-color-on-primary-container)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
                       fontFamily: 'var(--font-headline)',
                       fontWeight: 700,
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.04em',
-                      marginBottom: '0.2rem',
+                      fontSize: '0.875rem',
+                      flexShrink: 0,
                     }}
                   >
-                    Signed in as
-                  </p>
-                  <p
-                    style={{
-                      fontSize: '0.8125rem',
-                      color: 'var(--md-sys-color-on-surface)',
-                      fontWeight: 600,
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                      margin: 0,
-                    }}
-                  >
-                    {userEmail || 'User'}
-                  </p>
+                    {userInitial}
+                  </div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                    <span
+                      style={{
+                        fontSize: '0.6875rem',
+                        color: 'var(--md-sys-color-on-surface-variant)',
+                        fontFamily: 'var(--font-headline)',
+                        fontWeight: 700,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em',
+                        lineHeight: 1.2,
+                      }}
+                    >
+                      JobTrail Account
+                    </span>
+                    <span
+                      style={{
+                        fontSize: '0.8125rem',
+                        color: 'var(--md-sys-color-on-surface)',
+                        fontWeight: 600,
+                        fontFamily: 'var(--font-body)',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                        marginTop: '0.15rem',
+                      }}
+                      title={userEmail || ''}
+                    >
+                      {userEmail || 'User'}
+                    </span>
+                  </div>
                 </div>
 
-                {/* M3 Divider (1dp height, outline-variant) */}
+                {/* M3 Divider (1dp height, outline-variant, 8dp vertical rhythm) */}
                 <div
                   style={{
                     height: '1px',
                     backgroundColor: 'var(--md-sys-color-outline-variant)',
-                    margin: '0.25rem 0',
+                    margin: '0.25rem 0 0.35rem 0',
                   }}
                 />
 
-                {/* M3 Menu Item (48dp height, 12-16dp padding, Label Large) */}
-                <button
-                  role="menuitem"
-                  onClick={handleLogout}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.75rem',
-                    height: '44px',
-                    padding: '0 1rem',
-                    border: 'none',
-                    backgroundColor: 'transparent',
-                    color: 'var(--md-sys-color-error)',
-                    fontFamily: 'var(--font-headline)',
-                    fontSize: '0.875rem',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    width: '100%',
-                    textAlign: 'left',
-                    transition: 'background-color 0.15s ease',
-                  }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.backgroundColor =
-                      'var(--md-sys-color-error-container)')
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.backgroundColor = 'transparent')
-                  }
-                >
-                  <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
-                    logout
-                  </span>
-                  <span>Log out</span>
-                </button>
+                {/* Menu Items Container with Inset Insets (M3 Menu Specs) */}
+                <div style={{ padding: '0 0.375rem' }}>
+                  <button
+                    role="menuitem"
+                    onClick={handleLogout}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.75rem',
+                      width: '100%',
+                      height: '40px',
+                      padding: '0 0.75rem',
+                      borderRadius: '10px', /* Inset rounded pill shape */
+                      border: 'none',
+                      backgroundColor: 'transparent',
+                      color: 'var(--md-sys-color-error)',
+                      fontFamily: 'var(--font-headline)',
+                      fontSize: '0.875rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      transition: 'background-color 0.15s ease, color 0.15s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor =
+                        'var(--md-sys-color-error-container)';
+                      e.currentTarget.style.color =
+                        'var(--md-sys-color-on-error-container)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                      e.currentTarget.style.color = 'var(--md-sys-color-error)';
+                    }}
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
+                      logout
+                    </span>
+                    <span>Log out</span>
+                  </button>
+                </div>
               </div>
             )}
           </div>
