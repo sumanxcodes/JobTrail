@@ -380,11 +380,11 @@ export default function ApplicationDetailPage() {
         </div>
       )}
 
-      {/* ================= 1. TOP HEADER HERO CARD ================= */}
+      {/* ================= 1. TOP HERO HEADER CARD (M3 Outlined Card) ================= */}
       <div
         className="m3-card"
         style={{
-          padding: '1.75rem 2rem',
+          padding: '1.5rem 1.75rem',
           marginBottom: '1.5rem',
           borderRadius: '20px',
           display: 'flex',
@@ -400,10 +400,10 @@ export default function ApplicationDetailPage() {
           <div
             className="company-avatar"
             style={{
-              width: '58px',
-              height: '58px',
+              width: '56px',
+              height: '56px',
               borderRadius: '16px',
-              fontSize: '1.35rem',
+              fontSize: '1.3rem',
               flexShrink: 0,
             }}
           >
@@ -490,7 +490,7 @@ export default function ApplicationDetailPage() {
                   padding: '0.5rem 1.1rem',
                   borderRadius: '9999px',
                   border: '1px solid var(--md-sys-color-outline-variant)',
-                  backgroundColor: 'var(--md-sys-color-surface-container-low)',
+                  backgroundColor: 'transparent',
                   color: 'var(--md-sys-color-on-surface)',
                   fontFamily: 'var(--font-headline)',
                   fontSize: '0.875rem',
@@ -502,7 +502,7 @@ export default function ApplicationDetailPage() {
                   e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container-low)';
+                  e.currentTarget.style.backgroundColor = 'transparent';
                 }}
               >
                 <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
@@ -513,32 +513,32 @@ export default function ApplicationDetailPage() {
 
               <button
                 onClick={() => setDeleteDialogOpen(true)}
+                aria-label="Delete application"
                 style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.4rem',
-                  padding: '0.5rem 1rem',
-                  borderRadius: '9999px',
-                  border: 'none',
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '50%',
+                  border: '1px solid var(--md-sys-color-outline-variant)',
                   backgroundColor: 'transparent',
                   color: 'var(--md-sys-color-error)',
-                  fontFamily: 'var(--font-headline)',
-                  fontSize: '0.875rem',
-                  fontWeight: 600,
                   cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                   transition: 'all 0.15s ease',
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = 'var(--md-sys-color-error-container)';
+                  e.currentTarget.style.borderColor = 'var(--md-sys-color-error)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.backgroundColor = 'transparent';
+                  e.currentTarget.style.borderColor = 'var(--md-sys-color-outline-variant)';
                 }}
               >
                 <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
                   delete
                 </span>
-                <span>Delete</span>
               </button>
             </>
           ) : (
@@ -574,14 +574,14 @@ export default function ApplicationDetailPage() {
           alignItems: 'start',
         }}
       >
-        {/* ================= LEFT COLUMN: INFO CARDS + NOTES + RAW JD ================= */}
+        {/* ================= LEFT COLUMN: METRIC CARDS + NOTES + RAW JD ================= */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           {isEditing ? (
             /* Full Edit Form */
             <div
               className="m3-card"
               style={{
-                padding: '2rem',
+                padding: '1.75rem',
                 backgroundColor: 'var(--md-sys-color-surface-container-low)',
                 borderRadius: '20px',
                 border: '1px solid var(--md-sys-color-outline-variant)',
@@ -670,7 +670,7 @@ export default function ApplicationDetailPage() {
                 <div
                   className="m3-card"
                   style={{
-                    padding: '1.125rem 1.25rem',
+                    padding: '1rem 1.25rem',
                     borderRadius: '16px',
                     backgroundColor: 'var(--md-sys-color-surface-container-low)',
                     border: '1px solid var(--md-sys-color-outline-variant)',
@@ -713,7 +713,7 @@ export default function ApplicationDetailPage() {
                 <div
                   className="m3-card"
                   style={{
-                    padding: '1.125rem 1.25rem',
+                    padding: '1rem 1.25rem',
                     borderRadius: '16px',
                     backgroundColor: 'var(--md-sys-color-surface-container-low)',
                     border: '1px solid var(--md-sys-color-outline-variant)',
@@ -756,7 +756,7 @@ export default function ApplicationDetailPage() {
                 <div
                   className="m3-card"
                   style={{
-                    padding: '1.125rem 1.25rem',
+                    padding: '1rem 1.25rem',
                     borderRadius: '16px',
                     backgroundColor: 'var(--md-sys-color-surface-container-low)',
                     border: '1px solid var(--md-sys-color-outline-variant)',
@@ -808,7 +808,7 @@ export default function ApplicationDetailPage() {
                 <div
                   className="m3-card"
                   style={{
-                    padding: '1.125rem 1.25rem',
+                    padding: '1rem 1.25rem',
                     borderRadius: '16px',
                     backgroundColor: 'var(--md-sys-color-surface-container-low)',
                     border: '1px solid var(--md-sys-color-outline-variant)',
@@ -851,7 +851,7 @@ export default function ApplicationDetailPage() {
                 <div
                   className="m3-card"
                   style={{
-                    padding: '1.125rem 1.5rem',
+                    padding: '1rem 1.5rem',
                     borderRadius: '16px',
                     backgroundColor: 'var(--md-sys-color-surface-container-low)',
                     border: '1px solid var(--md-sys-color-outline-variant)',
@@ -879,11 +879,11 @@ export default function ApplicationDetailPage() {
                     </span>
                   </div>
 
-                  {/* Vertical Divider */}
+                  {/* Vertical Hairline Divider */}
                   <div
                     style={{
                       width: '1px',
-                      height: '32px',
+                      height: '30px',
                       backgroundColor: 'var(--md-sys-color-outline-variant)',
                     }}
                   />
@@ -946,9 +946,7 @@ export default function ApplicationDetailPage() {
                     style={{
                       border: 'none',
                       backgroundColor: 'transparent',
-                      color: notesSavedSuccess
-                        ? 'var(--md-sys-color-primary)'
-                        : 'var(--md-sys-color-primary)',
+                      color: 'var(--md-sys-color-primary)',
                       fontFamily: 'var(--font-headline)',
                       fontSize: '0.8125rem',
                       fontWeight: 700,
@@ -1097,7 +1095,7 @@ export default function ApplicationDetailPage() {
 
         {/* ================= RIGHT COLUMN: UPDATE STATUS + TIMELINE ================= */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          {/* Card 1: Update Status Buttons Grid */}
+          {/* Card 1: Update Status M3 Segmented Buttons Grid */}
           <div
             className="m3-card"
             style={{
@@ -1133,13 +1131,13 @@ export default function ApplicationDetailPage() {
                       padding: '0.625rem 0.5rem',
                       borderRadius: '12px',
                       border: isActive
-                        ? '1.5px solid var(--md-sys-color-primary)'
+                        ? '1px solid transparent'
                         : '1px solid var(--md-sys-color-outline-variant)',
                       backgroundColor: isActive
-                        ? 'var(--md-sys-color-primary)'
+                        ? 'var(--md-sys-color-secondary-container)'
                         : 'var(--md-sys-color-surface-container-lowest)',
                       color: isActive
-                        ? 'var(--md-sys-color-on-primary)'
+                        ? 'var(--md-sys-color-on-secondary-container)'
                         : 'var(--md-sys-color-on-surface)',
                       fontFamily: 'var(--font-headline)',
                       fontSize: '0.8125rem',
@@ -1148,10 +1146,18 @@ export default function ApplicationDetailPage() {
                       textAlign: 'center',
                       textTransform: 'capitalize',
                       transition: 'all 0.15s ease',
-                      boxShadow: isActive ? '0 2px 6px rgba(0,0,0,0.1)' : 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.25rem',
                     }}
                   >
-                    {st}
+                    {isActive && (
+                      <span className="material-symbols-outlined" style={{ fontSize: '15px' }}>
+                        check
+                      </span>
+                    )}
+                    <span>{st}</span>
                   </button>
                 );
               })}
@@ -1169,13 +1175,13 @@ export default function ApplicationDetailPage() {
                       padding: '0.625rem 0.5rem',
                       borderRadius: '12px',
                       border: isActive
-                        ? '1.5px solid var(--md-sys-color-primary)'
+                        ? '1px solid transparent'
                         : '1px solid var(--md-sys-color-outline-variant)',
                       backgroundColor: isActive
-                        ? 'var(--md-sys-color-primary)'
+                        ? 'var(--md-sys-color-secondary-container)'
                         : 'var(--md-sys-color-surface-container-lowest)',
                       color: isActive
-                        ? 'var(--md-sys-color-on-primary)'
+                        ? 'var(--md-sys-color-on-secondary-container)'
                         : 'var(--md-sys-color-on-surface)',
                       fontFamily: 'var(--font-headline)',
                       fontSize: '0.8125rem',
@@ -1184,10 +1190,18 @@ export default function ApplicationDetailPage() {
                       textAlign: 'center',
                       textTransform: 'capitalize',
                       transition: 'all 0.15s ease',
-                      boxShadow: isActive ? '0 2px 6px rgba(0,0,0,0.1)' : 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.25rem',
                     }}
                   >
-                    {st}
+                    {isActive && (
+                      <span className="material-symbols-outlined" style={{ fontSize: '15px' }}>
+                        check
+                      </span>
+                    )}
+                    <span>{st}</span>
                   </button>
                 );
               })}
@@ -1233,7 +1247,7 @@ export default function ApplicationDetailPage() {
                 {history.map((entry, idx) => {
                   const isLatest = idx === 0;
                   return (
-                    <div key={entry.id || idx} className="m3-timeline-item" style={{ group: 'history-item' } as any}>
+                    <div key={entry.id || idx} className="m3-timeline-item">
                       <div className="m3-timeline-line" />
                       <div
                         className="m3-timeline-dot"
