@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Logo } from '@/components/ui/Logo';
 import { ThemeToggle } from './ThemeToggle';
+import { NewApplicationSheet } from '@/components/applications/NewApplicationSheet';
 
 export function NavigationRail() {
   const pathname = usePathname();
@@ -13,6 +14,7 @@ export function NavigationRail() {
   const supabase = createClient();
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [isNewSheetOpen, setIsNewSheetOpen] = useState(false);
 
   useEffect(() => {
     async function loadUser() {
@@ -23,6 +25,20 @@ export function NavigationRail() {
     }
     loadUser();
   }, [supabase]);
+
+  // Close user menu when clicking outside
+  useEffect(() => {
+    const handleDocumentClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.m3-user-menu-container')) {
+        setShowUserMenu(false);
+      }
+    };
+    if (showUserMenu) {
+      document.addEventListener('click', handleDocumentClick);
+    }
+    return () => document.removeEventListener('click', handleDocumentClick);
+  }, [showUserMenu]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -36,194 +52,274 @@ export function NavigationRail() {
     (pathname.startsWith('/applications/') && pathname !== '/applications/new');
 
   return (
-    <aside className="m3-nav-rail" aria-label="Main Navigation">
-      {/* Top Group: Logo Badge, FAB, and Navigation Destinations */}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
-        {/* Brand Stepped-Arch Circular Badge */}
-        <Link
-          href="/dashboard"
-          title="JobTrail Workspace"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '44px',
-            height: '44px',
-            borderRadius: '50%',
-            backgroundColor: 'var(--md-sys-color-surface-container-lowest)',
-            border: '1.5px solid var(--md-sys-color-outline-variant)',
-            textDecoration: 'none',
-            marginBottom: '2rem', /* 32px deliberate visual separation to navigation destinations */
-            transition: 'all 0.2s ease',
-          }}
-        >
-          <Logo size={22} color="var(--md-sys-color-primary)" />
-        </Link>
+    <>
+      <aside className="m3-nav-rail" aria-label="Main Navigation">
+        {/* Top Group: Brand Logo & Navigation Destinations */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', gap: '1.25rem' }}>
+          {/* Brand Logo Stepped-Arch Squircle */}
+          <Link
+            href="/dashboard"
+            title="JobTrail Workspace"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '44px',
+              height: '44px',
+              borderRadius: '14px',
+              backgroundColor: 'var(--md-sys-color-surface-container-low)',
+              border: '1px solid var(--md-sys-color-outline-variant)',
+              textDecoration: 'none',
+              transition: 'all 0.2s cubic-bezier(0.2, 0, 0, 1)',
+            }}
+          >
+            <Logo size={22} color="var(--md-sys-color-primary)" />
+          </Link>
 
-        {/* Middle Navigation Destinations (20px Rhythm) */}
-        <nav
+          {/* Canonical M3 Floating Action Button (FAB) for Quick Job Add */}
+          <button
+            onClick={() => setIsNewSheetOpen(true)}
+            className="m3-fab-btn"
+            title="Add New Application"
+            aria-label="Add New Application"
+            style={{
+              width: '48px',
+              height: '48px',
+              borderRadius: '16px',
+              backgroundColor: 'var(--md-sys-color-primary-container)',
+              color: 'var(--md-sys-color-on-primary-container)',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+              transition: 'all 0.2s cubic-bezier(0.2, 0, 0, 1)',
+              marginBottom: '0.75rem',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow = '0 3px 8px rgba(0, 0, 0, 0.18)';
+              e.currentTarget.style.transform = 'scale(1.04)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
+              e.currentTarget.style.transform = 'scale(1)';
+            }}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>
+              add
+            </span>
+          </button>
+
+          {/* Middle Navigation Destinations */}
+          <nav
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1rem',
+              width: '100%',
+            }}
+          >
+            {/* Dashboard Destination */}
+            <Link
+              href="/dashboard"
+              className={`m3-nav-item ${isDashboardActive ? 'active' : ''}`}
+              title="Dashboard Overview"
+            >
+              <div className="m3-active-pill">
+                <span
+                  className="material-symbols-outlined"
+                  style={{
+                    fontSize: '24px',
+                    fontVariationSettings: isDashboardActive ? "'FILL' 1" : "'FILL' 0",
+                  }}
+                >
+                  space_dashboard
+                </span>
+              </div>
+              <span className="m3-nav-label">Dashboard</span>
+            </Link>
+
+            {/* Applications Table Destination */}
+            <Link
+              href="/applications"
+              className={`m3-nav-item ${isApplicationsActive ? 'active' : ''}`}
+              title="Applications Data Table"
+            >
+              <div className="m3-active-pill">
+                <span
+                  className="material-symbols-outlined"
+                  style={{
+                    fontSize: '24px',
+                    fontVariationSettings: isApplicationsActive ? "'FILL' 1" : "'FILL' 0",
+                  }}
+                >
+                  business_center
+                </span>
+              </div>
+              <span className="m3-nav-label">Applications</span>
+            </Link>
+          </nav>
+        </div>
+
+        {/* Bottom Group: Circular Action Controls & Account Profile */}
+        <div
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: '1.25rem', /* 20px between destination item blocks */
+            alignItems: 'center',
+            gap: '0.875rem',
             width: '100%',
+            position: 'relative',
           }}
         >
-          {/* Dashboard Destination */}
-          <Link
-            href="/dashboard"
-            className={`m3-nav-item ${isDashboardActive ? 'active' : ''}`}
-            title="Dashboard Overview"
-          >
-            <div className="m3-active-pill">
-              <span
-                className="material-symbols-outlined"
-                style={{
-                  fontSize: '24px',
-                  fontVariationSettings: isDashboardActive ? "'FILL' 1" : "'FILL' 0",
-                }}
-              >
-                space_dashboard
-              </span>
-            </div>
-            <span className="m3-nav-label">Dashboard</span>
-          </Link>
-
-          {/* Applications Table Destination */}
-          <Link
-            href="/applications"
-            className={`m3-nav-item ${isApplicationsActive ? 'active' : ''}`}
-            title="Applications Data Table"
-          >
-            <div className="m3-active-pill">
-              <span
-                className="material-symbols-outlined"
-                style={{
-                  fontSize: '24px',
-                  fontVariationSettings: isApplicationsActive ? "'FILL' 1" : "'FILL' 0",
-                }}
-              >
-                business_center
-              </span>
-            </div>
-            <span className="m3-nav-label">Applications</span>
-          </Link>
-        </nav>
-      </div>
-
-      {/* Bottom Group: Circular Outlined Action Controls (48×48px with 16px gap) */}
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '1rem',
-          width: '100%',
-          position: 'relative',
-        }}
-      >
-        {/* User Account / Profile Circular Outlined Button */}
-        <div style={{ position: 'relative' }}>
-          <button
-            onClick={() => setShowUserMenu(!showUserMenu)}
-            className="m3-rail-circle-btn"
-            title={userEmail ? `Logged in as ${userEmail}` : 'User Profile'}
-            aria-label="User Account Menu"
-          >
-            {userEmail ? (
-              <span
-                style={{
-                  fontFamily: 'var(--font-headline)',
-                  fontWeight: 700,
-                  fontSize: '0.875rem',
-                  textTransform: 'uppercase',
-                }}
-              >
-                {userEmail.charAt(0)}
-              </span>
-            ) : (
-              <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
-                person
-              </span>
-            )}
-          </button>
-
-          {/* Account Popover Menu */}
-          {showUserMenu && (
-            <div
+          {/* User Account / Profile Button */}
+          <div className="m3-user-menu-container" style={{ position: 'relative' }}>
+            <button
+              onClick={() => setShowUserMenu(!showUserMenu)}
+              aria-label="User Account Menu"
+              title={userEmail ? `Signed in as ${userEmail}` : 'User Profile'}
               style={{
-                position: 'absolute',
-                bottom: '56px',
-                left: '52px',
-                width: '230px',
-                backgroundColor: 'var(--md-sys-color-surface-container-lowest)',
-                border: '1px solid var(--md-sys-color-outline-variant)',
-                borderRadius: '16px',
-                padding: '0.75rem',
-                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
-                zIndex: 100,
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '0.5rem',
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                backgroundColor: 'var(--md-sys-color-secondary-container)',
+                color: 'var(--md-sys-color-on-secondary-container)',
+                border: '1.5px solid var(--md-sys-color-outline-variant)',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontFamily: 'var(--font-headline)',
+                fontWeight: 700,
+                fontSize: '0.875rem',
+                textTransform: 'uppercase',
+                transition: 'all 0.15s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'var(--md-sys-color-outline)';
+                e.currentTarget.style.transform = 'scale(1.05)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'var(--md-sys-color-outline-variant)';
+                e.currentTarget.style.transform = 'scale(1)';
               }}
             >
+              {userEmail ? (
+                userEmail.charAt(0)
+              ) : (
+                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
+                  person
+                </span>
+              )}
+            </button>
+
+            {/* Account Popover Menu (M3 Surface Menu) */}
+            {showUserMenu && (
               <div
                 style={{
-                  padding: '0.25rem 0.5rem',
-                  borderBottom: '1px solid var(--md-sys-color-outline-variant)',
-                  paddingBottom: '0.5rem',
+                  position: 'absolute',
+                  bottom: '0px',
+                  left: '56px',
+                  width: '240px',
+                  backgroundColor: 'var(--md-sys-color-surface-container-high)',
+                  border: '1px solid var(--md-sys-color-outline-variant)',
+                  borderRadius: '16px',
+                  padding: '0.75rem',
+                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
+                  zIndex: 100,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.5rem',
+                  animation: 'scaleUp 0.15s cubic-bezier(0.2, 0, 0, 1)',
                 }}
               >
-                <p style={{ fontSize: '0.75rem', color: 'var(--md-sys-color-outline)', fontFamily: 'var(--font-headline)' }}>
-                  Account
-                </p>
-                <p
+                <div
                   style={{
-                    fontSize: '0.8125rem',
-                    color: 'var(--md-sys-color-on-surface)',
-                    fontWeight: 600,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
+                    padding: '0.35rem 0.5rem',
+                    borderBottom: '1px solid var(--md-sys-color-outline-variant)',
+                    paddingBottom: '0.625rem',
                   }}
                 >
-                  {userEmail || 'User'}
-                </p>
+                  <p
+                    style={{
+                      fontSize: '0.6875rem',
+                      color: 'var(--md-sys-color-on-surface-variant)',
+                      fontFamily: 'var(--font-headline)',
+                      fontWeight: 700,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.04em',
+                      marginBottom: '0.2rem',
+                    }}
+                  >
+                    Signed in as
+                  </p>
+                  <p
+                    style={{
+                      fontSize: '0.8125rem',
+                      color: 'var(--md-sys-color-on-surface)',
+                      fontWeight: 600,
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                      margin: 0,
+                    }}
+                  >
+                    {userEmail || 'User'}
+                  </p>
+                </div>
+
+                <button
+                  onClick={handleLogout}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    padding: '0.5rem 0.625rem',
+                    borderRadius: '10px',
+                    border: 'none',
+                    backgroundColor: 'transparent',
+                    color: 'var(--md-sys-color-error)',
+                    fontFamily: 'var(--font-headline)',
+                    fontSize: '0.875rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    width: '100%',
+                    textAlign: 'left',
+                    transition: 'background-color 0.15s ease',
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.backgroundColor =
+                      'var(--md-sys-color-error-container)')
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.backgroundColor = 'transparent')
+                  }
+                >
+                  <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
+                    logout
+                  </span>
+                  <span>Log out</span>
+                </button>
               </div>
+            )}
+          </div>
 
-              <button
-                onClick={handleLogout}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  padding: '0.5rem',
-                  borderRadius: '8px',
-                  border: 'none',
-                  backgroundColor: 'transparent',
-                  color: 'var(--md-sys-color-error)',
-                  fontFamily: 'var(--font-headline)',
-                  fontSize: '0.875rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  width: '100%',
-                  textAlign: 'left',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--md-sys-color-error-container)')}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
-              >
-                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
-                  logout
-                </span>
-                <span>Log out</span>
-              </button>
-            </div>
-          )}
+          {/* Theme Switcher Button */}
+          <ThemeToggle />
         </div>
+      </aside>
 
-        {/* Circular Outlined Theme Switcher Button (48×48px) */}
-        <ThemeToggle />
-      </div>
-    </aside>
+      {/* Global Quick Add Job Side Sheet */}
+      <NewApplicationSheet
+        open={isNewSheetOpen}
+        onClose={() => setIsNewSheetOpen(false)}
+        onCreated={(newApp) => {
+          setIsNewSheetOpen(false);
+          router.push(`/applications/${newApp.id}`);
+          router.refresh();
+        }}
+      />
+    </>
   );
 }
