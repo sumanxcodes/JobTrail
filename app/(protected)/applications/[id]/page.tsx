@@ -73,12 +73,22 @@ export default function ApplicationDetailPage() {
       if (!applicationId) return;
       setLoading(true);
 
-      // 1. Fetch application
-      const { data: appData, error: appError } = await supabase
-        .from('applications')
-        .select('*')
-        .eq('id', applicationId)
-        .single();
+      // Fetch application and status history concurrently
+      const [
+        { data: appData, error: appError },
+        { data: histData, error: histError },
+      ] = await Promise.all([
+        supabase
+          .from('applications')
+          .select('*')
+          .eq('id', applicationId)
+          .single(),
+        supabase
+          .from('status_history')
+          .select('*')
+          .eq('application_id', applicationId)
+          .order('changed_at', { ascending: false }),
+      ]);
 
       if (appError || !appData) {
         console.error('Failed to load application:', appError);
@@ -95,13 +105,6 @@ export default function ApplicationDetailPage() {
       setSeniority(appData.seniority || '');
       setJobUrl(appData.job_url || '');
       setNotes(appData.notes || '');
-
-      // 2. Fetch status history
-      const { data: histData, error: histError } = await supabase
-        .from('status_history')
-        .select('*')
-        .eq('application_id', applicationId)
-        .order('changed_at', { ascending: false });
 
       if (!histError) {
         setHistory(histData || []);

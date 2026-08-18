@@ -51,13 +51,13 @@ function ApplicationsContent() {
       setLoading(true);
       const { data, error } = await supabase
         .from('applications')
-        .select('*')
+        .select('id, user_id, company, title, location, salary_range, seniority, status, created_at, updated_at, source_type, parse_status, notes')
         .order('updated_at', { ascending: false });
 
       if (error) {
         console.error('Error fetching applications:', error);
       } else {
-        setApplications(data || []);
+        setApplications((data as unknown as Application[]) || []);
       }
       setLoading(false);
     }
