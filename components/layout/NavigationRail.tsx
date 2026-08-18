@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase/client';
 import { Logo } from '@/components/ui/Logo';
 import { ThemeToggle } from './ThemeToggle';
 import { NewApplicationSheet } from '@/components/applications/NewApplicationSheet';
-import { useM3Ripple, RippleContainer } from '@/components/ui/Ripple';
+import { Ripple } from '@/components/ui/Ripple';
 
 export function NavigationRail() {
   const pathname = usePathname();
@@ -16,12 +16,6 @@ export function NavigationRail() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [isNewSheetOpen, setIsNewSheetOpen] = useState(false);
-
-  // M3 Dynamic Ripple Hooks for interactive items
-  const dashboardRipple = useM3Ripple();
-  const applicationsRipple = useM3Ripple();
-  const fabRipple = useM3Ripple();
-  const accountRipple = useM3Ripple();
 
   useEffect(() => {
     async function loadUser() {
@@ -67,10 +61,7 @@ export function NavigationRail() {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', gap: '1.25rem' }}>
           {/* Canonical M3 Standard FAB (56x56dp, 16dp corner radius) */}
           <button
-            onClick={() => {
-              fabRipple.createRipple();
-              setIsNewSheetOpen(true);
-            }}
+            onClick={() => setIsNewSheetOpen(true)}
             className="m3-fab-btn"
             title="Add New Application"
             aria-label="Add New Application"
@@ -81,10 +72,7 @@ export function NavigationRail() {
             <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>
               add
             </span>
-            <RippleContainer
-              ripples={fabRipple.ripples}
-              onRippleEnd={fabRipple.removeRipple}
-            />
+            <Ripple centered={true} />
           </button>
 
           {/* Middle Navigation Destinations */}
@@ -101,14 +89,10 @@ export function NavigationRail() {
               href="/dashboard"
               className={`m3-nav-item ${isDashboardActive ? 'active' : ''}`}
               title="Dashboard Overview"
-              onClick={() => dashboardRipple.createRipple()}
             >
               <div className="m3-active-pill">
                 <Logo size={22} color="currentColor" />
-                <RippleContainer
-                  ripples={dashboardRipple.ripples}
-                  onRippleEnd={dashboardRipple.removeRipple}
-                />
+                <Ripple centered={true} />
               </div>
               <span className="m3-nav-label">Dashboard</span>
             </Link>
@@ -118,7 +102,6 @@ export function NavigationRail() {
               href="/applications"
               className={`m3-nav-item ${isApplicationsActive ? 'active' : ''}`}
               title="Applications Data Table"
-              onClick={() => applicationsRipple.createRipple()}
             >
               <div className="m3-active-pill">
                 <span
@@ -130,10 +113,7 @@ export function NavigationRail() {
                 >
                   business_center
                 </span>
-                <RippleContainer
-                  ripples={applicationsRipple.ripples}
-                  onRippleEnd={applicationsRipple.removeRipple}
-                />
+                <Ripple centered={true} />
               </div>
               <span className="m3-nav-label">Applications</span>
             </Link>
@@ -154,10 +134,7 @@ export function NavigationRail() {
           {/* User Account / Profile Button */}
           <div className="m3-user-menu-container" style={{ position: 'relative' }}>
             <button
-              onClick={() => {
-                accountRipple.createRipple();
-                setShowUserMenu(!showUserMenu);
-              }}
+              onClick={() => setShowUserMenu(!showUserMenu)}
               aria-label="User Account Menu"
               aria-haspopup="true"
               aria-expanded={showUserMenu}
@@ -203,10 +180,7 @@ export function NavigationRail() {
                   person
                 </span>
               )}
-              <RippleContainer
-                ripples={accountRipple.ripples}
-                onRippleEnd={accountRipple.removeRipple}
-              />
+              <Ripple centered={true} />
             </button>
 
             {/* Official Material Design 3 Menu Popover */}
@@ -321,6 +295,8 @@ export function NavigationRail() {
                       fontWeight: 600,
                       cursor: 'pointer',
                       textAlign: 'left',
+                      position: 'relative',
+                      overflow: 'hidden',
                       transition: 'background-color 0.15s ease, color 0.15s ease',
                     }}
                     onMouseEnter={(e) => {
@@ -338,6 +314,7 @@ export function NavigationRail() {
                       logout
                     </span>
                     <span>Log out</span>
+                    <Ripple color="var(--md-sys-color-error)" centered={false} />
                   </button>
                 </div>
               </div>

@@ -453,28 +453,32 @@ a {
   transform: scale(0.94); /* Tactile press feedback */
 }
 
-.m3-nav-item:active .m3-active-pill::after {
-  opacity: 0.16; /* M3 Pressed State Layer */
-}
-
-/* Official Material Design 3 Center Ripple Wave Motion (350ms Emphasized Decelerate) */
-.m3-center-ripple-wave {
+/* Official Material Design 3 Dynamic Ripple Animation */
+.m3-ripple-anim {
   transform: scale(0);
-  opacity: 0.25;
-  animation: m3CenterRipple 0.35s cubic-bezier(0.05, 0.7, 0.1, 1) forwards;
+  animation: m3RippleGrow 250ms cubic-bezier(0.2, 0, 0, 1) forwards;
   pointer-events: none;
 }
 
-@keyframes m3CenterRipple {
+.m3-ripple-anim.fade-out {
+  animation: m3RippleGrow 250ms cubic-bezier(0.2, 0, 0, 1) forwards,
+             m3RippleFadeOut 300ms cubic-bezier(0.2, 0, 0, 1) forwards;
+}
+
+@keyframes m3RippleGrow {
   0% {
     transform: scale(0);
-    opacity: 0.25;
-  }
-  40% {
-    opacity: 0.18;
   }
   100% {
-    transform: scale(1.6);
+    transform: scale(1);
+  }
+}
+
+@keyframes m3RippleFadeOut {
+  0% {
+    opacity: var(--ripple-pressed-opacity, 0.16);
+  }
+  100% {
     opacity: 0;
   }
 }
