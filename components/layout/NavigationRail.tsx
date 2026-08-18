@@ -54,28 +54,8 @@ export function NavigationRail() {
   return (
     <>
       <aside className="m3-nav-rail" aria-label="Main Navigation">
-        {/* Top Group: Brand Logo & Navigation Destinations */}
+        {/* Top Group: Quick Add FAB & Navigation Destinations */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', gap: '1.25rem' }}>
-          {/* Brand Logo Stepped-Arch Squircle */}
-          <Link
-            href="/dashboard"
-            title="JobTrail Workspace"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '44px',
-              height: '44px',
-              borderRadius: '14px',
-              backgroundColor: 'var(--md-sys-color-surface-container-low)',
-              border: '1px solid var(--md-sys-color-outline-variant)',
-              textDecoration: 'none',
-              transition: 'all 0.2s cubic-bezier(0.2, 0, 0, 1)',
-            }}
-          >
-            <Logo size={22} color="var(--md-sys-color-primary)" />
-          </Link>
-
           {/* Canonical M3 Floating Action Button (FAB) for Quick Job Add */}
           <button
             onClick={() => setIsNewSheetOpen(true)}
@@ -120,22 +100,14 @@ export function NavigationRail() {
               width: '100%',
             }}
           >
-            {/* Dashboard Destination */}
+            {/* Dashboard Destination (Uses App Logo Icon) */}
             <Link
               href="/dashboard"
               className={`m3-nav-item ${isDashboardActive ? 'active' : ''}`}
               title="Dashboard Overview"
             >
               <div className="m3-active-pill">
-                <span
-                  className="material-symbols-outlined"
-                  style={{
-                    fontSize: '24px',
-                    fontVariationSettings: isDashboardActive ? "'FILL' 1" : "'FILL' 0",
-                  }}
-                >
-                  space_dashboard
-                </span>
+                <Logo size={22} color="currentColor" />
               </div>
               <span className="m3-nav-label">Dashboard</span>
             </Link>

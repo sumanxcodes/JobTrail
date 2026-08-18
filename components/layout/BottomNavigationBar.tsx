@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { Logo } from '@/components/ui/Logo';
 import { ThemeToggle } from './ThemeToggle';
 import { NewApplicationSheet } from '@/components/applications/NewApplicationSheet';
 
@@ -27,22 +28,14 @@ export function BottomNavigationBar() {
   return (
     <>
       <nav className="m3-bottom-nav" aria-label="Mobile Navigation Bar">
-        {/* Dashboard Item */}
+        {/* Dashboard Item (Uses App Logo) */}
         <Link
           href="/dashboard"
           className={`m3-nav-item ${isInsightsActive ? 'active' : ''}`}
           style={{ flex: 1 }}
         >
           <div className="m3-active-pill">
-            <span
-              className="material-symbols-outlined"
-              style={{
-                fontSize: '24px',
-                fontVariationSettings: isInsightsActive ? "'FILL' 1" : "'FILL' 0",
-              }}
-            >
-              space_dashboard
-            </span>
+            <Logo size={22} color="currentColor" />
           </div>
           <span className="m3-nav-label">Dashboard</span>
         </Link>
