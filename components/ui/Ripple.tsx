@@ -7,7 +7,7 @@ export interface RippleProps {
   disabled?: boolean;
   /** Hover state layer opacity (default: 0.08) */
   hoverOpacity?: number;
-  /** Pressed state layer opacity (default: 0.12) */
+  /** Pressed state layer opacity (default: 0.18) */
   pressedOpacity?: number;
   /** Custom ripple color (default: currentColor) */
   color?: string;
@@ -23,12 +23,13 @@ interface RippleWave {
   y: number;
   size: number;
   holding: boolean;
+  startTime: number;
 }
 
 export function Ripple({
   disabled = false,
   hoverOpacity = 0.08,
-  pressedOpacity = 0.12,
+  pressedOpacity = 0.18,
   color = 'currentColor',
   centered = true,
   className = '',
@@ -39,23 +40,32 @@ export function Ripple({
   const [waves, setWaves] = useState<RippleWave[]>([]);
 
   useEffect(() => {
-    const parent = containerRef.current?.parentElement;
-    if (!parent || disabled) return;
+    const container = containerRef.current;
+    if (!container || disabled) return;
+
+    // Attach to closest interactive ancestor (.m3-nav-item, button, or direct parent)
+    const target =
+      container.closest('.m3-nav-item') ||
+      container.closest('button') ||
+      container.closest('a') ||
+      container.parentElement;
+
+    if (!target) return;
 
     const handlePointerEnter = () => setIsHovered(true);
     const handlePointerLeave = () => {
       setIsHovered(false);
-      setWaves((prev) => prev.map((w) => ({ ...w, holding: false })));
+      releaseAllWaves();
     };
 
-    const handlePointerDown = (e: PointerEvent) => {
-      // Only respond to primary click/touch
-      if (e.button !== 0) return;
+    const handlePointerDown = (e: Event) => {
+      const pe = e as PointerEvent;
+      if (pe.button !== undefined && pe.button !== 0) return;
 
-      const rect = parent.getBoundingClientRect();
-      const size = Math.max(rect.width, rect.height) * 2;
-      const x = centered ? rect.width / 2 : e.clientX - rect.left;
-      const y = centered ? rect.height / 2 : e.clientY - rect.top;
+      const rect = container.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height) * 2.2;
+      const x = centered ? rect.width / 2 : pe.clientX - rect.left;
+      const y = centered ? rect.height / 2 : pe.clientY - rect.top;
 
       const newWave: RippleWave = {
         id: Date.now() + Math.random(),
@@ -63,31 +73,49 @@ export function Ripple({
         y,
         size,
         holding: true,
+        startTime: Date.now(),
       };
 
       setWaves((prev) => [...prev, newWave]);
     };
 
-    const handlePointerUp = () => {
-      setWaves((prev) => prev.map((w) => ({ ...w, holding: false })));
+    const releaseAllWaves = () => {
+      const MIN_PRESS_MS = 200;
+      setWaves((prev) =>
+        prev.map((w) => {
+          if (!w.holding) return w;
+          const elapsed = Date.now() - w.startTime;
+          if (elapsed >= MIN_PRESS_MS) {
+            return { ...w, holding: false };
+          } else {
+            // Guarantee minimum animation duration before fading out
+            setTimeout(() => {
+              setWaves((current) =>
+                current.map((cw) => (cw.id === w.id ? { ...cw, holding: false } : cw))
+              );
+            }, MIN_PRESS_MS - elapsed);
+            return w;
+          }
+        })
+      );
     };
 
-    parent.addEventListener('pointerenter', handlePointerEnter);
-    parent.addEventListener('pointerleave', handlePointerLeave);
-    parent.addEventListener('pointerdown', handlePointerDown);
-    window.addEventListener('pointerup', handlePointerUp);
-    window.addEventListener('pointercancel', handlePointerUp);
+    target.addEventListener('pointerenter', handlePointerEnter);
+    target.addEventListener('pointerleave', handlePointerLeave);
+    target.addEventListener('pointerdown', handlePointerDown);
+    window.addEventListener('pointerup', releaseAllWaves);
+    window.addEventListener('pointercancel', releaseAllWaves);
 
     return () => {
-      parent.removeEventListener('pointerenter', handlePointerEnter);
-      parent.removeEventListener('pointerleave', handlePointerLeave);
-      parent.removeEventListener('pointerdown', handlePointerDown);
-      window.removeEventListener('pointerup', handlePointerUp);
-      window.removeEventListener('pointercancel', handlePointerUp);
+      target.removeEventListener('pointerenter', handlePointerEnter);
+      target.removeEventListener('pointerleave', handlePointerLeave);
+      target.removeEventListener('pointerdown', handlePointerDown);
+      window.removeEventListener('pointerup', releaseAllWaves);
+      window.removeEventListener('pointercancel', releaseAllWaves);
     };
   }, [disabled, centered]);
 
-  const handleWaveAnimationEnd = (id: number) => {
+  const handleWaveFadeEnd = (id: number) => {
     setWaves((prev) => prev.filter((w) => w.id !== id));
   };
 
@@ -123,10 +151,10 @@ export function Ripple({
       {waves.map((wave) => (
         <span
           key={wave.id}
-          className={`m3-ripple-anim ${!wave.holding ? 'fade-out' : ''}`}
+          className={`m3-ripple-wave-circle ${!wave.holding ? 'fade-out' : ''}`}
           onAnimationEnd={(e) => {
             if (e.animationName === 'm3RippleFadeOut') {
-              handleWaveAnimationEnd(wave.id);
+              handleWaveFadeEnd(wave.id);
             }
           }}
           style={{

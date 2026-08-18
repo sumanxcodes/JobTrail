@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase/client';
 import { Logo } from '@/components/ui/Logo';
 import { ThemeToggle } from './ThemeToggle';
 import { NewApplicationSheet } from '@/components/applications/NewApplicationSheet';
+import { Ripple } from '@/components/ui/Ripple';
 
 export function BottomNavigationBar() {
   const pathname = usePathname();
@@ -36,6 +37,7 @@ export function BottomNavigationBar() {
         >
           <div className="m3-active-pill">
             <Logo size={22} color="currentColor" />
+            <Ripple centered={true} />
           </div>
           <span className="m3-nav-label">Dashboard</span>
         </Link>
@@ -56,6 +58,7 @@ export function BottomNavigationBar() {
             >
               business_center
             </span>
+            <Ripple centered={true} />
           </div>
           <span className="m3-nav-label">Applications</span>
         </Link>
@@ -78,6 +81,7 @@ export function BottomNavigationBar() {
             >
               add_circle
             </span>
+            <Ripple centered={true} color="var(--md-sys-color-primary)" />
           </div>
           <span className="m3-nav-label" style={{ color: 'var(--md-sys-color-primary)', fontWeight: 700 }}>
             Add Job
@@ -104,6 +108,7 @@ export function BottomNavigationBar() {
             >
               logout
             </span>
+            <Ripple centered={true} color="var(--md-sys-color-error)" />
           </div>
           <span className="m3-nav-label" style={{ color: 'var(--md-sys-color-error)' }}>
             Log out

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { Ripple } from '@/components/ui/Ripple';
 
 export function ThemeToggle() {
   const [hasInteracted, setHasInteracted] = useState(false);
@@ -21,6 +22,7 @@ export function ThemeToggle() {
       className={`theme-toggle-btn ${hasInteracted ? 'has-interacted' : ''}`}
       aria-label="Toggle light and dark theme"
       title="Toggle light and dark theme"
+      style={{ position: 'relative', overflow: 'hidden' }}
     >
       <span className="material-symbols-outlined theme-icon-sun">
         light_mode
@@ -28,6 +30,7 @@ export function ThemeToggle() {
       <span className="material-symbols-outlined theme-icon-moon">
         dark_mode
       </span>
+      <Ripple centered={true} />
     </button>
   );
 }
