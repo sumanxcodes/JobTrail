@@ -178,10 +178,35 @@
   --status-withdrawn-text: #bfcbad;
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--md-sys-color-outline-variant) transparent;
+}
+
+/* Custom M3 Themed Slim Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--md-sys-color-outline-variant);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--md-sys-color-outline);
 }
 
 body {
@@ -528,6 +553,7 @@ a {
     min-height: calc(100vh - 1.5rem);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
     overflow-y: auto;
+    scrollbar-gutter: stable;
   }
 }
 
