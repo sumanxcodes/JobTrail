@@ -473,16 +473,14 @@ export function ApplicationDetailSheet({
           </div>
         </div>
 
-        {/* M3 Primary Tabs Bar (Pure Typographic Tabs) */}
+        {/* M3 Primary Tabs Bar (Full-Width Distributed 3-Column Grid) */}
         <div
           style={{
-            display: 'flex',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
             backgroundColor: 'var(--md-sys-color-surface-container-low)',
             borderBottom: '1px solid var(--md-sys-color-outline-variant)',
-            padding: '0 1.5rem',
-            gap: '1.25rem',
             flexShrink: 0,
-            overflowX: 'auto',
           }}
         >
           {[
@@ -496,9 +494,10 @@ export function ApplicationDetailSheet({
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key as any)}
                 style={{
-                  display: 'inline-flex',
+                  display: 'flex',
                   alignItems: 'center',
-                  padding: '0.875rem 0.25rem',
+                  justifyContent: 'center',
+                  height: '48px',
                   border: 'none',
                   borderBottom: isActive
                     ? '3px solid var(--md-sys-color-primary)'
@@ -589,15 +588,12 @@ export function ApplicationDetailSheet({
                           fontSize: '0.6875rem',
                           fontFamily: 'var(--font-headline)',
                           fontWeight: 700,
-                          color: 'var(--md-sys-color-primary)',
+                          color: 'var(--md-sys-color-on-surface-variant)',
                           textTransform: 'uppercase',
                           letterSpacing: '0.08em',
                         }}
                       >
                         Pipeline Progression
-                      </span>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
-                        Stage: <strong style={{ textTransform: 'capitalize', color: 'var(--md-sys-color-on-surface)' }}>{application.status}</strong>
                       </span>
                     </div>
 
@@ -673,7 +669,7 @@ export function ApplicationDetailSheet({
                     {/* Secondary Terminal Exit States (Clean Text Pills) */}
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '0.25rem' }}>
                       <span style={{ fontSize: '0.75rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
-                        Terminal outcomes:
+                        Other outcomes:
                       </span>
                       <div style={{ display: 'flex', gap: '0.5rem' }}>
                         {[
@@ -724,7 +720,7 @@ export function ApplicationDetailSheet({
                       border: '1px solid var(--md-sys-color-outline-variant)',
                       display: 'flex',
                       flexDirection: 'column',
-                      gap: '1.1rem',
+                      gap: '1rem',
                     }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -733,7 +729,7 @@ export function ApplicationDetailSheet({
                           fontSize: '0.6875rem',
                           fontFamily: 'var(--font-headline)',
                           fontWeight: 700,
-                          color: 'var(--md-sys-color-primary)',
+                          color: 'var(--md-sys-color-on-surface-variant)',
                           textTransform: 'uppercase',
                           letterSpacing: '0.08em',
                         }}
@@ -848,7 +844,7 @@ export function ApplicationDetailSheet({
                     ) : (
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                         {/* Location Row */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
                           <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                             Location
                           </span>
@@ -858,7 +854,7 @@ export function ApplicationDetailSheet({
                         </div>
 
                         {/* Salary Row */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
                           <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                             Compensation & Salary
                           </span>
@@ -868,8 +864,8 @@ export function ApplicationDetailSheet({
                         </div>
 
                         {/* Seniority & Source Row */}
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', paddingTop: '0.5rem', borderTop: '1px solid var(--md-sys-color-outline-variant)' }}>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
                             <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                               Seniority
                             </span>
@@ -878,7 +874,7 @@ export function ApplicationDetailSheet({
                             </span>
                           </div>
 
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
                             <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--md-sys-color-on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                               Posting
                             </span>
@@ -913,7 +909,7 @@ export function ApplicationDetailSheet({
                     )}
                   </div>
 
-                  {/* Card 3: Notes & Context (Integrated Document Pad) */}
+                  {/* Card 3: Notes & Context (Integrated Document Pad with Auto-Save on Blur) */}
                   <div
                     style={{
                       padding: '1.25rem 1.5rem',
@@ -922,7 +918,7 @@ export function ApplicationDetailSheet({
                       border: '1px solid var(--md-sys-color-outline-variant)',
                       display: 'flex',
                       flexDirection: 'column',
-                      gap: '0.875rem',
+                      gap: '0.75rem',
                     }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -931,23 +927,36 @@ export function ApplicationDetailSheet({
                           fontSize: '0.6875rem',
                           fontFamily: 'var(--font-headline)',
                           fontWeight: 700,
-                          color: 'var(--md-sys-color-primary)',
+                          color: 'var(--md-sys-color-on-surface-variant)',
                           textTransform: 'uppercase',
                           letterSpacing: '0.08em',
                         }}
                       >
                         Interview Notes & Prep
                       </span>
-                      {notesSavedSuccess && (
-                        <span style={{ fontSize: '0.75rem', color: 'var(--md-sys-color-primary)', fontWeight: 700 }}>
-                          ✓ Notes Saved
-                        </span>
-                      )}
+                      <span
+                        style={{
+                          fontSize: '0.75rem',
+                          color: notesSavedSuccess
+                            ? 'var(--md-sys-color-primary)'
+                            : 'var(--md-sys-color-on-surface-variant)',
+                          fontWeight: 600,
+                          transition: 'opacity 0.2s ease',
+                          opacity: savingNotes || notesSavedSuccess ? 1 : 0.6,
+                        }}
+                      >
+                        {savingNotes ? 'Saving...' : notesSavedSuccess ? '✓ Saved' : 'Auto-saves on blur'}
+                      </span>
                     </div>
 
                     <textarea
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
+                      onBlur={(e) => {
+                        e.target.style.borderColor = 'var(--md-sys-color-outline-variant)';
+                        e.target.style.boxShadow = 'none';
+                        handleSaveNotes();
+                      }}
                       rows={5}
                       placeholder="Add recruiter contacts, interview dates, questions, or referral notes here..."
                       style={{
@@ -955,30 +964,20 @@ export function ApplicationDetailSheet({
                         padding: '0.875rem 1rem',
                         borderRadius: '12px',
                         border: '1px solid var(--md-sys-color-outline-variant)',
-                        backgroundColor: 'var(--md-sys-color-surface-container-low)',
+                        backgroundColor: 'var(--md-sys-color-surface-container-lowest)',
                         color: 'var(--md-sys-color-on-surface)',
                         fontFamily: 'var(--font-body)',
                         fontSize: '0.875rem',
                         lineHeight: 1.6,
                         resize: 'vertical',
                         outline: 'none',
-                        transition: 'border-color 0.2s ease, background-color 0.2s ease',
+                        transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
                       }}
                       onFocus={(e) => {
                         e.target.style.borderColor = 'var(--md-sys-color-primary)';
-                        e.target.style.backgroundColor = 'var(--md-sys-color-surface-container-lowest)';
-                      }}
-                      onBlur={(e) => {
-                        e.target.style.borderColor = 'var(--md-sys-color-outline-variant)';
-                        e.target.style.backgroundColor = 'var(--md-sys-color-surface-container-low)';
+                        e.target.style.boxShadow = '0 0 0 1px var(--md-sys-color-primary)';
                       }}
                     />
-
-                    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                      <OutlinedButton onClick={handleSaveNotes} disabled={savingNotes}>
-                        {savingNotes ? 'Saving...' : 'Save Notes'}
-                      </OutlinedButton>
-                    </div>
                   </div>
                 </div>
               )}
