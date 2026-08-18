@@ -139,7 +139,7 @@ export default function ApplicationsPage() {
   };
 
   return (
-    <div style={{ maxWidth: '1280px', padding: '2rem 1.5rem 4rem 1.5rem', margin: '0 auto' }}>
+    <div style={{ maxWidth: '1280px', padding: '2rem 2rem 4rem 2rem', margin: '0 auto' }}>
       {/* Top Header */}
       <div
         style={{

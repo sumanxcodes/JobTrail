@@ -328,7 +328,7 @@ export default function ApplicationDetailPage() {
   const initials = getInitials(application.company);
 
   return (
-    <div style={{ padding: '2rem 2rem 4rem 2rem', maxWidth: '1240px', margin: '0 auto' }}>
+    <div style={{ padding: '2rem 2rem 4rem 2rem', maxWidth: '1280px', margin: '0 auto' }}>
       {/* Top Breadcrumb Nav */}
       <div style={{ marginBottom: '1.25rem' }}>
         <Link href="/applications" style={{ textDecoration: 'none' }}>

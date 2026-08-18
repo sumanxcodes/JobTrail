@@ -80,7 +80,7 @@ export default function DashboardPage() {
   }, [applications]);
 
   return (
-    <div style={{ padding: '2rem 2.5rem 4rem 2.5rem', maxWidth: '1200px', margin: '0 auto' }}>
+    <div style={{ maxWidth: '1280px', padding: '2rem 2rem 4rem 2rem', margin: '0 auto' }}>
       {/* Header & Primary Actions */}
       <div
         style={{
